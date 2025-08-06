@@ -1,7 +1,6 @@
+# blog/models.py
 from django.db import models
 from django.contrib.auth.models import User
-
-# Create your models here.
 
 
 class Category(models.Model):
@@ -27,14 +26,17 @@ class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     featured_image = models.ImageField(upload_to="articles/", null=True, blank=True)
-    slug = models.SlugField(
-        unique=True
-    )  # para los links por ejemplo articulos/mi-nombre-articulo
+    slug = models.SlugField(unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="articles")
     category = models.ManyToManyField(Category, blank=True, related_name="articles")
     tags = models.ManyToManyField(Tag, blank=True, related_name="articles")
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "Article"
+        verbose_name_plural = "Articles"
 
     def __str__(self):
         return self.title
@@ -46,6 +48,10 @@ class ArticleView(models.Model):
     viewed_at = models.DateTimeField(auto_now_add=True)
     ip_adress = models.CharField(max_length=45)
 
+    class Meta:
+        verbose_name = "Article View"
+        verbose_name_plural = "Article views"
+
 
 class Comment(models.Model):
     content = models.TextField()
@@ -53,10 +59,13 @@ class Comment(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "Comment"
+        verbose_name_plural = "Comments"
+
     def __str__(self):
-        return (
-            f"Comentado por {self.user.username} en el arituclo: {self.article.title}"
-        )
+        return f"Comentado por {self.user.username} en el artículo: {self.article.title}"
 
 
 class ArticleRating(models.Model):
@@ -67,6 +76,8 @@ class ArticleRating(models.Model):
 
     class Meta:
         unique_together = ("user", "article")
+        verbose_name = "Article Rating"
+        verbose_name_plural = "Article Ratings"
 
     def __str__(self):
         return f"{self.user.username} valoró {self.article.title}: {self.rating}"
@@ -79,3 +90,5 @@ class CommentLike(models.Model):
 
     class Meta:
         unique_together = ("user", "comment")
+        verbose_name = "Like in Comment"
+        verbose_name_plural = "Like in Comments"

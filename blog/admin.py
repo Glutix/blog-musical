@@ -1,87 +1,121 @@
+# blog/admin.py
 from django.contrib import admin
 from django.utils import timezone
-
-
-from .models import (
-    Category,
-    Tag,
-    Article,
-    ArticleView,
-    Comment,
-    ArticleRating,
-    CommentLike,
-)
-
+from django.utils.text import slugify
+from .models import Category, Tag, Article, ArticleView, Comment, ArticleRating, CommentLike
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("name", "description")
-    search_fields = ("name",)
-
+    list_display = ['name', 'description']
+    search_fields = ['name']
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ("name",)
-    search_fields = ("name",)
-
+    list_display = ['name']
+    search_fields = ['name']
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = (
-        "title",
-        "user",
-        "created_at_local",
-        "updated_at_local",
+    list_display = ['title', 'user', 'created_at_local', 'updated_at_local']
+    list_filter = ['created_at', 'updated_at', 'category', 'tags']
+    search_fields = ['title', 'content']
+    readonly_fields = ['created_at_local', 'updated_at_local']  
+    filter_horizontal = ['category', 'tags']
+    prepopulated_fields = {'slug': ('title',)} 
+    
+    fieldsets = (
+        ('Main Information', {
+            'fields': ('title', 'slug', 'content', 'featured_image') 
+        }),
+        ('Classification', {  
+            'fields': ('category', 'tags')
+        }),
+        ('Metadata', {  
+            'fields': ('user', 'created_at_local', 'updated_at_local'),
+            'classes': ('collapse',)
+        }),
     )
-    list_filter = (
-        "created_at",
-        "user",
-        "category",
-    )
-    search_fields = (
-        "title",
-        "content",
-        "user__username",
-    )
-    prepopulated_fields = {"slug": ("title",)}
-    filter_horizontal = ("category", "tags")
-    date_hierarchy = "created_at"
-    ordering = ("-created_at",)
-
+    
     def created_at_local(self, obj):
-        return timezone.localtime(obj.created_at).strftime("%d/%m/%Y %H:%M")
-
+        if obj.created_at:
+            local_time = timezone.localtime(obj.created_at)
+            return local_time.strftime('%d/%m/%Y %H:%M:%S')
+        return '-'
+    created_at_local.short_description = 'Created (Local Time)'  
+    
     def updated_at_local(self, obj):
-        return timezone.localtime(obj.updated_at).strftime("%d/%m/%Y %H:%M")
 
-    created_at_local.short_description = "Creado el"
-    updated_at_local.short_description = "Actualizado el"
+        if obj.updated_at:
+            local_time = timezone.localtime(obj.updated_at)
+            return local_time.strftime('%d/%m/%Y %H:%M:%S')
+        return '-'
+    updated_at_local.short_description = 'Updated (Local Time)'  
 
-
-@admin.register(ArticleView)
-class ArticleViewAdmin(admin.ModelAdmin):
-    list_display = ("user", "article", "viewed_at", "ip_adress")
-    list_filter = ("viewed_at", "article")
-    search_fields = ("user__username", "article__title", "ip_adress")
-
+    def save_model(self, request, obj, form, change):
+        if not obj.slug:
+            obj.slug = slugify(obj.title)
+        super().save_model(request, obj, form, change)
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ("user", "article", "created_at")
-    list_filter = ("created_at",)
-    search_fields = ("user__username", "article__title", "content")
-    ordering = ("-created_at",)
+    list_display = ['user', 'article', 'content_preview', 'created_at_local']
+    list_filter = ['created_at', 'article']
+    search_fields = ['content', 'user__username', 'article__title']
+    readonly_fields = ['created_at_local']
+    
+    def content_preview(self, obj):
+        return obj.content[:50] + '...' if len(obj.content) > 50 else obj.content
+    content_preview.short_description = 'Content Preview' 
+    
+    def created_at_local(self, obj):
+        
+        if obj.created_at:
+            local_time = timezone.localtime(obj.created_at)
+            return local_time.strftime('%d/%m/%Y %H:%M:%S')
+        return '-'
+    created_at_local.short_description = 'Created (Local Time)'  
 
+@admin.register(ArticleView)
+class ArticleViewAdmin(admin.ModelAdmin):
+    list_display = ['user', 'article', 'ip_adress', 'viewed_at_local']
+    list_filter = ['viewed_at', 'article']
+    search_fields = ['user__username', 'article__title', 'ip_adress']
+    readonly_fields = ['viewed_at_local']
+    
+    def viewed_at_local(self, obj):
+        
+        if obj.viewed_at:
+            local_time = timezone.localtime(obj.viewed_at)
+            return local_time.strftime('%d/%m/%Y %H:%M:%S')
+        return '-'
+    viewed_at_local.short_description = 'Viewed (Local Time)'
 
 @admin.register(ArticleRating)
 class ArticleRatingAdmin(admin.ModelAdmin):
-    list_display = ("user", "article", "rating", "created_at")
-    list_filter = ("rating", "created_at")
-    search_fields = ("user__username", "article__title")
-
+    list_display = ['user', 'article', 'rating', 'created_at_local']
+    list_filter = ['rating', 'created_at']
+    search_fields = ['user__username', 'article__title']
+    readonly_fields = ['created_at_local']
+    
+    def created_at_local(self, obj):
+        
+        if obj.created_at:
+            local_time = timezone.localtime(obj.created_at)
+            return local_time.strftime('%d/%m/%Y %H:%M:%S')
+        return '-'
+    created_at_local.short_description = 'Rated (Local Time)'  
 
 @admin.register(CommentLike)
 class CommentLikeAdmin(admin.ModelAdmin):
-    list_display = ("user", "comment", "created_at")
-    list_filter = ("created_at",)
-    search_fields = ("user__username", "comment__content")
+    list_display = ['user', 'comment', 'created_at_local']
+    list_filter = ['created_at']
+    search_fields = ['user__username']
+    readonly_fields = ['created_at_local']
+    
+    def created_at_local(self, obj):
+        
+        if obj.created_at:
+            local_time = timezone.localtime(obj.created_at)
+            return local_time.strftime('%d/%m/%Y %H:%M:%S')
+        return '-'
+    created_at_local.short_description = 'Liked (Local Time)' 
