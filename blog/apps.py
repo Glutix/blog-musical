@@ -3,8 +3,6 @@ from django.apps import AppConfig
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
-from django.utils.text import slugify
-
 
 def create_initial_data(sender, **kwargs):
     # ¡Importamos los modelos con los nombres correctos!
@@ -53,17 +51,14 @@ def create_initial_data(sender, **kwargs):
                 "Sirve para llenar la base de datos con contenido de ejemplo."
             )
             
-            # Generamos el slug a partir del título
-            slug = slugify(title)
-
             # Verificamos si el artículo existe antes de crearlo
             if not Article.objects.filter(title=title).exists():
                 article = Article.objects.create(
                     title=title,
                     content=content,
-                    user=admin_user,
-                    # Añadimos el slug generado
-                    slug=slug
+                    # El campo de autor es 'user', no 'author'
+                    user=admin_user
+                    # El campo 'is_published' no existe en el modelo, por lo que se elimina
                 )
                 
                 # Asignar categorías y tags al artículo
@@ -79,3 +74,4 @@ class BlogConfig(AppConfig):
     def ready(self):
         # Conecta la función a la señal `post_migrate`
         post_migrate.connect(create_initial_data, sender=self)
+
