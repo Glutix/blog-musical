@@ -1,100 +1,103 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Blog Musical{% endblock %}</title>
-    
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome para íconos si los necesitas -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    {% block extra_css %}{% endblock %}
+    <!-- Bloque para estilos adicionales de cada página -->
+    {% block head_extra %}{% endblock %}
+
+    <style>
+        /* Paleta de colores */
+        :root {
+            --color-texto: #000000;
+            --color-naranja: #FF6C2E;
+            --color-naranja-oscuro: #D25C2A;
+            --color-fondo-gris: #E5E5E5;
+            --color-fondo-claro: #FFFFFF;
+        }
+
+        /* Estilos personalizados para el navbar */
+        .btn-orange {
+            background-color: var(--color-naranja);
+            border-color: var(--color-naranja);
+            color: var(--color-fondo-claro);
+        }
+        .btn-orange:hover {
+            background-color: var(--color-naranja-oscuro);
+            border-color: var(--color-naranja-oscuro);
+        }
+        .navbar-brand img {
+            height: 40px; /* Ajusta el tamaño del logo */
+        }
+
+        /* Estilos para el carrusel */
+        .hero-section .hero-caption {
+            top: 50%;
+            transform: translateY(-50%);
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+        .hero-section .hero-caption h5 {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .hero-section .hero-caption p {
+            font-size: 1.2rem;
+        }
+    </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+    <!-- Nuevo Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light py-3 shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'blog:article_list' %}">🎵 Blog Musical</a>
+            <!-- Logo de la marca como imagen -->
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'img/logo-integral.png' %}" alt="Integrate Logo">
+            </a>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'blog:article_list' %}">Inicio</a>
+                        <a class="nav-link active" aria-current="page" href="#">Inicio</a>
                     </li>
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'blog:article_create' %}">Crear Artículo</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'blog:my_articles' %}">Mis Artículos</a>
-                        </li>
-                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Catálogo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Colecciones</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Sobre nosotros</a>
+                    </li>
                 </ul>
                 
-                <ul class="navbar-nav">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                👤 {{ user.username }}
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Perfil</a></li>
-                                <li><a class="dropdown-item" href="#">Configuración</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#">Cerrar Sesión</a></li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Iniciar Sesión</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Registrarse</a>
-                        </li>
-                        <!-- SOLO PARA DESARROLLO - Botón de login simulado -->
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-warning btn-sm ms-2" href="{% url 'blog:simulate_login_default' %}">
-                                🧪 Login Test
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
+                <div class="d-flex">
+                    <a href="{% url 'blog:simulate_login_default' %}" class="btn btn-dark me-2">Iniciar sesión</a>
+                    <a href="user/register/" class="btn btn-orange">Registrar</a>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Mensajes -->
-    {% if messages %}
-        <div class="container mt-3">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    <!-- Contenido principal -->
-    <div class="container mt-4">
-        {% block content %}
-        {% endblock %}
+    <!-- Contenido principal de la página -->
+    <div class="container">
+        {% block content %}{% endblock %}
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-light text-center py-3 mt-5">
-        <div class="container">
-            <p>&copy; 2024 Blog Musical. Todos los derechos reservados.</p>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    
-    {% block extra_js %}{% endblock %}
+    <!-- Scripts de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

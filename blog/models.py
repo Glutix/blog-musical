@@ -1,7 +1,7 @@
 # blog/models.py
 from django.db import models
 from django.contrib.auth.models import User
-
+from cloudinary.models import CloudinaryField
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -25,7 +25,7 @@ class Tag(models.Model):
 class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
-    featured_image = models.ImageField(upload_to="articles/", null=True, blank=True)
+    featured_image = CloudinaryField('image')
     slug = models.SlugField(unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
