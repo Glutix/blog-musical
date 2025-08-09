@@ -1,0 +1,170 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Mis Artículos - Blog Musical{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>📝 Mis Artículos</h1>
+            <a href="{% url 'blog:article_create' %}" class="btn btn-primary">
+                ✨ Crear Nuevo Artículo
+            </a>
+        </div>
+
+        {% if articles %}
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Título</th>
+                                    <th class="d-none d-md-table-cell">Categorías</th>
+                                    <th class="d-none d-lg-table-cell">Fecha</th>
+                                    <th class="d-none d-lg-table-cell">Vistas</th>
+                                    <th class="d-none d-md-table-cell">Comentarios</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for article in articles %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                {% if article.featured_image %}
+                                                    <img src="{{ article.featured_image.url }}" 
+                                                         alt="{{ article.title }}"
+                                                         class="rounded me-3"
+                                                         style="width: 50px; height: 50px; object-fit: cover;">
+                                                {% endif %}
+                                                <div>
+                                                    <h6 class="mb-1">
+                                                        <a href="{% url 'blog:article_detail' article.slug %}" 
+                                                           class="text-decoration-none">
+                                                            {{ article.title }}
+                                                        </a>
+                                                    </h6>
+                                                    <small class="text-muted">{{ article.content|truncatewords:10 }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="d-none d-md-table-cell">
+                                            {% for category in article.category.all %}
+                                                <span class="badge bg-secondary me-1">{{ category.name }}</span>
+                                            {% empty %}
+                                                <span class="text-muted">Sin categorías</span>
+                                            {% endfor %}
+                                        </td>
+                                        <td class="d-none d-lg-table-cell">
+                                            <div>
+                                                <strong>Creado:</strong> {{ article.created_at|date:"d/m/Y" }}<br>
+                                                {% if article.updated_at != article.created_at %}
+                                                    <small class="text-muted">Editado: {{ article.updated_at|date:"d/m/Y" }}</small>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td class="d-none d-lg-table-cell text-center">
+                                            <span class="badge bg-info">{{ article.articleview_set.count }}</span>
+                                        </td>
+                                        <td class="d-none d-md-table-cell text-center">
+                                            <span class="badge bg-success">{{ article.comment_set.count }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a href="{% url 'blog:article_detail' article.slug %}" 
+                                                   class="btn btn-outline-primary" title="Ver">
+                                                    👁️
+                                                </a>
+                                                <a href="{% url 'blog:article_edit' article.slug %}" 
+                                                   class="btn btn-outline-warning" title="Editar">
+                                                    ✏️
+                                                </a>
+                                                <a href="{% url 'blog:article_delete' article.slug %}" 
+                                                   class="btn btn-outline-danger" title="Eliminar">
+                                                    🗑️
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Estadísticas rápidas -->
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-primary">{{ articles.count }}</h3>
+                            <p class="mb-0">Artículos Publicados</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-info">
+                                {% with total_views=0 %}
+                                    {% for article in articles %}
+                                        {% with total_views=total_views|add:article.articleview_set.count %}
+                                        {% endwith %}
+                                    {% endfor %}
+                                    {{ total_views }}
+                                {% endwith %}
+                            </h3>
+                            <p class="mb-0">Vistas Totales</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-success">
+                                {% with total_comments=0 %}
+                                    {% for article in articles %}
+                                        {% with total_comments=total_comments|add:article.comment_set.count %}
+                                        {% endwith %}
+                                    {% endfor %}
+                                    {{ total_comments }}
+                                {% endwith %}
+                            </h3>
+                            <p class="mb-0">Comentarios Recibidos</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3 class="text-warning">
+                                {% with total_ratings=0 %}
+                                    {% for article in articles %}
+                                        {% with total_ratings=total_ratings|add:article.articlerating_set.count %}
+                                        {% endwith %}
+                                    {% endfor %}
+                                    {{ total_ratings }}
+                                {% endwith %}
+                            </h3>
+                            <p class="mb-0">Valoraciones</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-edit fa-4x text-muted"></i>
+                </div>
+                <h3 class="text-muted">No has creado artículos aún</h3>
+                <p class="text-muted">¡Comparte tu pasión por la música con el mundo!</p>
+                <a href="{% url 'blog:article_create' %}" class="btn btn-primary mt-3">
+                    ✨ Crear Mi Primer Artículo
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "blog",
+    "blog.apps.BlogConfig",
     "user_auth",
     "cloudinary",
     "cloudinary_storage",

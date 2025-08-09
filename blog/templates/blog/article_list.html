@@ -1,0 +1,104 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Inicio - Blog Musical{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>🎵 Artículos Recientes</h1>
+            {% if user.is_authenticated %}
+                <a href="{% url 'blog:article_create' %}" class="btn btn-primary">
+                    ✨ Crear Nuevo Artículo
+                </a>
+            {% endif %}
+        </div>
+
+        {% if articles %}
+            <div class="row">
+                {% for article in articles %}
+                    <div class="col-lg-6 col-xl-4 mb-4">
+                        <div class="card h-100">
+                            {% if article.featured_image %}
+                                <img src="{{ article.featured_image.url }}" 
+                                     class="card-img-top" 
+                                     alt="{{ article.title }}"
+                                     style="height: 200px; object-fit: cover;">
+                            {% endif %}
+                            
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ article.title }}</h5>
+                                <p class="card-text">{{ article.content|truncatewords:20 }}</p>
+                                
+                                <!-- Categorías -->
+                                {% if article.category.all %}
+                                    <div class="mb-2">
+                                        {% for category in article.category.all %}
+                                            <span class="badge bg-secondary me-1">{{ category.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Tags -->
+                                {% if article.tags.all %}
+                                    <div class="mb-2">
+                                        {% for tag in article.tags.all %}
+                                            <span class="badge bg-outline-primary me-1">#{{ tag.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="mt-auto">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            Por {{ article.user.username }}<br>
+                                            {{ article.created_at|date:"d/m/Y" }}
+                                        </small>
+                                        <a href="{% url 'blog:article_detail' article.slug %}" 
+                                           class="btn btn-outline-primary btn-sm">
+                                            Leer más →
+                                        </a>
+                                    </div>
+                                    
+                                    <!-- Opciones de autor -->
+                                    {% if user == article.user %}
+                                        <div class="mt-2 border-top pt-2">
+                                            <div class="btn-group btn-group-sm w-100" role="group">
+                                                <a href="{% url 'blog:article_edit' article.slug %}" 
+                                                   class="btn btn-outline-warning">
+                                                    ✏️ Editar
+                                                </a>
+                                                <a href="{% url 'blog:article_delete' article.slug %}" 
+                                                   class="btn btn-outline-danger">
+                                                    🗑️ Eliminar
+                                                </a>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-music fa-4x text-muted"></i>
+                </div>
+                <h3 class="text-muted">No hay artículos aún</h3>
+                <p class="text-muted">¡Sé el primero en compartir algo sobre música!</p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'blog:article_create' %}" class="btn btn-primary mt-3">
+                        ✨ Crear Primer Artículo
+                    </a>
+                {% else %}
+                    <p class="text-muted">
+                        <a href="#">Inicia sesión</a> para comenzar a escribir.
+                    </p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
