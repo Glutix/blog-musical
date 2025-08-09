@@ -5,25 +5,30 @@
 
 {% block content %}
     <!-- Sección del carrusel de héroe -->
+    <!-- Se agrega una clase personalizada 'hero-container' para controlar el tamaño máximo del carrusel -->
     <header class="hero-section text-center py-5">
         <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 {% for article in articles|slice:"3" %}
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                    <!-- Usar una imagen de marcador de posición si no hay imagen destacada -->
-                    <img src="{% if article.featured_image %}{{ article.featured_image.url }}{% else %}{% static 'img/placeholder.jpg' %}{% endif %}" class="d-block w-100 hero-image" alt="{{ article.title }}">
+                    <!-- Se agrega un contenedor para la imagen con la clase 'carousel-image-container' -->
+                    <div class="carousel-image-container">
+                        <!-- Usar una imagen de marcador de posición si no hay imagen destacada -->
+                        <img src="{% if article.featured_image %}{{ article.featured_image.url }}{% else %}{% static 'img/placeholder.jpg' %}{% endif %}" class="d-block w-100" alt="{{ article.title }}">
+                    </div>
                     <div class="carousel-caption d-none d-md-block text-white">
                         <div class="hero-caption">
-                            <span class="badge bg-orange mb-2">{{ article.category.first }}</span>
+                            <span class="fw-bold text-dark-orange">Autor {{ article.user.username }}</span>
                             <h5>{{ article.title }}</h5>
-                            <p>Por {{ article.user.username }}</p>
                             <a href="{% url 'blog:article_detail' article.slug %}" class="btn btn-orange">Leer más</a>
                         </div>
                     </div>
                 </div>
                 {% empty %}
                 <div class="carousel-item active">
-                    <img src="{% static 'img/placeholder.jpg' %}" class="d-block w-100 hero-image" alt="No hay artículos destacados">
+                    <div class="carousel-image-container">
+                        <img src="{% static 'img/placeholder.jpg' %}" class="d-block w-100" alt="No hay artículos destacados">
+                    </div>
                     <div class="carousel-caption d-none d-md-block text-white">
                         <div class="hero-caption">
                             <h5>No hay artículos disponibles</h5>
@@ -62,7 +67,8 @@
                         <p class="card-subtitle mb-3 text-grey">
                             Por <span class="fw-bold text-orange">{{ article.user.username }}</span> | {{ article.created_at|date:"d M, Y" }}
                         </p>
-                        <p class="card-text text-truncate-3-lines">{{ article.content }}</p>
+                        <!-- Se agrega una clase personalizada 'article-text' para establecer una altura máxima y truncar el texto -->
+                        <p class="card-text text-truncate-3-lines article-text"> {{ article.content }}</p>
                         <div class="mt-auto">
                             <a href="{% url 'blog:article_detail' article.slug %}" class="btn btn-orange w-100 fw-bold">Seguir leyendo</a>
                         </div>

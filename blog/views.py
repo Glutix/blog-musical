@@ -11,9 +11,11 @@ from .forms import ArticleForm
 # Vista para listar todos los artículos (pública)
 def article_list(request):
     """
-    Vista pública para mostrar todos los artículos
+    Vista pública para mostrar todos los artículos ordenados por fecha de creación descendente.
     """
-    articles = Article.objects.all()
+    # Obtener todos los artículos y ordenarlos por el campo 'created_at' de forma descendente
+    articles = Article.objects.all().order_by('-created_at')
+    
     return render(request, 'blog/article_list.html', {'articles': articles})
 
 
@@ -157,7 +159,8 @@ def article_delete(request, slug):
         article_title = article.title
         article.delete()
         messages.success(request, f'El artículo "{article_title}" ha sido eliminado exitosamente.')
-        return redirect('blog:article_list')
+        # Se ha cambiado la redirección para que apunte a la página de los artículos del usuario
+        return redirect('blog:my_articles')
     
     return render(request, 'blog/article_confirm_delete.html', {
         'article': article
