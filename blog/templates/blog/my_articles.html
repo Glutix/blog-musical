@@ -1,170 +1,150 @@
 {% extends 'blog/base.html' %}
+{% load static %}
 
-{% block title %}Mis Artículos - Blog Musical{% endblock %}
+{% block title %}Mis Publicaciones{% endblock %}
+
+{% block head_extra %}
+<style>
+    .card-article {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        border: 0;
+    }
+    .card-article:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+    }
+    .card-actions {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 5px;
+        padding: 5px;
+        display: flex;
+        gap: 8px;
+    }
+    .card-actions a {
+        color: var(--color-texto);
+        font-size: 1rem;
+    }
+    .card-actions a:hover {
+        color: var(--color-naranja);
+    }
+    .empty-state {
+        text-align: center;
+        padding: 5rem 2rem;
+        background-color: var(--color-fondo-claro);
+        border-radius: 8px;
+    }
+    .empty-state-icon {
+        font-size: 4rem;
+        color: var(--color-naranja);
+        margin-bottom: 1.5rem;
+    }
+    .modal-header-delete {
+        background-color: var(--color-naranja);
+        color: var(--color-fondo-claro);
+        border-bottom: 0;
+    }
+    .modal-header-delete .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+    .modal-icon {
+        font-size: 3.5rem;
+        color: var(--color-naranja);
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>📝 Mis Artículos</h1>
-            <a href="{% url 'blog:article_create' %}" class="btn btn-primary">
-                ✨ Crear Nuevo Artículo
-            </a>
-        </div>
-
-        {% if articles %}
-            <div class="card">
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th>Título</th>
-                                    <th class="d-none d-md-table-cell">Categorías</th>
-                                    <th class="d-none d-lg-table-cell">Fecha</th>
-                                    <th class="d-none d-lg-table-cell">Vistas</th>
-                                    <th class="d-none d-md-table-cell">Comentarios</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for article in articles %}
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                {% if article.featured_image %}
-                                                    <img src="{{ article.featured_image.url }}" 
-                                                         alt="{{ article.title }}"
-                                                         class="rounded me-3"
-                                                         style="width: 50px; height: 50px; object-fit: cover;">
-                                                {% endif %}
-                                                <div>
-                                                    <h6 class="mb-1">
-                                                        <a href="{% url 'blog:article_detail' article.slug %}" 
-                                                           class="text-decoration-none">
-                                                            {{ article.title }}
-                                                        </a>
-                                                    </h6>
-                                                    <small class="text-muted">{{ article.content|truncatewords:10 }}</small>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="d-none d-md-table-cell">
-                                            {% for category in article.category.all %}
-                                                <span class="badge bg-secondary me-1">{{ category.name }}</span>
-                                            {% empty %}
-                                                <span class="text-muted">Sin categorías</span>
-                                            {% endfor %}
-                                        </td>
-                                        <td class="d-none d-lg-table-cell">
-                                            <div>
-                                                <strong>Creado:</strong> {{ article.created_at|date:"d/m/Y" }}<br>
-                                                {% if article.updated_at != article.created_at %}
-                                                    <small class="text-muted">Editado: {{ article.updated_at|date:"d/m/Y" }}</small>
-                                                {% endif %}
-                                            </div>
-                                        </td>
-                                        <td class="d-none d-lg-table-cell text-center">
-                                            <span class="badge bg-info">{{ article.articleview_set.count }}</span>
-                                        </td>
-                                        <td class="d-none d-md-table-cell text-center">
-                                            <span class="badge bg-success">{{ article.comment_set.count }}</span>
-                                        </td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                <a href="{% url 'blog:article_detail' article.slug %}" 
-                                                   class="btn btn-outline-primary" title="Ver">
-                                                    👁️
-                                                </a>
-                                                <a href="{% url 'blog:article_edit' article.slug %}" 
-                                                   class="btn btn-outline-warning" title="Editar">
-                                                    ✏️
-                                                </a>
-                                                <a href="{% url 'blog:article_delete' article.slug %}" 
-                                                   class="btn btn-outline-danger" title="Eliminar">
-                                                    🗑️
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Estadísticas rápidas -->
-            <div class="row mt-4">
-                <div class="col-md-3">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h3 class="text-primary">{{ articles.count }}</h3>
-                            <p class="mb-0">Artículos Publicados</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h3 class="text-info">
-                                {% with total_views=0 %}
-                                    {% for article in articles %}
-                                        {% with total_views=total_views|add:article.articleview_set.count %}
-                                        {% endwith %}
-                                    {% endfor %}
-                                    {{ total_views }}
-                                {% endwith %}
-                            </h3>
-                            <p class="mb-0">Vistas Totales</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h3 class="text-success">
-                                {% with total_comments=0 %}
-                                    {% for article in articles %}
-                                        {% with total_comments=total_comments|add:article.comment_set.count %}
-                                        {% endwith %}
-                                    {% endfor %}
-                                    {{ total_comments }}
-                                {% endwith %}
-                            </h3>
-                            <p class="mb-0">Comentarios Recibidos</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h3 class="text-warning">
-                                {% with total_ratings=0 %}
-                                    {% for article in articles %}
-                                        {% with total_ratings=total_ratings|add:article.articlerating_set.count %}
-                                        {% endwith %}
-                                    {% endfor %}
-                                    {{ total_ratings }}
-                                {% endwith %}
-                            </h3>
-                            <p class="mb-0">Valoraciones</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% else %}
-            <div class="text-center py-5">
-                <div class="mb-4">
-                    <i class="fas fa-edit fa-4x text-muted"></i>
-                </div>
-                <h3 class="text-muted">No has creado artículos aún</h3>
-                <p class="text-muted">¡Comparte tu pasión por la música con el mundo!</p>
-                <a href="{% url 'blog:article_create' %}" class="btn btn-primary mt-3">
-                    ✨ Crear Mi Primer Artículo
-                </a>
-            </div>
-        {% endif %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <h1 class="fw-bold">Mis Publicaciones</h1>
+        <a href="{% url 'blog:article_create' %}" class="btn btn-orange">
+            <i class="fa-solid fa-plus me-2"></i>Crear Nuevo Artículo
+        </a>
     </div>
+
+    {% if articles %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for article in articles %}
+        <div class="col">
+            <div class="card h-100 shadow-sm card-article">
+                <div class="card-img-top-container">
+                    {% if article.featured_image %}
+                        <img src="{{ article.featured_image.url }}" class="card-img-top" alt="{{ article.title }}">
+                    {% else %}
+                        <img src="https://placehold.co/600x400/E5E5E5/000000?text=Sin+Imagen" class="card-img-top" alt="Imagen no disponible">
+                    {% endif %}
+                    
+                    <div class="card-actions">
+                        <a href="{% url 'blog:article_edit' article.slug %}" title="Editar"><i class="fa-solid fa-pen"></i></a>
+                        <a href="#" title="Eliminar" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-delete-url="{% url 'blog:article_delete' article.slug %}">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fw-bold">{{ article.title }}</h5>
+                    <p class="card-text text-truncate-3-lines">{{ article.content|striptags|truncatewords:25 }}</p>
+                    <div class="mt-auto">
+                         <a href="{% url 'blog:article_detail' article.slug %}" class="btn btn-dark w-100">Leer más</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Mensaje si no hay artículos -->
+    <div class="empty-state mt-4 shadow-sm">
+        <div class="empty-state-icon">
+            <i class="fa-solid fa-compact-disc fa-spin" style="--fa-animation-duration: 10s;"></i>
+        </div>
+        <h3 class="fw-bold">Tu escenario está vacío</h3>
+        <p class="text-muted mb-4">Parece que todavía no has compartido tu pasión. ¡Es hora de subir el volumen!</p>
+        <a href="{% url 'blog:article_create' %}" class="btn btn-orange btn-lg">Crea tu primera publicación</a>
+    </div>
+    {% endif %}
+
 </div>
+
+<!-- Modal de Confirmación de Borrado (Único para toda la página) -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center border-0 shadow-lg">
+      <div class="modal-header modal-header-delete">
+        <h5 class="modal-title w-100 fw-bold" id="deleteModalLabel">ELIMINAR PUBLICACIÓN</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body py-5">
+        <i class="fa-solid fa-power-off modal-icon mb-4"></i>
+        <h4 class="mb-3 fw-bold">¿Estás seguro de esto?</h4>
+        <p class="text-muted px-4">Estás a punto de eliminar esta publicación para siempre. Una vez que lo elimines, no hay vuelta atrás.</p>
+      </div>
+      <div class="modal-footer justify-content-center border-0 pb-4">
+        <form id="deleteForm" method="post" action="">
+            {% csrf_token %}
+            <button type="button" class="btn btn-secondary px-4 me-2" data-bs-dismiss="modal">Cancelar</button>add
+            <button type="submit" class="btn btn-danger px-4">Sí, eliminar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var deleteModal = document.getElementById('deleteConfirmModal');
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        // Botón que activó el modal
+        var button = event.relatedTarget;
+        // Extraer la URL del atributo data-delete-url
+        var deleteUrl = button.getAttribute('data-delete-url');
+        // Encontrar el formulario del modal y establecer su action
+        var deleteForm = document.getElementById('deleteForm');
+        deleteForm.action = deleteUrl;
+    });
+});
+</script>
 {% endblock %}

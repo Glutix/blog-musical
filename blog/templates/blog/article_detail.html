@@ -1,48 +1,75 @@
 {% extends 'blog/base.html' %}
+{% load static %}
 
 {% block title %}{{ article.title }} - Blog Musical{% endblock %}
-
 {% block content %}
-<div class="row">
-    <div class="col-lg-8">
-        <!-- Artículo principal -->
-        <article class="card mb-4">
-            {% if article.featured_image %}
-                <img src="{{ article.featured_image.url }}" 
-                     class="card-img-top" 
-                     alt="{{ article.title }}"
-                     style="height: 400px; object-fit: cover;">
-            {% endif %}
-            
-            <div class="card-body">
-                <h1 class="card-title">{{ article.title }}</h1>
-                
-                <!-- Metadata del artículo -->
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="text-muted">
-                        <strong>Por:</strong> {{ article.user.username }}<br>
-                        <strong>Publicado:</strong> {{ article.created_at|date:"d/m/Y H:i" }}
-                        {% if article.updated_at != article.created_at %}
-                            <br><strong>Actualizado:</strong> {{ article.updated_at|date:"d/m/Y H:i" }}
-                        {% endif %}
-                    </div>
-                    
-                    <!-- Opciones del autor -->
-                    {% if user == article.user %}
-                        <div class="btn-group" role="group">
-                            <a href="{% url 'blog:article_edit' article.slug %}" 
-                               class="btn btn-outline-warning btn-sm">
-                                ✏️ Editar
-                            </a>
-                            <a href="{% url 'blog:article_delete' article.slug %}" 
-                               class="btn btn-outline-danger btn-sm">
-                                🗑️ Eliminar
-                            </a>
-                        </div>
-                    {% endif %}
+<main class="container my-4 my-md-5">
+    <div class="card border-0 shadow-lg">
+        <!-- Imagen principal del artículo -->
+        {% if article.featured_image %}
+            <img src="{{ article.featured_image.url }}" 
+                 class="card-img-top" 
+                 alt="{{ article.title }}"
+                 style="max-height: 650px; object-fit: cover;">
+        {% endif %}
+
+        <div class="card-body p-4 p-md-5">
+            <!-- Metadata del artículo -->
+            <div class="d-flex align-items-center small text-muted mb-2">
+                <span>{{ article.user.username }}</span>
+                <span class="mx-2">&bull;</span>
+                <!-- Muestra la primera categoría si existe, si no, un valor predeterminado -->
+                <span>{% if article.category.all %}{{ article.category.first.name }}{% else %}Sin Categoría{% endif %}</span>
+            </div>
+
+            <!-- Título del artículo -->
+            <h1 class="display-5 fw-bold mb-3">
+                {{ article.title }}
+            </h1>
+
+            <!-- Autor y fecha -->
+            <p class="text-muted mb-4">
+                por <span class="fw-semibold text-naranja">{{ article.user.username }}</span> | {{ article.created_at|date:"d M, Y" }}
+            </p>
+
+            <!-- Contenido del artículo -->
+            <article class="fs-5">
+                {{ article.content|linebreaks }}
+            </article>
+
+            <!-- Botones de interacción (Likes, Vistas) -->
+            <div class="mt-5 d-flex align-items-center flex-wrap">
+                <button class="btn btn-link text-decoration-none text-muted d-flex align-items-center me-4 mb-2">
+                    <i class="far fa-heart fs-4 me-2"></i>
+                    <span class="fw-semibold">{{ article.articlerating_set.count }} Me gusta</span>
+                </button>
+                <button class="btn btn-link text-decoration-none text-muted d-flex align-items-center me-4 mb-2">
+                    <i class="far fa-share-square fs-4 me-2"></i>
+                    <span class="fw-semibold">Compartir</span>
+                </button>
+                <div class="d-flex align-items-center text-muted mb-2">
+                    <i class="far fa-eye fs-4 me-2"></i>
+                    <span class="fw-semibold">{{ article.articleview_set.count }} Vistas</span>
                 </div>
                 
-                <!-- Categorías y Tags -->
+                <!-- Opciones de autor (Editar/Eliminar) -->
+                {% if user == article.user %}
+                    <div class="d-flex align-items-center ms-auto">
+                        <a href="{% url 'blog:article_edit' article.slug %}" 
+                           class="btn btn-outline-warning btn-sm me-2">
+                           ✏️ Editar
+                        </a>
+                        <a href="{% url 'blog:article_delete' article.slug %}" 
+                           class="btn btn-outline-danger btn-sm">
+                           🗑️ Eliminar
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <hr class="my-5">
+            
+            <!-- Categorías y Tags -->
                 <div class="mb-3">
                     {% if article.category.all %}
                         <div class="mb-2">
@@ -63,129 +90,126 @@
                     {% endif %}
                 </div>
                 
-                <hr>
-                
-                <!-- Contenido del artículo -->
-                <div class="article-content">
-                    {{ article.content|linebreaks }}
-                </div>
-            </div>
-        </article>
-        
-        <!-- Sección de comentarios -->
-        <div class="card">
-            <div class="card-header">
-                <h4 class="mb-0">💬 Comentarios ({{ comments.count }})</h4>
-            </div>
-            <div class="card-body">
-                {% if user.is_authenticated %}
-                    <!-- Formulario para nuevo comentario -->
-                    <form method="post" class="mb-4 p-3 bg-light rounded">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="comment-content" class="form-label">Añadir un comentario:</label>
-                            <textarea name="content" id="comment-content" class="form-control" 
-                                      rows="3" placeholder="Escribe tu comentario aquí..." required></textarea>
+        </div>
+
+        <!-- Sección de Artículos Similares -->
+        <section id="similar-articles-section" class="bg-light p-4 p-md-5 border-top">
+            <h2 class="fw-bold mb-4">Artículos Similares</h2>
+            <div id="similar-articles-container">
+                {% if similar_articles %}
+                    <div id="similar-articles-carousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for article in similar_articles %}
+                                {% if forloop.first %}
+                                    <div class="carousel-item active">
+                                {% else %}
+                                    <div class="carousel-item">
+                                {% endif %}
+                                <div class="row">
+                                    <!-- Aquí puedes mostrar hasta 3 artículos por slide. El carrusel actual muestra 1 a la vez. -->
+                                    <div class="col-12">
+                                        <div class="card h-100">
+                                            {% if article.featured_image %}
+                                                <img src="{{ article.featured_image.url }}" class="card-img-top" alt="{{ article.title }}">
+                                            {% else %}
+                                                <img src="https://placehold.co/400x300/f39c12/FFFFFF?text={{ article.title|slice:":10" }}" class="card-img-top" alt="{{ article.title }}">
+                                            {% endif %}
+                                            <div class="card-body">
+                                                <h5 class="card-title fw-bold">{{ article.title }}</h5>
+                                                <p class="card-text text-muted small">por {{ article.user.username }} | {{ article.created_at|date:"d M, Y" }}</p>
+                                            </div>
+                                            <div class="card-footer bg-white border-0 pb-3">
+                                                <a href="{% url 'blog:article_detail' article.slug %}" class="btn btn-sm btn-outline-naranja">Seguir leyendo</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
-                        <button type="submit" class="btn btn-primary btn-sm">
-                            💬 Comentar
-                        </button>
-                    </form>
+                        {% if similar_articles|length > 1 %}
+                            <button class="carousel-control-prev" type="button" data-bs-target="#similar-articles-carousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#similar-articles-carousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        {% endif %}
+                    </div>
                 {% else %}
-                    <div class="alert alert-info">
-                        <a href="#">Inicia sesión</a> para poder comentar en este artículo.
+                    <div id="no-similar-articles" class="text-center text-muted p-5">
+                        <i class="fas fa-music fa-3x mb-3"></i>
+                        <h4 class="fw-bold">Próximamente: artículos relacionados</h4>
+                        <p>Estamos trabajando para traerte más contenido que te pueda interesar.</p>
                     </div>
                 {% endif %}
-                
-                <!-- Lista de comentarios -->
+            </div>
+        </section>
+
+
+        <!-- Sección de Comentarios -->
+        <section class="bg-white p-4 p-md-5 border-top">
+            <h2 class="fw-bold mb-4">Comentarios ({{ comments.count }})</h2>
+
+            <!-- Formulario para nuevo comentario -->
+            {% if user.is_authenticated %}
+                <form method="post" class="d-flex align-items-start mb-5">
+                    {% csrf_token %}
+                    <img src="https://placehold.co/48x48/E5E5E5/000000?text={{ user.username|slice:':1'|upper }}" alt="{{ user.username }} avatar" class="rounded-circle me-3">
+                    <div class="flex-grow-1">
+                        <textarea name="content" id="comment-content" class="form-control" rows="3" placeholder="Escribe tu comentario..." required></textarea>
+                        <button type="submit" class="btn btn-naranja mt-2">Publicar</button>
+                    </div>
+                </form>
+            {% else %}
+                <div class="alert alert-info">
+                    <a href="{% url 'blog:login' %}">Inicia sesión</a> para poder comentar en este artículo.
+                </div>
+            {% endif %}
+
+            <!-- Lista de comentarios -->
+            <div class="d-grid gap-4">
                 {% if comments %}
                     {% for comment in comments %}
-                        <div class="border-bottom py-3 {% if not forloop.last %}mb-3{% endif %}">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <div>
-                                    <strong>{{ comment.user.username }}</strong>
-                                    <small class="text-muted">{{ comment.created_at|date:"d/m/Y H:i" }}</small>
+                        <div class="d-flex align-items-start">
+                            <img src="https://placehold.co/48x48/{{ '0123456789abcdef'|random }}{{ '0123456789abcdef'|random }}D25C2A/FFFFFF?text={{ comment.user.username|slice:':1'|upper }}" 
+                                 alt="Avatar de {{ comment.user.username }}" 
+                                 class="rounded-circle me-3">
+                            <div class="flex-grow-1 bg-light p-3 rounded border">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <p class="fw-bold mb-0">{{ comment.user.username }}</p>
+                                    {% if user == comment.user %}
+                                        <!-- No existe una URL de delete para comentarios, se deja como placeholder -->
+                                        <button class="btn btn-outline-danger btn-sm">
+                                            🗑️
+                                        </button>
+                                    {% endif %}
                                 </div>
-                                {% if user == comment.user %}
-                                    <button class="btn btn-outline-danger btn-sm">
-                                        🗑️
-                                    </button>
-                                {% endif %}
+                                <p class="mb-0 text-muted">{{ comment.content|linebreaks }}</p>
                             </div>
-                            <p class="mb-1">{{ comment.content|linebreaks }}</p>
-                            
-                            <!-- Botones de interacción -->
-                            {% if user.is_authenticated %}
-                                <div class="mt-2">
-                                    <button class="btn btn-link btn-sm p-0 text-decoration-none">
-                                        👍 Me gusta
-                                    </button>
-                                </div>
-                            {% endif %}
                         </div>
                     {% endfor %}
                 {% else %}
-                    <p class="text-muted text-center py-4">
-                        No hay comentarios aún. ¡Sé el primero en comentar!
-                    </p>
+                    <div class="text-center text-muted p-4">
+                        <p class="mb-0">
+                            No hay comentarios aún. ¡Sé el primero en comentar!
+                        </p>
+                    </div>
                 {% endif %}
             </div>
-        </div>
+        </section>
+
     </div>
     
-    <!-- Sidebar -->
-    <div class="col-lg-4">
-        <!-- Información del autor -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">👤 Sobre el Autor</h5>
-            </div>
-            <div class="card-body">
-                <h6>{{ article.user.username }}</h6>
-                <p class="text-muted">
-                    {% if article.user.profile.bio %}
-                        {{ article.user.profile.bio }}
-                    {% else %}
-                        Usuario apasionado por la música.
-                    {% endif %}
-                </p>
-                <small class="text-muted">
-                    Miembro desde: {{ article.user.date_joined|date:"M Y" }}
-                </small>
-            </div>
-        </div>
-        
-        <!-- Artículos relacionados -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">📚 Más Artículos</h5>
-            </div>
-            <div class="card-body">
-                <!-- Aquí podrías agregar lógica para mostrar artículos relacionados -->
-                <p class="text-muted">Próximamente: artículos relacionados</p>
-            </div>
-        </div>
-        
-        <!-- Estadísticas del artículo -->
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">📊 Estadísticas</h5>
-            </div>
-            <div class="card-body">
-                <p><strong>Vistas:</strong> {{ article.articleview_set.count }}</p>
-                <p><strong>Comentarios:</strong> {{ comments.count }}</p>
-                <p class="mb-0"><strong>Valoraciones:</strong> {{ article.articlerating_set.count }}</p>
-            </div>
+    <!-- Botón volver -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <a href="{% url 'blog:article_list' %}" class="btn btn-secondary">
+                ← Volver a la lista
+            </a>
         </div>
     </div>
-</div>
-
-<!-- Botón volver -->
-<div class="row mt-4">
-    <div class="col-12">
-        <a href="{% url 'blog:article_list' %}" class="btn btn-secondary">
-            ← Volver a la lista
-        </a>
-    </div>
-</div>
+</main>
 {% endblock %}

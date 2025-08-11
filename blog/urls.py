@@ -1,3 +1,4 @@
+#blog/urls.py
 from django.urls import path
 from . import views
 
@@ -16,7 +17,7 @@ urlpatterns = [
     # URL para ver mis artículos
     path('mis-articulos/', views.my_articles, name='my_articles'),
     
-    # URL temporal para simulación de login (SOLO PARA DESARROLLO)
+    #! URL temporal para simulación de login (SOLO PARA DESARROLLO)
     path('simular-login/<int:user_id>/', views.simulate_login, name='simulate_login'),
     path('simular-login/', views.simulate_login, name='simulate_login_default'),
 ]
