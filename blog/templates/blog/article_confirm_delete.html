@@ -1,0 +1,35 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Confirmar Eliminación{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card bg-danger text-white shadow-lg border-0 rounded-3">
+            <div class="card-header bg-dark border-0 rounded-top">
+                <h2 class="mb-0 text-center">⚠️ Confirmar Eliminación</h2>
+            </div>
+            <div class="card-body text-center">
+                <p class="fs-5">
+                    ¿Estás seguro de que quieres eliminar el artículo <br>
+                    <strong>"{{ article.title }}"</strong>?
+                </p>
+                <p class="text-grey">
+                    Esta acción es irreversible y no se puede deshacer.
+                </p>
+                <form method="post" class="mt-4">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{% url 'blog:article_detail' article.slug %}" class="btn btn-custom-light rounded-pill px-4">
+                            ← Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-warning rounded-pill px-4">
+                            Sí, eliminar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

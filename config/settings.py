@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from decouple import config
 import os
-
+import cloudinary
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,12 +24,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Cloudinary credentials
 CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": config("API_NAME"),
-    "API_KEY": config("API_KEY"),
-    "API_SECRET": config("API_SECRET"),
+    # Forzamos que los valores sean leídos como strings para evitar errores
+    "CLOUD_NAME": config("API_NAME", cast=str),
+    "API_KEY": config("API_KEY", cast=str),
+    "API_SECRET": config("API_SECRET", cast=str),
 }
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
+# ================================================================
+# AÑADE ESTA SECCIÓN PARA CONFIGURAR EXPLICITAMENTE CLOUDINARY
+# Esto asegura que la librería interna de Cloudinary tenga las credenciales correctas
+cloudinary.config(
+    cloud_name = config("API_NAME", cast=str),
+    api_key = config("API_KEY", cast=str),
+    api_secret = config("API_SECRET", cast=str)
+)
+# ================================================================
 
 # Application definition
 
@@ -40,7 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "blog",
+    "blog.apps.BlogConfig",
     "user_auth",
     "cloudinary",
     "cloudinary_storage",
