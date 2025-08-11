@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import CreateUserForm, CustomLoginForm
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -32,8 +33,14 @@ def login_view(request):
             user = form.get_user()
             print(user)
             login(request, user)
-            return redirect("/")
+            return redirect("index")
     else:
         form = CustomLoginForm()
 
     return render(request, "login.html", {"form": form})
+
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect("login")

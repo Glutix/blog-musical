@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Iniciar Sesión</title>
+    <title>Iniciar Sesión - Blog Musical</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Bootstrap CSS -->
@@ -20,38 +20,33 @@
 
 <body class="bg-gris-oscuro">
     <div class="page-center">
-        <main class="form-container bg-blanco login-card">
-            <img src="{% static 'img/logo.png' %}" alt="Logo" class="logo-login" />
+        <main class="card-base">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" class="logo-base" />
 
             <h1 class="text-center color-naranja-claro mb-4">Iniciar Sesión</h1>
-
-            {% if form.errors %}
-            <div class="alert alert-danger" role="alert">
-                {% for field, errors in form.errors.items %}
-                {% for error in errors %}
-                <p class="mb-0">{{ error }}</p>
-                {% endfor %}
-                {% endfor %}
-            </div>
-            {% endif %}
 
             <form method="POST" novalidate>
                 {% csrf_token %}
 
                 <!-- Campo Usuario -->
                 <div class="mb-3">
-                    <label class="form-label fw-bold color-negro d-flex align-items-center gap-2"
-                        for="{{ form.username.id_for_label }}">
+                    <label class="form-label" for="{{ form.username.id_for_label }}">
                         <i class="bi bi-person-fill"></i>
                         {{ form.username.label }}
                     </label>
                     {{ form.username }}
+                    {% if form.username.errors %}
+                    <div class="field-error">
+                        {% for error in form.username.errors %}
+                        <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
 
                 <!-- Campo Contraseña -->
                 <div class="mb-3">
-                    <label class="form-label fw-bold color-negro d-flex align-items-center gap-2"
-                        for="{{ form.password.id_for_label }}">
+                    <label class="form-label" for="{{ form.password.id_for_label }}">
                         <i class="bi bi-lock-fill"></i>
                         {{ form.password.label }}
                     </label>
@@ -62,10 +57,36 @@
                             <i class="bi bi-eye"></i>
                         </span>
                     </div>
+                    {% if form.password.errors %}
+                    <div class="field-error">
+                        {% for error in form.password.errors %}
+                        <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
 
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary-custom">Ingresar</button>
+                <!-- Errores generales del formulario -->
+                {% if form.non_field_errors %}
+                <div class="field-error mb-3">
+                    {% for error in form.non_field_errors %}
+                    <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar
+                    </button>
+                </div>
+
+                <div class="text-center">
+                    <p class="mb-0">¿No tienes cuenta?
+                        <a href="{% url 'register' %}" class="color-naranja-claro text-decoration-none fw-bold">
+                            Regístrate aquí
+                        </a>
+                    </p>
                 </div>
             </form>
         </main>

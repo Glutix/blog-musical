@@ -1,3 +1,19 @@
-<h1>{{title}}</h1>
-<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia laudantium sapiente praesentium, ab esse delectus nam,
-    odit, voluptatem iste fugiat expedita culpa quo perspiciatis facilis in optio veritatis beatae maiores.</p>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba</title>
+</head>
+
+<body>
+    <h1>simular login y logout</h1>
+    {% if user.is_authenticated %}
+    <p>Hola, {{ user.username }}</p>
+    <a href="{% url 'logout' %}" class="btn btn-danger">Cerrar sesión</a>
+    {% else %}
+    <a href="{% url 'login' %}" class="btn btn-primary">Iniciar sesión</a>
+    {% endif %}
+</body>
+
+</html>
