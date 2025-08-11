@@ -4,11 +4,6 @@ from django.contrib.auth import login
 
 
 # Create your views here.
-def index(request):
-    title = "Bievenidos a seccion de Usuario"
-    return render(request, "index.html", {"title": title})
-
-
 def register(request):
     if request.method == "POST":
         form = CreateUserForm(request.POST)
@@ -22,7 +17,7 @@ def register(request):
     else:
         form = CreateUserForm()
 
-    return render(request, "register.html", {"form": form})
+    return render(request, "user_auth/register.html", {"form": form})
 
 
 def login_view(request):
@@ -36,4 +31,4 @@ def login_view(request):
     else:
         form = CustomLoginForm()
 
-    return render(request, "login.html", {"form": form})
+    return render(request, "user_auth/login.html", {"form": form})

@@ -15,12 +15,142 @@
     box-sizing: border-box;
 }
 
+/* Configuración base del body */
+html {
+    height: 100%;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--color-gris-oscuro);
     color: var(--color-negro);
     margin: 0;
     padding: 0;
+    min-height: 100vh;
+    /* Cambiado de width: 100vh */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Contenedor principal que permite centrado cuando se necesite */
+body>.container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* Por defecto arriba, pero se puede cambiar */
+    align-items: stretch;
+    /* Se extiende al ancho completo */
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Navbar fijo en la parte superior */
+.nav-conteiner {
+    display: flex;
+    background-color: var(--color-blanco);
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    /* No se comprime */
+}
+
+.logo {
+    height: 40px;
+    width: auto;
+    cursor: pointer;
+}
+
+.nav-conteiner ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 2rem;
+}
+
+.nav-conteiner li>a {
+    text-decoration: none;
+    color: var(--color-negro);
+}
+
+.nav-conteiner ul li {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-conteiner ul li:hover {
+    background-color: var(--color-naranja-claro);
+}
+
+.nav-conteiner div {
+    display: flex;
+    gap: 1rem;
+}
+
+/* botones de navbar */
+.btn-register {
+    background-color: var(--color-naranja-claro);
+    border: none;
+    color: var(--color-blanco);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn-register:hover {
+    background-color: var(--color-naranja-hover);
+}
+
+.btn-login {
+    background-color: var(--color-negro);
+    border: none;
+    color: var(--color-blanco);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+    background-color: #333;
+}
+
+
+
+
+
+
+
+/* Clases utilitarias para centrado específico */
+.page-center {
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center;
+}
+
+.content-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+}
+
+.vertical-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 70vh;
 }
 
 /* Utilidades de colores */
@@ -44,7 +174,7 @@ body {
     color: var(--color-naranja-oscuro);
 }
 
-/* Botón primario */
+/* Botón primario personalizado */
 .btn-primary-custom {
     background-color: var(--color-naranja-claro);
     border: none;
@@ -61,7 +191,7 @@ body {
     box-shadow: 0 0 8px var(--color-naranja-hover);
 }
 
-/* Inputs */
+/* Inputs personalizados */
 input.form-control,
 .input-group .form-control {
     border: 1px solid #ccc;
@@ -76,7 +206,7 @@ input.form-control:focus,
     box-shadow: 0 0 0 0.2rem rgba(255, 108, 46, 0.25);
 }
 
-/* Labels */
+/* Labels personalizados */
 .form-label {
     font-weight: 600;
     color: var(--color-negro);
@@ -87,16 +217,7 @@ input.form-control:focus,
     margin-right: 0.5rem;
 }
 
-/* Layouts comunes */
-.container-centered,
-.page-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
-
-/* Tarjetas base */
+/* Tarjetas base para formularios centrados */
 .card-base {
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -104,6 +225,7 @@ input.form-control:focus,
     background-color: var(--color-blanco);
     width: 100%;
     max-width: 480px;
+    margin: 0 auto;
 }
 
 /* Logo base */
@@ -114,12 +236,63 @@ input.form-control:focus,
     margin: 0 auto 1.5rem auto;
 }
 
-/* Utilidad para puntero */
+/* Utilidades generales */
 .cursor-pointer {
     cursor: pointer;
 }
 
-/* Utilidad texto centrado */
 .text-center {
     text-align: center;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.h-100 {
+    height: 100%;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .nav-conteiner {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0.5rem;
+    }
+
+    .nav-conteiner ul {
+        gap: 1rem;
+    }
+
+    .nav-conteiner div {
+        width: 100%;
+        justify-content: center;
+    }
+
+    body>.container {
+        padding: 0 15px;
+    }
+
+    .card-base {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+}
+
+/* Override Bootstrap cuando sea necesario mantener el centrado */
+.container.centered {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 80vh;
+}
+
+/* Para páginas que necesitan centrado completo */
+.full-height {
+    min-height: calc(100vh - 100px);
+    /* Ajusta según altura del navbar */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }

@@ -1,64 +1,154 @@
-/* Form container */
-.form-container {
-    padding: 2rem 3rem;
-    border-radius: 8px;
+/* Ajustes específicos para el body del login */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-/* Logo */
-.logo {
-    max-width: 320px;
+body.bg-gris-oscuro {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+/* Contenedor principal centrado */
+.page-center {
+    width: 100%;
+    max-width: 500px;
+}
+
+/* Card del formulario usando estilos base */
+.card-base {
+    background-color: var(--color-blanco);
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    padding: 2.5rem;
+    width: 100%;
+    animation: slideUp 0.6s ease-out;
+}
+
+/* Animación de entrada */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Logo usando clase base */
+.logo-base {
+    max-width: 280px;
+    height: auto;
     display: block;
     margin: 0 auto 1.5rem auto;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
-/* Label básico */
+/* Título del formulario */
+h1.color-naranja-claro {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos mejorados para labels con iconos */
 .form-label {
-    font-weight: bold;
+    font-weight: 600;
     color: var(--color-negro);
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin-bottom: 0.5rem;
     transition: color 0.3s ease;
 }
 
-/* Espacio entre icono y texto en label */
-.form-label i+* {
-    margin-left: 0.5rem;
-}
-
-/* Icono en label */
 .form-label i {
-    font-size: 1.2rem;
-    transition: color 0.3s ease;
+    font-size: 1.1rem;
     color: var(--color-negro);
+    transition: color 0.3s ease;
+    width: 16px;
+    text-align: center;
 }
 
-/* Cambia color label e icono en focus */
-.mb-3:focus-within>label {
+/* Efectos de focus en labels */
+.mb-3:focus-within .form-label {
     color: var(--color-naranja-claro);
 }
 
-.mb-3:focus-within>label i {
+.mb-3:focus-within .form-label i {
     color: var(--color-naranja-claro);
+    transform: scale(1.1);
 }
 
-/* Inputs: transición para borde y sombra */
-input.form-control,
-.input-group .form-control {
-    border: 1px solid #ccc;
-    border-radius: 0.375rem;
-    padding: 0.5rem 0.75rem;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+/* Estilos para inputs */
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
 }
 
-input.form-control:focus,
-.input-group .form-control:focus {
+.form-control:hover {
     border-color: var(--color-naranja-claro);
-    box-shadow: 0 0 0 0.2rem rgba(255, 108, 46, 0.25);
+    background-color: #fff;
+}
+
+.form-control:focus {
+    border-color: var(--color-naranja-claro);
+    box-shadow: 0 0 0 0.2rem rgba(255, 108, 46, 0.15);
+    background-color: #fff;
     outline: none;
 }
 
-/* Toggle password icon: transición y colores */
+/* Placeholder styling */
+.form-control::placeholder {
+    color: #6c757d;
+    opacity: 0.8;
+}
+
+/* Estilos específicos para el input-group del password */
+.input-group .form-control {
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+}
+
+.input-group .form-control:focus {
+    border-color: var(--color-naranja-claro);
+    box-shadow: 0 0 0 0.2rem rgba(255, 108, 46, 0.15);
+}
+
+.input-group-text.toggle-password {
+    border: 2px solid #e9ecef;
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.input-group-text.toggle-password:hover {
+    background-color: #fff;
+    border-color: var(--color-naranja-claro);
+}
+
+.input-group:focus-within .toggle-password {
+    border-color: var(--color-naranja-claro);
+    background-color: #fff;
+}
+
+/* Toggle password icon */
 .toggle-password i {
     transition: color 0.3s ease;
     color: var(--color-negro);
@@ -68,5 +158,109 @@ input.form-control:focus,
 .toggle-password:focus i,
 .input-group:focus-within .toggle-password i {
     color: var(--color-naranja-claro);
-    outline: none;
+}
+
+/* Estilos para mensajes de error de campos */
+.field-error {
+    color: var(--color-naranja-oscuro) !important;
+    background-color: rgba(210, 92, 42, 0.1) !important;
+    border: 1px solid rgba(210, 92, 42, 0.4) !important;
+    border-radius: 6px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    display: block;
+}
+
+/* Asegurar que todos los elementos dentro también tengan el color correcto */
+.field-error * {
+    color: var(--color-naranja-oscuro) !important;
+}
+
+.field-error div {
+    color: var(--color-naranja-oscuro) !important;
+    font-weight: 600 !important;
+}
+
+/* Botón usando estilos base */
+.btn-primary-custom {
+    background-color: var(--color-naranja-claro);
+    border: none;
+    color: var(--color-blanco);
+    font-weight: 600;
+    padding: 0.85rem 1.5rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.btn-primary-custom:hover {
+    background-color: var(--color-naranja-hover);
+    color: var(--color-blanco);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 108, 46, 0.3);
+}
+
+.btn-primary-custom:active {
+    transform: translateY(0);
+}
+
+/* Enlace al registro */
+.page-center a.color-naranja-claro {
+    color: var(--color-naranja-claro);
+    transition: all 0.3s ease;
+}
+
+.page-center a.color-naranja-claro:hover {
+    color: var(--color-naranja-hover);
+    text-decoration: underline !important;
+    transform: translateY(-1px);
+}
+
+
+/* Responsive design */
+@media (max-width: 576px) {
+    body.bg-gris-oscuro {
+        padding: 0.5rem;
+    }
+
+    .card-base {
+        padding: 1.5rem;
+        margin: 0.5rem;
+    }
+
+    .logo-base {
+        max-width: 220px;
+    }
+
+    h1.color-naranja-claro {
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-control {
+        padding: 0.65rem 0.85rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .card-base {
+        padding: 1rem;
+    }
+
+    .logo-base {
+        max-width: 180px;
+    }
+}
+
+/* Mejora visual para campos obligatorios */
+.form-label[for="id_username"]::after,
+.form-label[for="id_password"]::after {
+    content: " *";
+    color: var(--color-naranja-claro);
+    font-weight: bold;
+    margin-left: 2px;
 }

@@ -14,6 +14,7 @@ from pathlib import Path
 from decouple import config
 import os
 import cloudinary
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -35,9 +36,9 @@ DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 # AÑADE ESTA SECCIÓN PARA CONFIGURAR EXPLICITAMENTE CLOUDINARY
 # Esto asegura que la librería interna de Cloudinary tenga las credenciales correctas
 cloudinary.config(
-    cloud_name = config("API_NAME", cast=str),
-    api_key = config("API_KEY", cast=str),
-    api_secret = config("API_SECRET", cast=str)
+    cloud_name=config("API_NAME", cast=str),
+    api_key=config("API_KEY", cast=str),
+    api_secret=config("API_SECRET", cast=str),
 )
 # ================================================================
 
@@ -72,7 +73,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
