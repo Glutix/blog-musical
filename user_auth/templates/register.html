@@ -3,109 +3,58 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Registro</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        :root {
-            --color-negro: #000000;
-            --color-naranja-claro: #FF6C2E;
-            --color-gris-oscuro: #E5E5E5;
-            --color-naranja-oscuro: #D25C2A;
-            --color-blanco: #FFFFFF;
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        body {
-            background-color: var(--color-gris-oscuro);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-        .form-container {
-            background-color: var(--color-blanco);
-            padding: 3rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 500px;
-        }
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 
-        .form-container h1 {
-            color: var(--color-naranja-claro);
-            margin-bottom: 1.5rem;
-        }
-
-        .btn-primary {
-            background-color: var(--color-naranja-claro);
-            border-color: var(--color-naranja-claro);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--color-naranja-oscuro);
-            border-color: var(--color-naranja-oscuro);
-        }
-
-        .form-label {
-            font-weight: bold;
-            color: var(--color-negro);
-        }
-
-
-        .logo {
-            max-width: 320px;
-            display: block;
-            margin: 0 auto 1.5rem auto;
-        }
-
-        input.form-control:hover,
-        input.form-control:focus {
-            border-color: #FF6C2E;
-            box-shadow: 0 0 0 0.2rem rgba(255, 108, 46, 0.25);
-        }
-
-        input.form-control:focus+label {
-            color: #FF6C2E;
-        }
-    </style>
+    <!-- CSS General y específico -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/register.css' %}" />
 </head>
 
-<body>
-    <div class="form-container">
-        <img src="{% static 'img/logo.png' %}" alt="Logo" class="logo">
+<body class="bg-gris-oscuro">
+    <div class="page-center">
+        <main class="form-container bg-blanco">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" class="logo" />
 
-        <h1 class="text-center">¡Registrate!</h1>
+            <h1 class="text-center color-naranja-claro mb-4">¡Registrate!</h1>
 
-        <form method="POST">
-            {% csrf_token %}
+            <form method="POST" novalidate>
+                {% csrf_token %}
 
-            {% for field in form %}
-            <div class="mb-3">
-                <label class="form-label" for="{{ field.id_for_label }}">
-                    {% if field.name == "username" %}
-                    <i class="bi bi-person-fill"></i>
-                    {% elif field.name == "password1" %}
-                    <i class="bi bi-lock-fill"></i>
-                    {% elif field.name == "password2" %}
-                    <i class="bi bi-shield-lock-fill"></i>
+                {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label fw-bold color-negro d-flex align-items-center gap-2"
+                        for="{{ field.id_for_label }}">
+                        {% if field.name == "username" %}
+                        <i class="bi bi-person-fill"></i>
+                        {% elif field.name == "password1" %}
+                        <i class="bi bi-lock-fill"></i>
+                        {% elif field.name == "password2" %}
+                        <i class="bi bi-shield-lock-fill"></i>
+                        {% endif %}
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <div class="text-danger small mt-1">
+                        {{ field.errors }}
+                    </div>
                     {% endif %}
-                    {{ field.label }}
-                </label>
-                {{ field }}
-                {% if field.errors %}
-                <div class="text-danger small mt-1">
-                    {{ field.errors }}
                 </div>
-                {% endif %}
-            </div>
-            {% endfor %}
+                {% endfor %}
 
-            <div class="d-grid">
-                <button type="submit" class="btn btn-primary">Registrarme</button>
-            </div>
-        </form>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-primary-custom">Registrarme</button>
+                </div>
+            </form>
+        </main>
     </div>
 </body>
 
