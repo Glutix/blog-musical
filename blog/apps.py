@@ -3,7 +3,8 @@ from django.apps import AppConfig
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
-from django.utils.text import slugify # <-- ¡Importamos slugify aquí!
+from django.utils.text import slugify  # <-- ¡Importamos slugify aquí!
+
 
 def create_initial_data(sender, **kwargs):
     # Importamos los modelos con los nombres correctos
@@ -11,29 +12,56 @@ def create_initial_data(sender, **kwargs):
 
     # --- Crear categorías y tags ---
     categories = [
-        "Rock", "Pop", "Jazz", "Clásica", "Electrónica",
-        "Hip Hop", "Reggae", "Country", "Blues", "Metal",
-        "Indie", "Folk", "Soul", "R&B", "Funk",
+        "Rock",
+        "Pop",
+        "Jazz",
+        "Clásica",
+        "Electrónica",
+        "Hip Hop",
+        "Reggae",
+        "Country",
+        "Blues",
+        "Metal",
+        "Indie",
+        "Folk",
+        "Soul",
+        "R&B",
+        "Funk",
     ]
-    
+
     for name in categories:
-        Category.objects.get_or_create(name=name, defaults={'description': f'Descripción para la categoría {name}'})
-    
+        Category.objects.get_or_create(
+            name=name, defaults={"description": f"Descripción para la categoría {name}"}
+        )
+
     tags = [
-        "Guitarras", "Batería", "Teclados", "Voz", "Bajo",
-        "Letras", "Producción", "Conciertos", "Álbumes",
-        "Éxitos", "Historia", "Instrumentos", "Tendencias",
-        "Entrevistas", "Críticas",
+        "Guitarras",
+        "Batería",
+        "Teclados",
+        "Voz",
+        "Bajo",
+        "Letras",
+        "Producción",
+        "Conciertos",
+        "Álbumes",
+        "Éxitos",
+        "Historia",
+        "Instrumentos",
+        "Tendencias",
+        "Entrevistas",
+        "Críticas",
     ]
-    
+
     for name in tags:
         Tag.objects.get_or_create(name=name)
 
     # --- Crear artículos iniciales (solo si no existen) ---
     User = get_user_model()
-    admin_user, created = User.objects.get_or_create(username='dether', defaults={'is_staff': True, 'is_superuser': True})
+    admin_user, created = User.objects.get_or_create(
+        username="integrate", defaults={"is_staff": True, "is_superuser": True}
+    )
     if created:
-        admin_user.set_password('asd123')
+        admin_user.set_password("123456music")
         admin_user.save()
 
     all_categories = list(Category.objects.all())
@@ -46,7 +74,7 @@ def create_initial_data(sender, **kwargs):
                 f"Este es el contenido del Artículo de Prueba número {i}. "
                 "Sirve para llenar la base de datos con contenido de ejemplo."
             )
-            
+
             # Generar el slug único para cada artículo
             # Se usa slugify para convertir el título en un slug válido
             base_slug = slugify(title)
@@ -61,9 +89,9 @@ def create_initial_data(sender, **kwargs):
                 title=title,
                 content=content,
                 user=admin_user,
-                slug=slug  # <-- ¡Aquí está el cambio clave!
+                slug=slug,  # <-- ¡Aquí está el cambio clave!
             )
-            
+
             # Asignar categorías y tags al artículo
             article.category.add(*all_categories[:2])
             article.tags.add(*all_tags[:3])

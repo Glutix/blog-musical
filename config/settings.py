@@ -14,6 +14,7 @@ from pathlib import Path
 from decouple import config
 import os
 import cloudinary
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -35,9 +36,9 @@ DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 # AÑADE ESTA SECCIÓN PARA CONFIGURAR EXPLICITAMENTE CLOUDINARY
 # Esto asegura que la librería interna de Cloudinary tenga las credenciales correctas
 cloudinary.config(
-    cloud_name = config("API_NAME", cast=str),
-    api_key = config("API_KEY", cast=str),
-    api_secret = config("API_SECRET", cast=str)
+    cloud_name=config("API_NAME", cast=str),
+    api_key=config("API_KEY", cast=str),
+    api_secret=config("API_SECRET", cast=str),
 )
 # ================================================================
 
@@ -152,10 +153,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
-# Solo si tenés una carpeta 'static/' en el raíz del proyecto
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-
+# settings.py
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    # Si tienes carpetas estáticas en otras aplicaciones, agrégalas aquí
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
