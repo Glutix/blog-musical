@@ -22,7 +22,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path("admin/", admin.site.urls), 
-    path("user/", include(urls)),  # URLs de autenticación
-    path('', include('blog.urls')),  # URLs del blog en la raíz
+    path("admin/", admin.site.urls),
+    path("", include("blog.urls")),  # blog en la raíz
+    path("", include("user_auth.urls")),  # user_auth también en la raíz
 ]

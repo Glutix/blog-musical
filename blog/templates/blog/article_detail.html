@@ -5,7 +5,7 @@
 {% block content %}
 <main class="container my-4 my-md-5">
     <div class="card border-0 shadow-lg">
-        <!-- Imagen principal del artículo -->
+
         {% if article.featured_image %}
             <img src="{{ article.featured_image.url }}" 
                  class="card-img-top" 
@@ -14,34 +14,30 @@
         {% endif %}
 
         <div class="card-body p-4 p-md-5">
-            <!-- Metadata del artículo -->
             <div class="d-flex align-items-center small text-muted mb-2">
                 <span>{{ article.user.username }}</span>
                 <span class="mx-2">&bull;</span>
-                <!-- Muestra la primera categoría si existe, si no, un valor predeterminado -->
                 <span>{% if article.category.all %}{{ article.category.first.name }}{% else %}Sin Categoría{% endif %}</span>
             </div>
 
-            <!-- Título del artículo -->
-            <h1 class="display-5 fw-bold mb-3">
-                {{ article.title }}
-            </h1>
+            <h1 class="display-5 fw-bold mb-3">{{ article.title }}</h1>
 
-            <!-- Autor y fecha -->
             <p class="text-muted mb-4">
                 por <span class="fw-semibold text-naranja">{{ article.user.username }}</span> | {{ article.created_at|date:"d M, Y" }}
             </p>
 
-            <!-- Contenido del artículo -->
-            <article class="fs-5">
-                {{ article.content|linebreaks }}
-            </article>
+            <article class="fs-5">{{ article.content|linebreaks }}</article>
 
-            <!-- Botones de interacción (Likes, Vistas) -->
             <div class="mt-5 d-flex align-items-center flex-wrap">
-                <button class="btn btn-link text-decoration-none text-muted d-flex align-items-center me-4 mb-2">
-                    <i class="far fa-heart fs-4 me-2"></i>
-                    <span class="fw-semibold">{{ article.articlerating_set.count }} Me gusta</span>
+                <button id="like-button" 
+                    class="btn btn-link text-decoration-none text-muted d-flex align-items-center me-4 mb-2"
+                    data-article-id="{{ article.id }}">
+                    {% if user_has_liked %}
+                        <i class="fas fa-heart fs-4 me-2 text-danger"></i>
+                    {% else %}
+                        <i class="far fa-heart fs-4 me-2"></i>
+                    {% endif %}
+                    <span class="fw-semibold" id="like-count">{{ total_likes }}</span> Me gusta
                 </button>
                 <button class="btn btn-link text-decoration-none text-muted d-flex align-items-center me-4 mb-2">
                     <i class="far fa-share-square fs-4 me-2"></i>
@@ -51,109 +47,64 @@
                     <i class="far fa-eye fs-4 me-2"></i>
                     <span class="fw-semibold">{{ article.articleview_set.count }} Vistas</span>
                 </div>
-                
-                <!-- Opciones de autor (Editar/Eliminar) -->
+
+                {% if user.is_authenticated %}
+                    <script>
+                        document.getElementById('like-button').addEventListener('click', function() {
+                            const articleId = this.dataset.articleId;
+                            fetch(`/articulo/${articleId}/like/`, {
+                                method: 'POST',
+                                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.is_liked) {
+                                    this.querySelector('i').classList.remove('far');
+                                    this.querySelector('i').classList.add('fas', 'text-danger');
+                                } else {
+                                    this.querySelector('i').classList.remove('fas', 'text-danger');
+                                    this.querySelector('i').classList.add('far');
+                                }
+                                document.getElementById('like-count').textContent = data.total_likes;
+                            });
+                        });
+                    </script>
+                {% endif %}
+
                 {% if user == article.user %}
                     <div class="d-flex align-items-center ms-auto">
-                        <a href="{% url 'blog:article_edit' article.slug %}" 
-                           class="btn btn-outline-warning btn-sm me-2">
-                           ✏️ Editar
-                        </a>
-                        <a href="{% url 'blog:article_delete' article.slug %}" 
-                           class="btn btn-outline-danger btn-sm">
-                           🗑️ Eliminar
-                        </a>
+                        <a href="{% url 'blog:article_edit' article.slug %}" class="btn btn-outline-warning btn-sm me-2">✏️ Editar</a>
+                        <a href="{% url 'blog:article_delete' article.slug %}" class="btn btn-outline-danger btn-sm">🗑️ Eliminar</a>
                     </div>
                 {% endif %}
             </div>
             
             <hr class="my-5">
             
-            <!-- Categorías y Tags -->
-                <div class="mb-3">
-                    {% if article.category.all %}
-                        <div class="mb-2">
-                            <strong>Categorías:</strong>
-                            {% for category in article.category.all %}
-                                <span class="badge bg-secondary me-1">{{ category.name }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    
-                    {% if article.tags.all %}
-                        <div>
-                            <strong>Tags:</strong>
-                            {% for tag in article.tags.all %}
-                                <span class="badge bg-secondary me-1">#{{ tag.name }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-                
-        </div>
-
-        <!-- Sección de Artículos Similares -->
-        <section id="similar-articles-section" class="bg-light p-4 p-md-5 border-top">
-            <h2 class="fw-bold mb-4">Artículos Similares</h2>
-            <div id="similar-articles-container">
-                {% if similar_articles %}
-                    <div id="similar-articles-carousel" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            {% for article in similar_articles %}
-                                {% if forloop.first %}
-                                    <div class="carousel-item active">
-                                {% else %}
-                                    <div class="carousel-item">
-                                {% endif %}
-                                <div class="row">
-                                    <!-- Aquí puedes mostrar hasta 3 artículos por slide. El carrusel actual muestra 1 a la vez. -->
-                                    <div class="col-12">
-                                        <div class="card h-100">
-                                            {% if article.featured_image %}
-                                                <img src="{{ article.featured_image.url }}" class="card-img-top" alt="{{ article.title }}">
-                                            {% else %}
-                                                <img src="https://placehold.co/400x300/f39c12/FFFFFF?text={{ article.title|slice:":10" }}" class="card-img-top" alt="{{ article.title }}">
-                                            {% endif %}
-                                            <div class="card-body">
-                                                <h5 class="card-title fw-bold">{{ article.title }}</h5>
-                                                <p class="card-text text-muted small">por {{ article.user.username }} | {{ article.created_at|date:"d M, Y" }}</p>
-                                            </div>
-                                            <div class="card-footer bg-white border-0 pb-3">
-                                                <a href="{% url 'blog:article_detail' article.slug %}" class="btn btn-sm btn-outline-naranja">Seguir leyendo</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        {% if similar_articles|length > 1 %}
-                            <button class="carousel-control-prev" type="button" data-bs-target="#similar-articles-carousel" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#similar-articles-carousel" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
-                        {% endif %}
+            <div class="mb-3">
+                {% if article.category.all %}
+                    <div class="mb-2">
+                        <strong>Categorías:</strong>
+                        {% for category in article.category.all %}
+                            <span class="badge bg-secondary me-1">{{ category.name }}</span>
+                        {% endfor %}
                     </div>
-                {% else %}
-                    <div id="no-similar-articles" class="text-center text-muted p-5">
-                        <i class="fas fa-music fa-3x mb-3"></i>
-                        <h4 class="fw-bold">Próximamente: artículos relacionados</h4>
-                        <p>Estamos trabajando para traerte más contenido que te pueda interesar.</p>
+                {% endif %}
+                {% if article.tags.all %}
+                    <div>
+                        <strong>Tags:</strong>
+                        {% for tag in article.tags.all %}
+                            <span class="badge bg-secondary me-1">#{{ tag.name }}</span>
+                        {% endfor %}
                     </div>
                 {% endif %}
             </div>
-        </section>
+        </div>
 
-
-        <!-- Sección de Comentarios -->
+        <!-- Comentarios -->
         <section class="bg-white p-4 p-md-5 border-top">
             <h2 class="fw-bold mb-4">Comentarios ({{ comments.count }})</h2>
 
-            <!-- Formulario para nuevo comentario -->
             {% if user.is_authenticated %}
                 <form method="post" class="d-flex align-items-start mb-5">
                     {% csrf_token %}
@@ -165,51 +116,123 @@
                 </form>
             {% else %}
                 <div class="alert alert-info">
-                    <a href="{% url 'blog:login' %}">Inicia sesión</a> para poder comentar en este artículo.
+                    <a href="{% url 'login' %}">Inicia sesión</a> para poder comentar en este artículo.
                 </div>
             {% endif %}
 
-            <!-- Lista de comentarios -->
             <div class="d-grid gap-4">
                 {% if comments %}
                     {% for comment in comments %}
-                        <div class="d-flex align-items-start">
-                            <img src="https://placehold.co/48x48/{{ '0123456789abcdef'|random }}{{ '0123456789abcdef'|random }}D25C2A/FFFFFF?text={{ comment.user.username|slice:':1'|upper }}" 
-                                 alt="Avatar de {{ comment.user.username }}" 
-                                 class="rounded-circle me-3">
-                            <div class="flex-grow-1 bg-light p-3 rounded border">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <p class="fw-bold mb-0">{{ comment.user.username }}</p>
-                                    {% if user == comment.user %}
-                                        <!-- No existe una URL de delete para comentarios, se deja como placeholder -->
-                                        <button class="btn btn-outline-danger btn-sm">
-                                            🗑️
-                                        </button>
-                                    {% endif %}
-                                </div>
-                                <p class="mb-0 text-muted">{{ comment.content|linebreaks }}</p>
+                        <div class="flex-grow-1 bg-light p-3 rounded border" id="comment-{{ comment.id }}">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <p class="fw-bold mb-0">{{ comment.user.username }}</p>
+                                {% if user == comment.user %}
+                                    <button class="btn btn-outline-warning btn-sm me-1 edit-btn" data-id="{{ comment.id }}" data-content="{{ comment.content|escapejs }}">✏️</button>
+                                    <form action="{% url 'blog:comment_delete' comment.id %}" method="post" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('¿Seguro que quieres eliminar este comentario?');">🗑️</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+
+                            <p class="mb-2 text-muted comment-content">{{ comment.content|linebreaks }}</p>
+                            <small class="text-muted">
+                                {{ comment.created_at|date:"d M Y H:i" }}
+                                {% if comment.total_likes > 0 %} • {{ comment.total_likes }} me gusta{% endif %}
+                            </small>
+
+                            <div class="mt-2">
+                                {% if user.is_authenticated %}
+                                    <button class="btn btn-link p-0 text-decoration-none comment-like-btn" data-comment-id="{{ comment.id }}">
+                                        <i class="{% if comment.user_has_liked %}fas fa-heart text-danger{% else %}far fa-heart{% endif %}"></i>
+                                        <span class="comment-like-count">{{ comment.total_likes }}</span> Me gusta
+                                    </button>
+                                {% else %}
+                                    <small><a href="{% url 'login' %}">Inicia sesión</a> para dar like</small>
+                                {% endif %}
+                                <button class="btn btn-link p-0 ms-3 text-decoration-none">Responder</button>
                             </div>
                         </div>
                     {% endfor %}
                 {% else %}
                     <div class="text-center text-muted p-4">
-                        <p class="mb-0">
-                            No hay comentarios aún. ¡Sé el primero en comentar!
-                        </p>
+                        <p class="mb-0">No hay comentarios aún. ¡Sé el primero en comentar!</p>
                     </div>
                 {% endif %}
             </div>
         </section>
-
     </div>
-    
-    <!-- Botón volver -->
+
     <div class="row mt-4">
         <div class="col-12">
-            <a href="{% url 'blog:article_list' %}" class="btn btn-secondary">
-                ← Volver a la lista
-            </a>
+            <a href="{% url 'blog:article_list' %}" class="btn btn-secondary">← Volver a la lista</a>
         </div>
     </div>
 </main>
+
+{% if user.is_authenticated %}
+<script>
+document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const id = this.dataset.id;
+        const div = document.getElementById(`comment-${id}`);
+        const content = this.dataset.content;
+        div.querySelector('.comment-content').innerHTML = `
+            <textarea class="form-control edit-textarea">${content}</textarea>
+            <div class="mt-2">
+                <button class="btn btn-success btn-sm save-edit" data-id="${id}">Guardar</button>
+                <button class="btn btn-secondary btn-sm cancel-edit" data-id="${id}">Atrás</button>
+            </div>
+        `;
+    });
+});
+
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('save-edit')) {
+        const id = e.target.dataset.id;
+        const div = document.getElementById(`comment-${id}`);
+        const newContent = div.querySelector('.edit-textarea').value;
+
+        fetch(`/comentario/${id}/editar-ajax/`, {
+            method: 'POST',
+            headers: {'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `content=${encodeURIComponent(newContent)}`
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                div.querySelector('.comment-content').innerHTML = data.content;
+            } else {
+                alert(data.error || 'Error al editar');
+            }
+        });
+    }
+    if (e.target.classList.contains('cancel-edit')) {
+        location.reload();
+    }
+});
+
+document.querySelectorAll('.comment-like-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const id = this.dataset.commentId;
+        fetch(`/comentario/${id}/like/`, {
+            method: 'POST',
+            headers: {'X-CSRFToken': '{{ csrf_token }}'},
+        })
+        .then(res => res.json())
+        .then(data => {
+            const icon = this.querySelector('i');
+            if (data.is_liked) {
+                icon.classList.remove('far');
+                icon.classList.add('fas', 'text-danger');
+            } else {
+                icon.classList.remove('fas', 'text-danger');
+                icon.classList.add('far');
+            }
+            this.querySelector('.comment-like-count').textContent = data.total_likes;
+        });
+    });
+});
+</script>
+{% endif %}
 {% endblock %}

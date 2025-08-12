@@ -1,0 +1,125 @@
+/* Variables globales de color */
+:root {
+    --color-negro: #000000;
+    --color-naranja-claro: #FF6C2E;
+    --color-naranja-hover: #e65a1f;
+    --color-naranja-oscuro: #D25C2A;
+    --color-gris-oscuro: #E5E5E5;
+    --color-blanco: #FFFFFF;
+}
+
+/* Reset básico */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--color-gris-oscuro);
+    color: var(--color-negro);
+    margin: 0;
+    padding: 0;
+}
+
+/* Utilidades de colores */
+.bg-blanco {
+    background-color: var(--color-blanco);
+}
+
+.bg-gris-oscuro {
+    background-color: var(--color-gris-oscuro);
+}
+
+.color-negro {
+    color: var(--color-negro);
+}
+
+.color-naranja-claro {
+    color: var(--color-naranja-claro);
+}
+
+.color-naranja-oscuro {
+    color: var(--color-naranja-oscuro);
+}
+
+/* Botón primario */
+.btn-primary-custom {
+    background-color: var(--color-naranja-claro);
+    border: none;
+    color: var(--color-blanco);
+    font-weight: 600;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-primary-custom:hover,
+.btn-primary-custom:focus {
+    background-color: var(--color-naranja-hover);
+    color: var(--color-blanco);
+    outline: none;
+    box-shadow: 0 0 8px var(--color-naranja-hover);
+}
+
+/* Inputs */
+input.form-control,
+.input-group .form-control {
+    border: 1px solid #ccc;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input.form-control:hover,
+.input-group .form-control:hover,
+input.form-control:focus,
+.input-group .form-control:focus {
+    border-color: var(--color-naranja-claro);
+    box-shadow: 0 0 0 0.2rem rgba(255, 108, 46, 0.25);
+}
+
+/* Labels */
+.form-label {
+    font-weight: 600;
+    color: var(--color-negro);
+}
+
+.form-label i {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+}
+
+/* Layouts comunes */
+.container-centered,
+.page-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Tarjetas base */
+.card-base {
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    background-color: var(--color-blanco);
+    width: 100%;
+    max-width: 480px;
+}
+
+/* Logo base */
+.logo-base {
+    max-width: 320px;
+    height: auto;
+    display: block;
+    margin: 0 auto 1.5rem auto;
+}
+
+/* Utilidad para puntero */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Utilidad texto centrado */
+.text-center {
+    text-align: center;
+}

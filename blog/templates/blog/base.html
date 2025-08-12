@@ -90,7 +90,7 @@
                         <a class="nav-link active" aria-current="page" href="/">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Catálogo</a>
+                        <a href="/mis-articulos" class="nav-link" href="#">Catálogo</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Colecciones</a>
@@ -100,8 +100,13 @@
                     </li>
                 </ul>
                 <div class="d-flex">
-                    <a href="{% url 'blog:simulate_login_default' %}" class="btn btn-dark me-2">Iniciar sesión </a>
+                    {% if user.is_authenticated %}
+                    <span>Hola, {{ user.username }}</span>
+                    <a href="{% url 'logout' %}">Cerrar sesión</a>
+                    {% else %}
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-dark me-2">Iniciar sesión </a>
                     <a href="user/register/" class="btn btn-orange">Registrar</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

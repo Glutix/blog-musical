@@ -41,6 +41,10 @@ class Article(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def total_likes(self):
+        return self.likes.count()
+
 
 class ArticleView(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -54,10 +58,12 @@ class ArticleView(models.Model):
 
 
 class Comment(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="comments")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(auto_now=True)
+    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
 
     class Meta:
         ordering = ['-created_at']
@@ -65,27 +71,30 @@ class Comment(models.Model):
         verbose_name_plural = "Comments"
 
     def __str__(self):
-        return f"Comentado por {self.user.username} en el artículo: {self.article.title}"
+        return f"Comentado por {self.user.username} en: {self.article.title}"
+
+    @property
+    def total_likes(self):
+        return self.comment_likes.count()
 
 
-class ArticleRating(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    rating = models.IntegerField(null=False)
+class ArticleLike(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="article_likes")
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name="likes")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ("user", "article")
-        verbose_name = "Article Rating"
-        verbose_name_plural = "Article Ratings"
+        verbose_name = "Article Like"
+        verbose_name_plural = "Article Likes"
 
     def __str__(self):
-        return f"{self.user.username} valoró {self.article.title}: {self.rating}"
+        return f"{self.user.username} le gusta {self.article.title}"
 
 
 class CommentLike(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comment_likes")
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="comment_likes")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

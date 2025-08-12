@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Iniciar Sesión - Blog Musical</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <!-- CSS General y específico -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+</head>
+
+<body class="bg-gris-oscuro">
+    <div class="page-center">
+        <main class="card-base">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" class="logo-base" />
+
+            <h1 class="text-center color-naranja-claro mb-4">Iniciar Sesión</h1>
+
+            <form method="POST" novalidate>
+                {% csrf_token %}
+
+                <!-- Campo Usuario -->
+                <div class="mb-3">
+                    <label class="form-label" for="{{ form.username.id_for_label }}">
+                        <i class="bi bi-person-fill"></i>
+                        {{ form.username.label }}
+                    </label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                    <div class="field-error">
+                        {% for error in form.username.errors %}
+                        <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Campo Contraseña -->
+                <div class="mb-3">
+                    <label class="form-label" for="{{ form.password.id_for_label }}">
+                        <i class="bi bi-lock-fill"></i>
+                        {{ form.password.label }}
+                    </label>
+                    <div class="input-group">
+                        {{ form.password }}
+                        <span class="input-group-text toggle-password" id="togglePassword" role="button"
+                            aria-label="Mostrar u ocultar contraseña" tabindex="0">
+                            <i class="bi bi-eye"></i>
+                        </span>
+                    </div>
+                    {% if form.password.errors %}
+                    <div class="field-error">
+                        {% for error in form.password.errors %}
+                        <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Errores generales del formulario -->
+                {% if form.non_field_errors %}
+                <div class="field-error mb-3">
+                    {% for error in form.non_field_errors %}
+                    <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar
+                    </button>
+                </div>
+
+                <div class="text-center">
+                    <p class="mb-0">¿No tienes cuenta?
+                        <a href="{% url 'register' %}" class="color-naranja-claro text-decoration-none fw-bold">
+                            Regístrate aquí
+                        </a>
+                    </p>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JS personalizado -->
+    <script src="{% static 'js/toggle-password.js' %}"></script>
+</body>
+
+</html>
