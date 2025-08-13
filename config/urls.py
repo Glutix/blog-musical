@@ -17,12 +17,9 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from user_auth import urls
-from django.conf import settings
-from django.conf.urls.static import static
 
 urlpatterns = [
-    path("admin/", admin.site.urls), 
-    path("user/", include(urls)),  # URLs de autenticación
-    path('', include('blog.urls')),  # URLs del blog en la raíz
+    path("admin/", admin.site.urls),
+    path("user/", include("user_auth.urls")),  # URLs de autenticación
+    path("", include("blog.urls")),  # URLs del blog en la raíz
 ]

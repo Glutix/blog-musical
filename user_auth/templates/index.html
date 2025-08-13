@@ -9,10 +9,10 @@
 <body>
     <h1>simular login y logout</h1>
     {% if user.is_authenticated %}
-    <p>Hola, {{ user.username }}</p>
-    <a href="{% url 'logout' %}" class="btn btn-danger">Cerrar sesión</a>
+    <p>Hola, <a href="{% url 'user_auth:profile_view' %}">{{ user.username }}</a></p>
+    <a href="{% url 'user_auth:logout' %}" class="btn btn-danger">Cerrar sesión</a>
     {% else %}
-    <a href="{% url 'login' %}" class="btn btn-primary">Iniciar sesión</a>
+    <a href="{% url 'user_auth:login' %}" class="btn btn-primary">Iniciar sesión</a>
     {% endif %}
 </body>
 

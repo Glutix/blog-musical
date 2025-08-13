@@ -1,0 +1,120 @@
+{% extends "blog/base.html" %}
+{% load static %}
+
+{% block title %}{{ profile_user.get_full_name|default:profile_user.username }} - Blog Musical{% endblock %}
+
+{% block content %}
+<div class="container my-5" style="max-width: 600px;">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <!-- Card Principal del Perfil -->
+            <div class="card shadow">
+                <div class="card-body text-center py-5">
+                    <!-- Avatar -->
+                    <img src="{{ profile.get_avatar_url }}" alt="Avatar de {{ profile_user.username }}"
+                        class="rounded-circle border border-3 border-naranja mb-4"
+                        style="width: 150px; height: 150px; object-fit: cover;">
+
+                    <!-- Nombre y Usuario -->
+                    <h3 class="fw-bold mb-2">{{ profile_user.get_full_name|default:profile_user.username }}</h3>
+                    <p class="text-muted mb-4 fs-5">@{{ profile_user.username }}</p>
+
+                    <!-- Badge de Autor -->
+                    {% if profile.is_author %}
+                    <span class="badge bg-naranja mb-4 fs-6 px-3 py-2">
+                        <i class="fas fa-pen-nib me-2"></i>Autor
+                    </span>
+                    {% endif %}
+
+                    <!-- Información Personal -->
+                    <div class="row text-start mt-4">
+                        <!-- Biografía -->
+                        {% if profile.bio %}
+                        <div class="col-12 mb-4">
+                            <h6 class="fw-bold text-naranja mb-2">
+                                <i class="fas fa-quote-left me-2"></i>Biografía
+                            </h6>
+                            <p class="text-muted mb-0">{{ profile.bio|linebreaks }}</p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Sitio Web -->
+                        {% if profile.web_site %}
+                        <div class="col-12 mb-4">
+                            <h6 class="fw-bold text-naranja mb-2">
+                                <i class="fas fa-globe me-2"></i>Sitio Web
+                            </h6>
+                            <a href="{{ profile.web_site }}" target="_blank" class="text-decoration-none text-primary">
+                                {{ profile.web_site }}
+                                <i class="fas fa-external-link-alt ms-1 small"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+
+                        <!-- Fecha de Cumpleaños (solo día y mes) -->
+                        {% if profile.birth_date %}
+                        <div class="col-12 mb-4">
+                            <h6 class="fw-bold text-naranja mb-2">
+                                <i class="fas fa-birthday-cake me-2"></i>Cumpleaños
+                            </h6>
+                            <p class="text-muted mb-0">{{ profile.birth_date|date:"d \d\e F" }}</p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Fecha de Registro -->
+                        <div class="col-12 mb-0">
+                            <h6 class="fw-bold text-naranja mb-2">
+                                <i class="fas fa-calendar-plus me-2"></i>Miembro desde
+                            </h6>
+                            <p class="text-muted mb-0">{{ profile_user.date_joined|date:"F \d\e Y" }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Mensaje si no hay información adicional -->
+                    {% if not profile.bio and not profile.web_site and not profile.birth_date %}
+                    <div class="text-muted mt-4">
+                        <i class="fas fa-info-circle fa-2x mb-3"></i>
+                        <p class="mb-0">Este usuario no ha completado su información personal</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Botón de editar para el propio perfil -->
+                    {% if is_own_profile %}
+                    <div class="mt-4">
+                        <a href="{% url 'user_auth:profile_view' %}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-eye me-2"></i>Volver a mi perfil
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-naranja {
+        background-color: #f39c12;
+        border-color: #f39c12;
+        color: white;
+    }
+
+    .btn-naranja:hover {
+        background-color: #e67e22;
+        border-color: #e67e22;
+        color: white;
+    }
+
+    .bg-naranja {
+        background-color: #f39c12;
+    }
+
+    .border-naranja {
+        border-color: #f39c12;
+    }
+
+    .text-naranja {
+        color: #f39c12;
+    }
+</style>
+{% endblock %}

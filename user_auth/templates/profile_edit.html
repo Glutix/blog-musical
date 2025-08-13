@@ -1,0 +1,298 @@
+{% extends "blog/base.html" %}
+{% load static %}
+
+{% block title %}Editar Perfil - Blog Musical{% endblock %}
+
+{% block content %}
+<div class="container my-5" style="max-width: 600px;">
+    <div class="card shadow">
+        <div class="card-header bg-naranja text-white">
+            <h2 class="mb-0">
+                <i class="fas fa-user-edit me-2"></i>Editar Perfil
+            </h2>
+        </div>
+        <div class="card-body p-4">
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+
+                <div class="mb-4 text-center">
+                    <label class="form-label fw-bold">Foto de perfil</label>
+                    <div class="d-flex flex-column align-items-center">
+                        <div class="position-relative mb-3">
+                            <img id="avatar-preview" src="{{ user.profile.get_avatar_url }}"
+                                alt="Avatar de {{ user.username }}"
+                                class="rounded-circle border border-3 border-naranja shadow-sm"
+                                style="width: 120px; height: 120px; object-fit: cover;">
+
+                            <div class="position-absolute bottom-0 end-0 bg-naranja rounded-circle p-2 shadow">
+                                <i class="fas fa-camera text-white"></i>
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="id_avatar" class="btn btn-outline-naranja btn-sm">
+                                <i class="fas fa-upload me-2"></i>Subir nueva imagen
+                            </label>
+                            <input type="file" class="d-none" id="id_avatar" name="avatar" accept="image/*">
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-2">O elige un avatar por defecto:</small>
+                            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                {% with user.username|slice:':2'|upper as initials %}
+                                <img class="avatar-option rounded-circle border cursor-pointer"
+                                    src="https://ui-avatars.com/api/?name={{ initials }}&background=f39c12&color=ffffff&size=60&bold=true"
+                                    data-avatar-url="https://ui-avatars.com/api/?name={{ initials }}&background=f39c12&color=ffffff&size=200&bold=true"
+                                    data-avatar-color="f39c12" style="width: 50px; height: 50px;" title="Naranja">
+
+                                <img class="avatar-option rounded-circle border cursor-pointer"
+                                    src="https://ui-avatars.com/api/?name={{ initials }}&background=e74c3c&color=ffffff&size=60&bold=true"
+                                    data-avatar-url="https://ui-avatars.com/api/?name={{ initials }}&background=e74c3c&color=ffffff&size=200&bold=true"
+                                    data-avatar-color="e74c3c" style="width: 50px; height: 50px;" title="Rojo">
+
+                                <img class="avatar-option rounded-circle border cursor-pointer"
+                                    src="https://ui-avatars.com/api/?name={{ initials }}&background=3498db&color=ffffff&size=60&bold=true"
+                                    data-avatar-url="https://ui-avatars.com/api/?name={{ initials }}&background=3498db&color=ffffff&size=200&bold=true"
+                                    data-avatar-color="3498db" style="width: 50px; height: 50px;" title="Azul">
+
+                                <img class="avatar-option rounded-circle border cursor-pointer"
+                                    src="https://ui-avatars.com/api/?name={{ initials }}&background=2ecc71&color=ffffff&size=60&bold=true"
+                                    data-avatar-url="https://ui-avatars.com/api/?name={{ initials }}&background=2ecc71&color=ffffff&size=200&bold=true"
+                                    data-avatar-color="2ecc71" style="width: 50px; height: 50px;" title="Verde">
+
+                                <img class="avatar-option rounded-circle border cursor-pointer"
+                                    src="https://ui-avatars.com/api/?name={{ initials }}&background=9b59b6&color=ffffff&size=60&bold=true"
+                                    data-avatar-url="https://ui-avatars.com/api/?name={{ initials }}&background=9b59b6&color=ffffff&size=200&bold=true"
+                                    data-avatar-color="9b59b6" style="width: 50px; height: 50px;" title="Morado">
+
+                                <img class="avatar-option rounded-circle border cursor-pointer"
+                                    src="https://ui-avatars.com/api/?name={{ initials }}&background=34495e&color=ffffff&size=60&bold=true"
+                                    data-avatar-url="https://ui-avatars.com/api/?name={{ initials }}&background=34495e&color=ffffff&size=200&bold=true"
+                                    data-avatar-color="34495e" style="width: 50px; height: 50px;" title="Gris oscuro">
+                                {% endwith %}
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="selected-avatar" name="selected_avatar" value="">
+
+                        {% if user.profile.has_avatar %}
+                        <div class="mb-2">
+                            <button type="button" class="btn btn-outline-danger btn-sm" id="remove-avatar">
+                                <i class="fas fa-trash-alt me-2"></i>Eliminar avatar personalizado
+                            </button>
+                        </div>
+                        {% endif %}
+
+                        {% if form.avatar.errors %}
+                        <div class="text-danger small">{{ form.avatar.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="mb-3">
+                    <label for="{{ form.bio.id_for_label }}" class="form-label fw-bold">
+                        <i class="fas fa-quote-left me-2 text-muted"></i>Biografía
+                    </label>
+                    {{ form.bio }}
+                    <div class="form-text">Cuéntanos un poco sobre ti y tu pasión por la música</div>
+                    {% if form.bio.errors %}
+                    <div class="text-danger small">{{ form.bio.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.web_site.id_for_label }}" class="form-label fw-bold">
+                        <i class="fas fa-globe me-2 text-muted"></i>Sitio Web
+                    </label>
+                    {{ form.web_site }}
+                    <div class="form-text">Tu página web, blog o perfil de redes sociales</div>
+                    {% if form.web_site.errors %}
+                    <div class="text-danger small">{{ form.web_site.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-4">
+                    <label for="{{ form.birth_date.id_for_label }}" class="form-label fw-bold">
+                        <i class="fas fa-calendar me-2 text-muted"></i>Fecha de nacimiento
+                    </label>
+                    {{ form.birth_date }}
+                    <div class="form-text">Opcional - Solo se mostrará el día y mes públicamente</div>
+                    {% if form.birth_date.errors %}
+                    <div class="text-danger small">{{ form.birth_date.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-naranja flex-grow-1">
+                        <i class="fas fa-save me-2"></i>Guardar cambios
+                    </button>
+                    <a href="{% url 'user_auth:profile_view' %}" class="btn btn-secondary">
+                        <i class="fas fa-eye me-2"></i>Ver perfil
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .cursor-pointer {
+        cursor: pointer;
+    }
+
+    .avatar-option {
+        transition: all 0.3s ease;
+    }
+
+    .avatar-option:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .avatar-option.selected {
+        border: 3px solid #f39c12 !important;
+        transform: scale(1.1);
+    }
+
+    .btn-naranja {
+        background-color: #f39c12;
+        border-color: #f39c12;
+        color: white;
+    }
+
+    .btn-naranja:hover {
+        background-color: #e67e22;
+        border-color: #e67e22;
+        color: white;
+    }
+
+    .btn-outline-naranja {
+        color: #f39c12;
+        border-color: #f39c12;
+    }
+
+    .btn-outline-naranja:hover {
+        background-color: #f39c12;
+        border-color: #f39c12;
+        color: white;
+    }
+
+    .bg-naranja {
+        background-color: #f39c12;
+    }
+
+    .border-naranja {
+        border-color: #f39c12;
+    }
+
+    .text-naranja {
+        color: #f39c12;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Elementos del DOM
+        const avatarPreview = document.getElementById('avatar-preview');
+        const avatarInput = document.getElementById('id_avatar');
+        const selectedAvatarInput = document.getElementById('selected-avatar');
+        const avatarOptions = document.querySelectorAll('.avatar-option');
+        const removeAvatarBtn = document.getElementById('remove-avatar');
+
+        // Manejar selección de avatares por defecto
+        avatarOptions.forEach(option => {
+            option.addEventListener('click', function () {
+                // Remover selección anterior
+                avatarOptions.forEach(opt => opt.classList.remove('selected'));
+
+                // Seleccionar el actual
+                this.classList.add('selected');
+
+                // Actualizar preview
+                const avatarUrl = this.getAttribute('data-avatar-url');
+                avatarPreview.src = avatarUrl;
+
+                // Guardar el color del avatar como identificador
+                const avatarColor = this.getAttribute('data-avatar-color');
+                selectedAvatarInput.value = avatarColor;  // ✅ Nuevo: Guardamos solo el color
+
+                // Limpiar input de archivo
+                avatarInput.value = '';
+            });
+        });
+
+        // Manejar subida de archivo personalizado
+        avatarInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                // Validar tipo de archivo
+                if (!file.type.startsWith('image/')) {
+                    alert('Por favor selecciona un archivo de imagen válido.');
+                    this.value = '';
+                    return;
+                }
+
+                // Validar tamaño (máximo 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('La imagen debe ser menor a 5MB.');
+                    this.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    avatarPreview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+
+                // Limpiar selección de avatares por defecto
+                avatarOptions.forEach(opt => opt.classList.remove('selected'));
+                selectedAvatarInput.value = '';
+            }
+        });
+
+        // Manejar eliminación de avatar personalizado
+        if (removeAvatarBtn) {
+            removeAvatarBtn.addEventListener('click', function () {
+                if (confirm('¿Estás seguro de que quieres eliminar tu avatar personalizado?')) {
+                    // Usar el primer avatar por defecto
+                    const firstOption = avatarOptions[0];
+                    if (firstOption) {
+                        firstOption.click();
+                    }
+
+                    // Marcar para eliminación en el backend
+                    selectedAvatarInput.value = 'DELETE_AVATAR';
+                }
+            });
+        }
+
+        // Mejorar UX del input de archivo con drag & drop
+        const fileLabel = document.querySelector('label[for="id_avatar"]');
+        if (fileLabel) {
+            fileLabel.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                this.classList.add('bg-light');
+            });
+
+            fileLabel.addEventListener('dragleave', function (e) {
+                e.preventDefault();
+                this.classList.remove('bg-light');
+            });
+
+            fileLabel.addEventListener('drop', function (e) {
+                e.preventDefault();
+                this.classList.remove('bg-light');
+
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    avatarInput.files = files;
+                    avatarInput.dispatchEvent(new Event('change'));
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
