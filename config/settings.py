@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
-import os
 import cloudinary
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -164,3 +163,8 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Configuración de login/logout
+LOGIN_URL = "login"  # Vista que usará cuando alguien intente entrar sin autenticarse
+LOGIN_REDIRECT_URL = "blog:article_list"  # A dónde va después de iniciar sesión
+LOGOUT_REDIRECT_URL = "login"  # A dónde va después de cerrar sesión

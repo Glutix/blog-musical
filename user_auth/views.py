@@ -41,13 +41,15 @@ def register(request):
 
 #! Authenticacion de usuario
 def login_view(request):
+    next_url = request.GET.get("next", "blog:article_list")
     if request.method == "POST":
         form = CustomLoginForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
-            print(user)
             login(request, user)
-            return redirect("/")
+            return redirect(
+                next_url
+            )  # Redirige a la url anterior de redirigir al login
     else:
         form = CustomLoginForm()
 
@@ -104,7 +106,7 @@ def profile_edit(request):
                         messages.success(
                             request, "Avatar personalizado eliminado exitosamente."
                         )
-                    except Exception as e:
+                    except Exception:
                         messages.warning(
                             request, "No se pudo eliminar el avatar anterior."
                         )
@@ -133,7 +135,7 @@ def profile_edit(request):
                                 cloudinary.uploader.destroy(
                                     updated_profile.avatar.public_id
                                 )
-                            except:
+                            except Exception:
                                 pass
 
                         # Subimos el archivo directamente a Cloudinary

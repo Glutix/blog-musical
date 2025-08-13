@@ -278,7 +278,7 @@
               </span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-              <li><a class="dropdown-item" href="{% url 'blog:mis_articulos' %}"><i
+              <li><a class="dropdown-item" href="{% url 'blog:my_articles' %}"><i
                     class="fa-solid fa-file-lines me-2"></i> Mis artículos</a></li>
               <li><a class="dropdown-item" href="{% url 'user_auth:profile_view' %}"><i
                     class="fa-solid fa-user me-2"></i> Perfil</a></li>
@@ -305,7 +305,7 @@
             <span class="fw-semibold">{{ user.username }}</span>
           </div>
           <ul class="list-unstyled mb-0">
-            <li><a class="user-mobile-item" href="{% url 'blog:mis_articulos' %}"><i
+            <li><a class="user-mobile-item" href="{% url 'blog:my_articles' %}"><i
                   class="fa-solid fa-file-lines me-2"></i> Mis artículos</a></li>
             <li><a class="user-mobile-item" href="{% url 'user_auth:profile_view' %}"><i
                   class="fa-solid fa-user me-2"></i> Perfil</a></li>
@@ -349,7 +349,7 @@
           <h5 class="fw-bold text-dark mb-3">Bienvenido {{user.username}}</h5>
           <ul class="list-unstyled">
             <li><a class="footer-link" href="{% url 'user_auth:profile_view' %}">Perfil</a></li>
-            <li><a class="footer-link" href="{% url 'blog:mis_articulos' %}">Mis artículos</a></li>
+            <li><a class="footer-link" href="{% url 'blog:my_articles' %}">Mis artículos</a></li>
             <li><a class="footer-link" href="{% url 'user_auth:logout' %}">Cerrar sesión</a></li>
           </ul>
         </div>
