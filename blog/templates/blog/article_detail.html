@@ -1,16 +1,18 @@
-{% extends 'blog/base.html' %}
-{% load static %}
+{% extends 'blog/base.html' %} 
+{% load static %} 
 
-{% block title %}{{ article.title }} - Blog Musical{% endblock %}
+{% block title %}{{ article.title }} - Blog Musical{% endblock %} 
+
 {% block content %}
 <main class="container my-4 my-md-5">
     <div class="card border-0 shadow-lg">
-
         {% if article.featured_image %}
-            <img src="{{ article.featured_image.url }}" 
-                 class="card-img-top" 
-                 alt="{{ article.title }}"
-                 style="max-height: 650px; object-fit: cover;">
+        <img
+            src="{{ article.featured_image.url }}"
+            class="card-img-top"
+            alt="{{ article.title }}"
+            style="max-height: 650px; object-fit: cover"
+        />
         {% endif %}
 
         <div class="card-body p-4 p-md-5">
@@ -23,216 +25,361 @@
             <h1 class="display-5 fw-bold mb-3">{{ article.title }}</h1>
 
             <p class="text-muted mb-4">
-                por <span class="fw-semibold text-naranja">{{ article.user.username }}</span> | {{ article.created_at|date:"d M, Y" }}
+                por
+                <span class="fw-semibold text-naranja">{{ article.user.username }}</span>
+                | {{ article.created_at|date:"d M, Y" }}
             </p>
 
             <article class="fs-5">{{ article.content|linebreaks }}</article>
 
             <div class="mt-5 d-flex align-items-center flex-wrap">
-                <button id="like-button" 
-                    class="btn btn-link text-decoration-none text-muted d-flex align-items-center me-4 mb-2"
-                    data-article-id="{{ article.id }}">
-                    {% if user_has_liked %}
-                        <i class="fas fa-heart fs-4 me-2 text-danger"></i>
-                    {% else %}
-                        <i class="far fa-heart fs-4 me-2"></i>
-                    {% endif %}
-                    <span class="fw-semibold" id="like-count">{{ total_likes }}</span> Me gusta
-                </button>
-                <button class="btn btn-link text-decoration-none text-muted d-flex align-items-center me-4 mb-2">
-                    <i class="far fa-share-square fs-4 me-2"></i>
-                    <span class="fw-semibold">Compartir</span>
-                </button>
-                <div class="d-flex align-items-center text-muted mb-2">
-                    <i class="far fa-eye fs-4 me-2"></i>
-                    <span class="fw-semibold">{{ article.articleview_set.count }} Vistas</span>
-                </div>
+				<button
+					id="like-button"
+					class="btn btn-link text-decoration-none text-muted d-flex align-items-center me-4 mb-2"
+					data-article-id="{{ article.id }}"
+				>
+					{% if user_has_liked %}
+					<i class="fas fa-heart fs-4 me-2 text-danger"></i>
+					{% else %}
+					<i class="far fa-heart fs-4 me-2"></i>
+					{% endif %}
+					<span class="fw-semibold" id="like-count"
+						>{{ total_likes }}</span
+					>
+					Me gusta
+				</button>
+				<button
+					class="btn btn-link text-decoration-none text-muted d-flex align-items-center me-4 mb-2"
+				>
+					<i class="far fa-share-square fs-4 me-2"></i>
+					<span class="fw-semibold">Compartir</span>
+				</button>
+				<div class="d-flex align-items-center text-muted mb-2">
+					<i class="far fa-eye fs-4 me-2"></i>
+					<span class="fw-semibold"
+						>{{ article.articleview_set.count }} Vistas</span
+					>
+				</div>
 
-                {% if user.is_authenticated %}
-                    <script>
-                        document.getElementById('like-button').addEventListener('click', function() {
-                            const articleId = this.dataset.articleId;
-                            fetch(`/articulo/${articleId}/like/`, {
-                                method: 'POST',
-                                headers: {'X-CSRFToken': '{{ csrf_token }}'},
-                            })
-                            .then(res => res.json())
-                            .then(data => {
-                                if (data.is_liked) {
-                                    this.querySelector('i').classList.remove('far');
-                                    this.querySelector('i').classList.add('fas', 'text-danger');
-                                } else {
-                                    this.querySelector('i').classList.remove('fas', 'text-danger');
-                                    this.querySelector('i').classList.add('far');
-                                }
-                                document.getElementById('like-count').textContent = data.total_likes;
-                            });
-                        });
-                    </script>
-                {% endif %}
-
-                {% if user == article.user %}
-                    <div class="d-flex align-items-center ms-auto">
-                        <a href="{% url 'blog:article_edit' article.slug %}" class="btn btn-outline-warning btn-sm me-2">✏️ Editar</a>
-                        <a href="{% url 'blog:article_delete' article.slug %}" class="btn btn-outline-danger btn-sm">🗑️ Eliminar</a>
-                    </div>
-                {% endif %}
-            </div>
-            
-            <hr class="my-5">
-            
-            <div class="mb-3">
-                {% if article.category.all %}
-                    <div class="mb-2">
-                        <strong>Categorías:</strong>
-                        {% for category in article.category.all %}
-                            <span class="badge bg-secondary me-1">{{ category.name }}</span>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-                {% if article.tags.all %}
-                    <div>
-                        <strong>Tags:</strong>
-                        {% for tag in article.tags.all %}
-                            <span class="badge bg-secondary me-1">#{{ tag.name }}</span>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
+				{% if user.is_authenticated %}
+				<script>
+					document
+						.getElementById("like-button")
+						.addEventListener("click", function () {
+							const articleId = this.dataset.articleId;
+							fetch(`/articulo/${articleId}/like/`, {
+								method: "POST",
+								headers: { "X-CSRFToken": "{{ csrf_token }}" },
+							})
+								.then((res) => res.json())
+								.then((data) => {
+									if (data.is_liked) {
+										this.querySelector(
+											"i"
+										).classList.remove("far");
+										this.querySelector("i").classList.add(
+											"fas",
+											"text-danger"
+										);
+									} else {
+										this.querySelector(
+											"i"
+										).classList.remove(
+											"fas",
+											"text-danger"
+										);
+										this.querySelector("i").classList.add(
+											"far"
+										);
+									}
+									document.getElementById(
+										"like-count"
+									).textContent = data.total_likes;
+								});
+						});
+				</script>
+				{% endif %} {% if user == article.user %}
+				<div class="d-flex align-items-center ms-auto">
+					<a
+						href="{% url 'blog:article_edit' article.slug %}"
+						class="btn btn-outline-warning btn-sm me-2"
+						>:pencil2: Editar</a
+					>
+					<a
+						href="{% url 'blog:article_delete' article.slug %}"
+						class="btn btn-outline-danger btn-sm"
+						>:wastebasket: Eliminar</a
+					>
+				</div>
+				{% endif %}
+			</div>
         </div>
-
-        <!-- Comentarios -->
-        <section class="bg-white p-4 p-md-5 border-top">
-            <h2 class="fw-bold mb-4">Comentarios ({{ comments.count }})</h2>
-
-            {% if user.is_authenticated %}
-                <form method="post" class="d-flex align-items-start mb-5">
-                    {% csrf_token %}
-                    <img src="https://placehold.co/48x48/E5E5E5/000000?text={{ user.username|slice:':1'|upper }}" alt="{{ user.username }} avatar" class="rounded-circle me-3">
-                    <div class="flex-grow-1">
-                        <textarea name="content" id="comment-content" class="form-control" rows="3" placeholder="Escribe tu comentario..." required></textarea>
-                        <button type="submit" class="btn btn-naranja mt-2">Publicar</button>
-                    </div>
-                </form>
-            {% else %}
-                <div class="alert alert-info">
-                    <a href="{% url 'login' %}">Inicia sesión</a> para poder comentar en este artículo.
-                </div>
-            {% endif %}
-
-            <div class="d-grid gap-4">
-                {% if comments %}
-                    {% for comment in comments %}
-                        <div class="flex-grow-1 bg-light p-3 rounded border" id="comment-{{ comment.id }}">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <p class="fw-bold mb-0">{{ comment.user.username }}</p>
-                                {% if user == comment.user %}
-                                    <button class="btn btn-outline-warning btn-sm me-1 edit-btn" data-id="{{ comment.id }}" data-content="{{ comment.content|escapejs }}">✏️</button>
-                                    <form action="{% url 'blog:comment_delete' comment.id %}" method="post" style="display:inline;">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('¿Seguro que quieres eliminar este comentario?');">🗑️</button>
-                                    </form>
-                                {% endif %}
-                            </div>
-
-                            <p class="mb-2 text-muted comment-content">{{ comment.content|linebreaks }}</p>
-                            <small class="text-muted">
-                                {{ comment.created_at|date:"d M Y H:i" }}
-                                {% if comment.total_likes > 0 %} • {{ comment.total_likes }} me gusta{% endif %}
-                            </small>
-
-                            <div class="mt-2">
-                                {% if user.is_authenticated %}
-                                    <button class="btn btn-link p-0 text-decoration-none comment-like-btn" data-comment-id="{{ comment.id }}">
-                                        <i class="{% if comment.user_has_liked %}fas fa-heart text-danger{% else %}far fa-heart{% endif %}"></i>
-                                        <span class="comment-like-count">{{ comment.total_likes }}</span> Me gusta
-                                    </button>
-                                {% else %}
-                                    <small><a href="{% url 'login' %}">Inicia sesión</a> para dar like</small>
-                                {% endif %}
-                                <button class="btn btn-link p-0 ms-3 text-decoration-none">Responder</button>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="text-center text-muted p-4">
-                        <p class="mb-0">No hay comentarios aún. ¡Sé el primero en comentar!</p>
-                    </div>
-                {% endif %}
-            </div>
-        </section>
     </div>
 
-    <div class="row mt-4">
-        <div class="col-12">
-            <a href="{% url 'blog:article_list' %}" class="btn btn-secondary">← Volver a la lista</a>
+    <!-- Sección de comentarios -->
+    <div class="my-5">
+        <h2 class="h4 mb-4">Comentarios ({{ article.comments.count }})</h2>
+
+        <!-- Formulario para agregar un nuevo comentario -->
+        {% if user.is_authenticated %}
+        <div class="bg-white p-4 rounded shadow-sm mb-4">
+            <form method="post" action="{% url 'blog:article_detail' article.slug %}">
+                {% csrf_token %}
+                <input type="hidden" name="parent_id" value="">
+                <div class="d-flex align-items-start">
+                    <img src="https://placehold.co/48x48/E5E5E5/000000?text={{ user.username|slice:':1'|upper }}"
+                         alt="{{ user.username }} avatar"
+                         class="rounded-circle me-3"
+                         style="width: 48px; height: 48px;">
+                    <div class="flex-grow-1">
+                        <textarea name="content" class="form-control" rows="3" placeholder="Escribe tu comentario..." required></textarea>
+                        <button type="submit" class="btn btn-naranja mt-3">Publicar comentario</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% else %}
+        <div class="alert alert-info" role="alert">
+            <a href="{% url 'login' %}">Inicia sesión</a> para dejar un comentario.
+        </div>
+        {% endif %}
+
+        <!-- Listado de comentarios -->
+        <div id="comments-container">
+            {% for comment in comments %}
+                {% include 'blog/partials/comment.html' with comment=comment %}
+            {% endfor %}
         </div>
     </div>
 </main>
 
-{% if user.is_authenticated %}
-<script>
-document.querySelectorAll('.edit-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const id = this.dataset.id;
-        const div = document.getElementById(`comment-${id}`);
-        const content = this.dataset.content;
-        div.querySelector('.comment-content').innerHTML = `
-            <textarea class="form-control edit-textarea">${content}</textarea>
-            <div class="mt-2">
-                <button class="btn btn-success btn-sm save-edit" data-id="${id}">Guardar</button>
-                <button class="btn btn-secondary btn-sm cancel-edit" data-id="${id}">Atrás</button>
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        `;
-    });
-});
+            <div class="modal-body">
+                ¿Estás seguro de que quieres eliminar este comentario? Esta acción no se puede deshacer.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('save-edit')) {
-        const id = e.target.dataset.id;
-        const div = document.getElementById(`comment-${id}`);
-        const newContent = div.querySelector('.edit-textarea').value;
 
-        fetch(`/comentario/${id}/editar-ajax/`, {
-            method: 'POST',
-            headers: {'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/x-www-form-urlencoded'},
-            body: `content=${encodeURIComponent(newContent)}`
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                div.querySelector('.comment-content').innerHTML = data.content;
-            } else {
-                alert(data.error || 'Error al editar');
+<!-- Scripts JS -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const csrfToken = '{{ csrf_token }}';
+        
+        // --- Lógica para el like del artículo ---
+        const likeBtn = document.getElementById('like-btn');
+        if (likeBtn) {
+            likeBtn.addEventListener('click', function() {
+                const articleId = this.dataset.articleId;
+                fetch(`/articulo/${articleId}/like/`, {
+                    method: 'POST',
+                    headers: {'X-CSRFToken': csrfToken},
+                })
+                .then(res => res.json())
+                .then(data => {
+                    const icon = this.querySelector('i');
+                    if (data.is_liked) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                    }
+                    this.querySelector('.like-count').textContent = data.total_likes;
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        }
+        
+        // --- Lógica para el like de comentarios ---
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.comment-like-btn')) {
+                const btn = e.target.closest('.comment-like-btn');
+                const commentId = btn.dataset.commentId;
+                fetch(`/comentario/${commentId}/like/`, {
+                    method: 'POST',
+                    headers: {'X-CSRFToken': csrfToken},
+                })
+                .then(res => res.json())
+                .then(data => {
+                    const icon = btn.querySelector('i');
+                    const likeCountSpan = btn.querySelector('.comment-like-count');
+                    
+                    if (data.is_liked) {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas', 'text-danger');
+                    } else {
+                        icon.classList.remove('fas', 'text-danger');
+                        icon.classList.add('far');
+                    }
+                    likeCountSpan.textContent = data.total_likes;
+                })
+                .catch(error => console.error('Error:', error));
             }
         });
-    }
-    if (e.target.classList.contains('cancel-edit')) {
-        location.reload();
-    }
-});
 
-document.querySelectorAll('.comment-like-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const id = this.dataset.commentId;
-        fetch(`/comentario/${id}/like/`, {
-            method: 'POST',
-            headers: {'X-CSRFToken': '{{ csrf_token }}'},
-        })
-        .then(res => res.json())
-        .then(data => {
-            const icon = this.querySelector('i');
-            if (data.is_liked) {
-                icon.classList.remove('far');
-                icon.classList.add('fas', 'text-danger');
-            } else {
-                icon.classList.remove('fas', 'text-danger');
-                icon.classList.add('far');
+        // --- Lógica para responder a comentarios ---
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.reply-btn')) {
+                const btn = e.target.closest('.reply-btn');
+                const commentId = btn.dataset.commentId;
+                const replyFormContainer = document.getElementById(`reply-form-${commentId}`);
+                replyFormContainer.style.display = replyFormContainer.style.display === 'none' ? 'block' : 'none';
             }
-            this.querySelector('.comment-like-count').textContent = data.total_likes;
+            if (e.target.closest('.cancel-reply')) {
+                const btn = e.target.closest('.cancel-reply');
+                const replyFormContainer = btn.closest('.reply-form-container');
+                replyFormContainer.style.display = 'none';
+            }
+        });
+        
+        // --- Lógica para editar comentarios (mejorada) ---
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.edit-btn')) {
+                const editBtn = e.target.closest('.edit-btn');
+                const commentId = editBtn.dataset.id;
+                const commentDiv = document.getElementById(`comment-${commentId}`);
+                const commentContentP = commentDiv.querySelector('.comment-content');
+                const originalContent = editBtn.dataset.content.trim();
+                
+                // Ocultar botones de acción originales
+                const actionsDiv = commentDiv.querySelector('.comment-actions');
+                actionsDiv.style.display = 'none';
+                
+                // Reemplazar el párrafo con un textarea para la edición
+                const textarea = document.createElement('textarea');
+                textarea.className = 'form-control mt-2';
+                textarea.rows = 3;
+                textarea.value = originalContent.replace(/<br\s*\/?>/g, '\n');
+                
+                // Botones de guardar y cancelar
+                const saveBtn = document.createElement('button');
+                saveBtn.className = 'btn btn-success btn-sm mt-2 me-2 save-edit';
+                saveBtn.textContent = 'Guardar';
+                saveBtn.dataset.id = commentId;
+                
+                const cancelBtn = document.createElement('button');
+                cancelBtn.className = 'btn btn-secondary btn-sm mt-2 cancel-edit';
+                cancelBtn.textContent = 'Cancelar';
+                cancelBtn.dataset.id = commentId;
+                
+                commentContentP.style.display = 'none';
+                
+                const editControls = document.createElement('div');
+                editControls.className = 'edit-controls';
+                editControls.appendChild(textarea);
+                editControls.appendChild(saveBtn);
+                editControls.appendChild(cancelBtn);
+                
+                commentDiv.querySelector('.flex-grow-1').appendChild(editControls);
+            }
+            
+            if (e.target.closest('.cancel-edit')) {
+                const cancelBtn = e.target.closest('.cancel-edit');
+                const commentId = cancelBtn.dataset.id;
+                const commentDiv = document.getElementById(`comment-${commentId}`);
+                const commentContentP = commentDiv.querySelector('.comment-content');
+                const editControls = commentDiv.querySelector('.edit-controls');
+                
+                commentContentP.style.display = 'block';
+                editControls.remove();
+                
+                const actionsDiv = commentDiv.querySelector('.comment-actions');
+                actionsDiv.style.display = 'block';
+            }
+            
+            if (e.target.closest('.save-edit')) {
+                const saveBtn = e.target.closest('.save-edit');
+                const commentId = saveBtn.dataset.id;
+                const commentDiv = document.getElementById(`comment-${commentId}`);
+                const textarea = commentDiv.querySelector('.edit-controls textarea');
+                const newContent = textarea.value.trim();
+                
+                if (!newContent) {
+                    // Reemplazamos alert por una modal de Bootstrap o un mensaje en la UI
+                    const messageBox = document.createElement('div');
+                    messageBox.className = 'alert alert-danger mt-2';
+                    messageBox.textContent = 'El comentario no puede estar vacío.';
+                    commentDiv.querySelector('.edit-controls').prepend(messageBox);
+                    setTimeout(() => messageBox.remove(), 3000);
+                    return;
+                }
+                
+                fetch(`/comentario/${commentId}/editar-ajax/`, {
+                    method: 'POST',
+                    headers: {'X-CSRFToken': csrfToken, 'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: new URLSearchParams({
+                        'content': newContent
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        const commentContentP = commentDiv.querySelector('.comment-content');
+                        commentContentP.innerHTML = newContent.replace(/\n/g, '<br>');
+                        commentContentP.style.display = 'block';
+                        
+                        const editBtn = commentDiv.querySelector('.edit-btn');
+                        editBtn.dataset.content = newContent;
+                        
+                        commentDiv.querySelector('.edit-controls').remove();
+                        
+                        const actionsDiv = commentDiv.querySelector('.comment-actions');
+                        actionsDiv.style.display = 'block';
+
+                    } else {
+                        // Reemplazamos alert por una modal de Bootstrap o un mensaje en la UI
+                        const messageBox = document.createElement('div');
+                        messageBox.className = 'alert alert-danger mt-2';
+                        messageBox.textContent = data.error || 'Error al editar el comentario.';
+                        commentDiv.querySelector('.edit-controls').prepend(messageBox);
+                        setTimeout(() => messageBox.remove(), 3000);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Reemplazamos alert
+                    const messageBox = document.createElement('div');
+                    messageBox.className = 'alert alert-danger mt-2';
+                    messageBox.textContent = 'Error de conexión con el servidor.';
+                    commentDiv.querySelector('.edit-controls').prepend(messageBox);
+                    setTimeout(() => messageBox.remove(), 3000);
+                });
+            }
+        });
+        
+        // --- Lógica para eliminar comentarios con modal ---
+        let commentIdToDelete = null;
+        const confirmDeleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+        
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.delete-btn')) {
+                const btn = e.target.closest('.delete-btn');
+                commentIdToDelete = btn.dataset.id;
+                confirmDeleteModal.show();
+            }
+        });
+        
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            if (commentIdToDelete) {
+                const form = document.getElementById(`delete-form-${commentIdToDelete}`);
+                form.submit();
+                commentIdToDelete = null;
+                confirmDeleteModal.hide();
+            }
         });
     });
-});
 </script>
-{% endif %}
 {% endblock %}

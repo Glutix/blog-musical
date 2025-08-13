@@ -1,0 +1,64 @@
+<!-- blog/partials/comment.html -->
+<div class="d-flex mt-4" id="comment-{{ comment.id }}">
+    <img src="https://placehold.co/48x48/E5E5E5/000000?text={{ comment.user.username|slice:':1'|upper }}"
+         alt="{{ comment.user.username }} avatar"
+         class="rounded-circle me-3"
+         style="width: 48px; height: 48px;">
+    
+    <div class="flex-grow-1 bg-light p-3 rounded border">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <p class="fw-bold mb-0">{{ comment.user.username }}</p>
+            {% if user == comment.user %}
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-outline-warning btn-sm me-1 edit-btn" data-id="{{ comment.id }}" data-content="{{ comment.content|escapejs }}">✏️</button>
+                    <form action="{% url 'blog:comment_delete' comment.id %}" method="post" id="delete-form-{{ comment.id }}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="button" class="btn btn-outline-danger btn-sm delete-btn" data-id="{{ comment.id }}">🗑️</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+
+        <p class="mb-2 text-muted comment-content">{{ comment.content|linebreaks }}</p>
+        <small class="text-muted"> Hace {{ comment.created_at|timesince }} </small>
+
+        <div class="mt-2 comment-actions">
+            {% if user.is_authenticated %}
+                <button class="btn btn-link p-0 text-decoration-none comment-like-btn" data-comment-id="{{ comment.id }}">
+                    <i class="{% if comment.user_has_liked %}fas fa-heart text-danger{% else %}far fa-heart{% endif %}"></i>
+                    <span class="comment-like-count">{{ comment.total_likes }}</span> Me gusta
+                </button>
+                <button class="btn btn-link p-0 ms-3 text-decoration-none reply-btn" data-comment-id="{{ comment.id }}">Responder</button>
+            {% else %}
+                <small><a href="{% url 'login' %}">Inicia sesión</a> para dar like o responder</small>
+            {% endif %}
+        </div>
+
+        <!-- Contenedor del formulario de respuesta (inicialmente oculto) -->
+        <div class="reply-form-container mt-3" style="display: none;" id="reply-form-{{ comment.id }}">
+            <form action="{% url 'blog:article_detail' comment.article.slug %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                <div class="d-flex align-items-start">
+                    <img src="https://placehold.co/48x48/E5E5E5/000000?text={{ user.username|slice:':1'|upper }}" 
+                         alt="{{ user.username }} avatar" 
+                         class="rounded-circle me-3">
+                    <div class="flex-grow-1">
+                        <textarea name="content" class="form-control" rows="2" placeholder="Escribe tu respuesta..." required></textarea>
+                        <button type="submit" class="btn btn-naranja btn-sm mt-2">Enviar Respuesta</button>
+                        <button type="button" class="btn btn-secondary btn-sm mt-2 cancel-reply">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Recursión para mostrar las respuestas anidadas -->
+        {% if comment.replies.all %}
+            <div class="replies-container">
+                {% for reply in comment.replies.all %}
+                    {% include 'blog/partials/comment.html' with comment=reply %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>

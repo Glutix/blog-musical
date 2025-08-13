@@ -18,7 +18,7 @@ def article_list(request):
 
 def article_detail(request, slug):
     article = get_object_or_404(Article, slug=slug)
-    comments = article.comments.all()
+    comments = article.comments.filter(parent_comment__isnull=True).order_by('-created_at') # 💡 Filtra solo los comentarios de nivel superior
     comment_form = CommentForm()
 
     # Nuevo comentario
@@ -29,6 +29,16 @@ def article_detail(request, slug):
                 new_comment = comment_form.save(commit=False)
                 new_comment.article = article
                 new_comment.user = request.user
+                
+                # Manejar comentarios anidados
+                parent_id = request.POST.get('parent_id') # <--- Obtener el ID del comentario padre
+                if parent_id:
+                    try:
+                        parent = Comment.objects.get(id=parent_id)
+                        new_comment.parent_comment = parent
+                    except Comment.DoesNotExist:
+                        pass # Si no encuentra el padre, se ignorará y creará un comentario de nivel superior
+                
                 new_comment.save()
                 messages.success(request, 'Tu comentario ha sido publicado.')
                 return redirect('blog:article_detail', slug=article.slug)
