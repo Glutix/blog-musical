@@ -165,6 +165,6 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Configuración de login/logout
-LOGIN_URL = "login"  # Vista que usará cuando alguien intente entrar sin autenticarse
+LOGIN_URL = "user_auth:login"  # Vista que usará cuando alguien intente entrar sin autenticarse
 LOGIN_REDIRECT_URL = "blog:article_list"  # A dónde va después de iniciar sesión
-LOGOUT_REDIRECT_URL = "login"  # A dónde va después de cerrar sesión
+LOGOUT_REDIRECT_URL = "/"  # A dónde va después de cerrar sesión
