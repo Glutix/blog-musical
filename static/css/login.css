@@ -1,43 +1,137 @@
-/* Ajustes específicos para el body del login */
-html,
-body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
+/* --- FORZAR PALETA PERSONALIZADA SOBRE BOOTSTRAP EN LOGIN --- */
+body.bg-gris-oscuro {
+    background: var(--gris-oscuro) !important;
+    color: var(--blanco) !important;
+}
+
+.card-base {
+    background: var(--color-fondo-claro) !important;
+    color: var(--color-texto) !important;
+    box-shadow: var(--sombra-suave);
+}
+
+.form-label {
+    color: var(--color-texto) !important;
+}
+
+.form-control {
+    background: var(--gris-muy-claro) !important;
+    color: var(--gris-oscuro) !important;
+    border: 2px solid var(--gris-claro) !important;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+.form-control:focus {
+    border-color: var(--naranja) !important;
+    background: var(--blanco) !important;
+    color: var(--gris-oscuro) !important;
+}
+.form-control::placeholder {
+    color: var(--gris) !important;
+    opacity: 0.8;
+}
+
+.input-group-text.toggle-password {
+    background: var(--gris-muy-claro) !important;
+    border: 2px solid var(--gris-claro) !important;
+    color: var(--gris-oscuro) !important;
+}
+.input-group-text.toggle-password:hover {
+    background: var(--blanco) !important;
+    border-color: var(--naranja) !important;
+    color: var(--naranja) !important;
+}
+.toggle-password i {
+    color: var(--gris-oscuro) !important;
+}
+.toggle-password:hover i,
+.toggle-password:focus i,
+.input-group:focus-within .toggle-password i {
+    color: var(--naranja) !important;
+}
+
+.btn-primary-custom {
+    background: var(--naranja) !important;
+    color: var(--blanco) !important;
+    border: none;
+    font-weight: 600;
+    padding: 0.85rem 1.5rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-shadow: 0 6px 15px rgba(255, 108, 46, 0.08);
+}
+.btn-primary-custom:hover {
+    background: var(--naranja-hover) !important;
+    color: var(--blanco) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 108, 46, 0.18);
+}
+.btn-primary-custom:active {
+    transform: translateY(0);
+}
+
+.field-error {
+    color: var(--naranja-oscuro) !important;
+    background: rgba(210, 92, 42, 0.1) !important;
+    border: 1px solid rgba(210, 92, 42, 0.4) !important;
+    border-radius: 6px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    display: block;
+}
+.field-error * {
+    color: var(--naranja-oscuro) !important;
+}
+.field-error div {
+    color: var(--naranja-oscuro) !important;
+    font-weight: 600 !important;
+}
+
+.page-center a.color-naranja-claro {
+    color: var(--naranja) !important;
+    transition: all 0.3s ease;
+}
+.page-center a.color-naranja-claro:hover {
+    color: var(--naranja-hover) !important;
+    text-decoration: underline !important;
+    transform: translateY(-1px);
 }
 
 body.bg-gris-oscuro {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: var(--gris-oscuro);
     padding: 1rem;
     box-sizing: border-box;
 }
 
-/* Contenedor principal centrado */
 .page-center {
     width: 100%;
     max-width: 500px;
 }
 
-/* Card del formulario usando estilos base */
 .card-base {
-    background-color: var(--color-blanco);
-    border-radius: 10px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    background-color: var(--color-fondo-claro);
+    border-radius: 12px;
+    box-shadow: var(--sombra-suave);
     padding: 2.5rem;
     width: 100%;
     animation: slideUp 0.6s ease-out;
 }
 
-/* Animación de entrada */
 @keyframes slideUp {
     from {
         opacity: 0;
         transform: translateY(30px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
@@ -45,8 +139,9 @@ body.bg-gris-oscuro {
 }
 
 /* Logo usando clase base */
+
 .logo-base {
-    max-width: 280px;
+    max-width: 220px;
     height: auto;
     display: block;
     margin: 0 auto 1.5rem auto;
@@ -54,17 +149,20 @@ body.bg-gris-oscuro {
 }
 
 /* Título del formulario */
+
 h1.color-naranja-claro {
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
+    color: var(--naranja);
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* Estilos mejorados para labels con iconos */
+
 .form-label {
     font-weight: 600;
-    color: var(--color-negro);
+    color: var(--color-texto);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -72,97 +170,93 @@ h1.color-naranja-claro {
     transition: color 0.3s ease;
 }
 
+
 .form-label i {
     font-size: 1.1rem;
-    color: var(--color-negro);
+    color: var(--color-texto);
     transition: color 0.3s ease;
     width: 16px;
     text-align: center;
 }
 
 /* Efectos de focus en labels */
-.mb-3:focus-within .form-label {
-    color: var(--color-naranja-claro);
-}
 
+.mb-3:focus-within .form-label {
+    color: var(--naranja);
+}
 .mb-3:focus-within .form-label i {
-    color: var(--color-naranja-claro);
+    color: var(--naranja);
     transform: scale(1.1);
 }
 
 /* Estilos para inputs */
+
 .form-control {
-    border: 2px solid #e9ecef;
+    border: 2px solid var(--gris-claro);
     border-radius: 8px;
     padding: 0.75rem 1rem;
     font-size: 1rem;
     transition: all 0.3s ease;
-    background-color: #f8f9fa;
+    background-color: var(--gris-muy-claro);
 }
-
 .form-control:hover {
-    border-color: var(--color-naranja-claro);
-    background-color: #fff;
+    border-color: var(--naranja);
+    background-color: var(--blanco);
 }
-
 .form-control:focus {
-    border-color: var(--color-naranja-claro);
+    border-color: var(--naranja);
     box-shadow: 0 0 0 0.2rem rgba(255, 108, 46, 0.15);
-    background-color: #fff;
+    background-color: var(--blanco);
     outline: none;
 }
 
 /* Placeholder styling */
+
 .form-control::placeholder {
-    color: #6c757d;
+    color: var(--gris);
     opacity: 0.8;
 }
 
 /* Estilos específicos para el input-group del password */
+
 .input-group .form-control {
     border-right: none;
     border-radius: 8px 0 0 8px;
 }
-
 .input-group .form-control:focus {
-    border-color: var(--color-naranja-claro);
+    border-color: var(--naranja);
     box-shadow: 0 0 0 0.2rem rgba(255, 108, 46, 0.15);
 }
-
 .input-group-text.toggle-password {
-    border: 2px solid #e9ecef;
+    border: 2px solid var(--gris-claro);
     border-left: none;
     border-radius: 0 8px 8px 0;
-    background-color: #f8f9fa;
+    background-color: var(--gris-muy-claro);
     cursor: pointer;
     transition: all 0.3s ease;
 }
-
 .input-group-text.toggle-password:hover {
-    background-color: #fff;
-    border-color: var(--color-naranja-claro);
+    background-color: var(--blanco);
+    border-color: var(--naranja);
 }
-
 .input-group:focus-within .toggle-password {
-    border-color: var(--color-naranja-claro);
-    background-color: #fff;
+    border-color: var(--naranja);
+    background-color: var(--blanco);
 }
-
-/* Toggle password icon */
 .toggle-password i {
     transition: color 0.3s ease;
-    color: var(--color-negro);
+    color: var(--color-texto);
 }
-
 .toggle-password:hover i,
 .toggle-password:focus i,
 .input-group:focus-within .toggle-password i {
-    color: var(--color-naranja-claro);
+    color: var(--naranja);
 }
 
 /* Estilos para mensajes de error de campos */
+
 .field-error {
-    color: var(--color-naranja-oscuro) !important;
+    color: var(--naranja-oscuro) !important;
     background-color: rgba(210, 92, 42, 0.1) !important;
     border: 1px solid rgba(210, 92, 42, 0.4) !important;
     border-radius: 6px;
@@ -172,22 +266,20 @@ h1.color-naranja-claro {
     margin-top: 0.5rem;
     display: block;
 }
-
-/* Asegurar que todos los elementos dentro también tengan el color correcto */
 .field-error * {
-    color: var(--color-naranja-oscuro) !important;
+    color: var(--naranja-oscuro) !important;
 }
-
 .field-error div {
-    color: var(--color-naranja-oscuro) !important;
+    color: var(--naranja-oscuro) !important;
     font-weight: 600 !important;
 }
 
 /* Botón usando estilos base */
+
 .btn-primary-custom {
-    background-color: var(--color-naranja-claro);
+    background-color: var(--naranja);
     border: none;
-    color: var(--color-blanco);
+    color: var(--blanco);
     font-weight: 600;
     padding: 0.85rem 1.5rem;
     font-size: 1.1rem;
@@ -195,26 +287,24 @@ h1.color-naranja-claro {
     transition: all 0.3s ease;
     width: 100%;
 }
-
 .btn-primary-custom:hover {
-    background-color: var(--color-naranja-hover);
-    color: var(--color-blanco);
+    background-color: var(--naranja-hover);
+    color: var(--blanco);
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(255, 108, 46, 0.3);
 }
-
 .btn-primary-custom:active {
     transform: translateY(0);
 }
 
 /* Enlace al registro */
+
 .page-center a.color-naranja-claro {
-    color: var(--color-naranja-claro);
+    color: var(--naranja);
     transition: all 0.3s ease;
 }
-
 .page-center a.color-naranja-claro:hover {
-    color: var(--color-naranja-hover);
+    color: var(--naranja-hover);
     text-decoration: underline !important;
     transform: translateY(-1px);
 }
@@ -260,7 +350,7 @@ h1.color-naranja-claro {
 .form-label[for="id_username"]::after,
 .form-label[for="id_password"]::after {
     content: " *";
-    color: var(--color-naranja-claro);
+    color: var(--naranja-claro);
     font-weight: bold;
     margin-left: 2px;
 }

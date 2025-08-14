@@ -1,3 +1,88 @@
+/* --- FORZAR PALETA PERSONALIZADA SOBRE BOOTSTRAP EN REGISTER --- */
+body.bg-gris-oscuro {
+    background: var(--gris-oscuro) !important;
+    color: var(--blanco) !important;
+}
+
+.card-base {
+    background: var(--color-fondo-claro) !important;
+    color: var(--color-texto) !important;
+    box-shadow: var(--sombra-suave);
+}
+
+.form-label {
+    color: var(--color-texto) !important;
+}
+
+.form-control {
+    background: var(--gris-muy-claro) !important;
+    color: var(--gris-oscuro) !important;
+    border: 2px solid var(--gris-claro) !important;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+.form-control:focus {
+    border-color: var(--naranja) !important;
+    background: var(--blanco) !important;
+    color: var(--gris-oscuro) !important;
+}
+.form-control::placeholder {
+    color: var(--gris) !important;
+    opacity: 0.8;
+}
+
+.btn-primary-custom {
+    background: var(--naranja) !important;
+    color: var(--blanco) !important;
+    border: none;
+    font-weight: 600;
+    padding: 0.85rem 1.5rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    width: 100%;
+    box-shadow: 0 6px 15px rgba(255, 108, 46, 0.08);
+}
+.btn-primary-custom:hover {
+    background: var(--naranja-hover) !important;
+    color: var(--blanco) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 108, 46, 0.18);
+}
+.btn-primary-custom:active {
+    transform: translateY(0);
+}
+
+.field-error {
+    color: var(--naranja-oscuro) !important;
+    background: rgba(210, 92, 42, 0.1) !important;
+    border: 1px solid rgba(210, 92, 42, 0.4) !important;
+    border-radius: 6px;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    display: block;
+}
+.field-error * {
+    color: var(--naranja-oscuro) !important;
+}
+.field-error div {
+    color: var(--naranja-oscuro) !important;
+    font-weight: 600 !important;
+}
+
+.page-center a.color-naranja-claro {
+    color: var(--naranja) !important;
+    transition: all 0.3s ease;
+}
+.page-center a.color-naranja-claro:hover {
+    color: var(--naranja-hover) !important;
+    text-decoration: underline !important;
+    transform: translateY(-1px);
+}
 /* Ajustes específicos para el body del registro */
 html,
 body {

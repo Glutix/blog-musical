@@ -1,4 +1,6 @@
+
 # blog/views.py
+import json
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -32,25 +34,37 @@ def article_detail(request, slug):
 
     # Nuevo comentario
     if request.method == "POST" and request.user.is_authenticated:
-        if "content" in request.POST:
-            comment_form = CommentForm(request.POST)
+        # Soporte para AJAX (JSON) y POST normal
+        if request.content_type == "application/json":
+            data = json.loads(request.body)
+            content = data.get("content", "").strip()
+            parent_id = data.get("parent_id")
+        else:
+            content = request.POST.get("content", "").strip()
+            parent_id = request.POST.get("parent_id")
+        if content:
+            comment_form = CommentForm({"content": content})
             if comment_form.is_valid():
                 new_comment = comment_form.save(commit=False)
                 new_comment.article = article
                 new_comment.user = request.user
-
-                # Manejar comentarios anidados
-                parent_id = request.POST.get(
-                    "parent_id"
-                )  # <--- Obtener el ID del comentario padre
                 if parent_id:
                     try:
                         parent = Comment.objects.get(id=parent_id)
                         new_comment.parent_comment = parent
                     except Comment.DoesNotExist:
-                        pass  # Si no encuentra el padre, se ignorará y creará un comentario de nivel superior
-
+                        pass
                 new_comment.save()
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json':
+                    from django.template.loader import render_to_string
+                    # Pasa el contexto completo de request.user y user al render, para que los hijos tengan el CSRF token y clase
+                    context = {
+                        "comment": new_comment,
+                        "user": request.user,
+                        "request": request,
+                    }
+                    comment_html = render_to_string("blog/partials/comment.html", context, request=request)
+                    return JsonResponse({"success": True, "comment_html": comment_html})
                 messages.success(request, "Tu comentario ha sido publicado.")
                 return redirect("blog:article_detail", slug=article.slug)
 
@@ -71,12 +85,21 @@ def article_detail(request, slug):
             user=request.user, article=article
         ).exists()
 
-    # 💡 Cálculo de likes en cada comentario
+
+    # 💡 Cálculo de likes en cada comentario y replies recursivamente
+    def set_user_has_liked(comment, user):
+        comment.user_has_liked = False
+        if user.is_authenticated:
+            comment.user_has_liked = comment.comment_likes.filter(user=user).exists()
+        # Recursivo para replies (forzar lista para evitar problemas de queryset en template)
+        replies = list(comment.replies.all())
+        comment.replies_list = replies  # atributo público para el template
+        for reply in replies:
+            set_user_has_liked(reply, user)
+
     comments_with_flags = []
     for c in comments:
-        c.user_has_liked = False
-        if request.user.is_authenticated:
-            c.user_has_liked = c.comment_likes.filter(user=request.user).exists()
+        set_user_has_liked(c, request.user)
         comments_with_flags.append(c)
 
     context = {
@@ -249,7 +272,6 @@ def my_articles(request):
     return render(request, "blog/my_articles.html", {"articles": articles})
 
 
-
 # Función auxiliar para obtener la IP del cliente
 def get_client_ip(request):
     """
@@ -309,7 +331,9 @@ def comment_like_toggle(request, pk):
     return JsonResponse({"error": "Invalid request method"}, status=400)
 
 
+import json
 @login_required
+
 def edit_comment_ajax(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
 
@@ -319,14 +343,41 @@ def edit_comment_ajax(request, comment_id):
         )
 
     if request.method == "POST":
-        content = request.POST.get("content", "").strip()
+        if request.content_type == "application/json":
+            data = json.loads(request.body)
+            content = data.get("content", "").strip()
+        else:
+            content = request.POST.get("content", "").strip()
         if not content:
             return JsonResponse(
                 {"error": "El comentario no puede estar vacío."}, status=400
             )
 
-        comment.content = content
-        comment.save()
-        return JsonResponse({"success": True, "content": comment.content})
+    comment.content = content
+    comment.save()
+    from django.template.loader import render_to_string
+    content_html = render_to_string("blog/partials/comment_content.html", {"comment": comment})
+    return JsonResponse({"success": True, "content_html": content_html})
 
-    return JsonResponse({"error": "Método no permitido"}, status=405)
+
+
+@login_required
+def delete_comment_ajax(request, comment_id):
+    """
+    Vista para eliminar un comentario vía AJAX.
+    Devuelve una respuesta JSON para ser manejada por el frontend.
+    """
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    # Comprobar permisos: solo el autor o un superusuario pueden eliminar
+    if comment.user != request.user and not request.user.is_superuser:
+        return JsonResponse(
+            {"error": "No tienes permiso para eliminar este comentario."}, status=403
+        )
+
+    if request.method == "POST":
+        comment.delete()
+        return JsonResponse({"success": True})
+
+    # Si no es POST, devolver un error
+    return JsonResponse({"error": "Método no permitido."}, status=405)
