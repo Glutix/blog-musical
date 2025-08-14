@@ -4,8 +4,8 @@
 {% block title %}{{ article.title }} - Blog Musical{% endblock %}
 
 {% block content %}
-<main id="article-detail-container" class="container my-4 my-md-5">
-    <div class="card border-0 shadow-lg">
+<main id="article-detail-container" class="container my-4 my-md-4">
+    <div class="border-0 shadow-lg bg-white rounded">
         {% if article.featured_image %}
         <img src="{{ article.featured_image.url }}" class="card-img-top" alt="{{ article.title }}"
             style="max-height: 650px; object-fit: cover" />
@@ -13,33 +13,86 @@
 
         <div class="card-body p-4 p-md-5">
             <div class="d-flex align-items-center small text-muted mb-2">
-                <span>{{ article.user.username }}</span>
+                <span>Categorias</span>
                 <span class="mx-2">&bull;</span>
-                <span>{% if article.category.all %}{{ article.category.first.name }}{% else %}Sin Categoría{% endif %}</span>
+                <span>
+                    {% if article.category.all %}
+                    {% for cat in article.category.all|slice:":5" %}
+                    {{ cat.name }}{% if not forloop.last %} - {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    Sin Categoría
+                    {% endif %}
+                </span>
             </div>
 
             <h1 class="display-5 fw-bold mb-3">{{ article.title }}</h1>
 
-            <p class="text-muted mb-4">
-                por
-                <span class="fw-semibold" style="color: var(--naranja);">{{ article.user.username }}</span>
-                | {{ article.created_at|date:"d M, Y" }}
+            <p class="card-subtitle mb-3 text-grey">
+                Por <a href="{% url 'user_auth:public_profile' article.user.username %}"
+                    class="text-orange text-decoration-none">
+                    <span class="fw-bold author-link-span">
+                        {{ article.user.username }}
+                    </span>
+                </a> | {{ article.created_at|date:'d M, Y' }}
             </p>
 
             <article class="fs-5">{{ article.content|linebreaks }}</article>
 
+
+            <div class="d-flex align-items-center small text-muted mb-2">
+                <span>Tags</span>
+                <span class="mx-2">&bull;</span>
+                <span>
+                    {% if article.tags.all %}
+                    {% for tag in article.tags.all|slice:":5" %}
+                    <span style="background-color: var(--naranja-claro); padding: .2rem; border-radius: .3rem;"
+                        class="text-black me-1">{{ tag.name }}</span>
+                    {% endfor %}
+                    {% if article.tags.count > 5 %}
+                    <span class="text-black">...</span>
+                    {% endif %}
+                    {% else %}
+                    <span class="text-muted">Sin Tags</span>
+                    {% endif %}
+                </span>
+            </div>
+
+
             <div class="mt-5 d-flex align-items-center flex-wrap">
                 {% if user.is_authenticated %}
                 <button id="like-button"
-                    class="btn btn-link text-decoration-none text-muted d-flex align-items-center me-4 mb-2" data-article-id="{{ article.id }}" data-url="{% url 'blog:article_like_toggle' article.id %}">  <i class="{% if user_has_liked %}fas fa-heart fs-4 me-2 text-danger{% else %}far fa-heart fs-4 me-2{% endif %}"></i>
+                    class="btn btn-link text-decoration-none text-muted d-flex align-items-center me-4 mb-2"
+                    data-article-id="{{ article.id }}" data-url="{% url 'blog:article_like_toggle' article.id %}"> <i
+                        class="{% if user_has_liked %}fas fa-heart fs-4 me-2 text-danger{% else %}far fa-heart fs-4 me-2{% endif %}"></i>
                     <span class="fw-semibold" id="like-count">{{ total_likes }}</span>
                     <span class="ms-1">Me gusta</span>
                 </button>
                 {% endif %}
-                <button class="btn btn-link text-decoration-none text-muted d-flex align-items-center me-4 mb-2">
+
+                <!-- Botón de compartir -->
+                <button id="shareBtn"
+                    class="btn btn-link text-decoration-none text-muted d-flex align-items-center me-4 mb-2">
                     <i class="far fa-share-square fs-4 me-2"></i>
                     <span class="fw-semibold">Compartir</span>
                 </button>
+
+                <!-- Toast de confirmación -->
+                <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                    <div id="shareToast" class="toast align-items-center text-bg-success border-0" role="alert"
+                        aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                ✅ Enlace copiado al portapapeles
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                                aria-label="Cerrar"></button>
+                        </div>
+                    </div>
+                </div>
+
+
+
                 <div class="d-flex align-items-center text-muted mb-2">
                     <i class="far fa-eye fs-4 me-2"></i>
                     <span class="fw-semibold">{{ article.articleview_set.count }} Vistas</span>
@@ -47,8 +100,10 @@
 
                 {% if user == article.user %}
                 <div class="d-flex align-items-center ms-auto">
-                    <a href="{% url 'blog:article_edit' article.slug %}" class="btn btn-outline-warning btn-sm me-2">✏️ Editar</a>
-                    <a href="{% url 'blog:article_delete' article.slug %}" class="btn btn-outline-danger btn-sm">🗑️ Eliminar</a>
+                    <a href="{% url 'blog:article_edit' article.slug %}" class="btn btn-outline-warning btn-sm me-2">✏️
+                        Editar</a>
+                    <a href="{% url 'blog:article_delete' article.slug %}" class="btn btn-outline-danger btn-sm">🗑️
+                        Eliminar</a>
                 </div>
                 {% endif %}
             </div>
@@ -57,47 +112,49 @@
 
     <div class="my-5">
         <h3 class="mb-4">Comentarios ({{ article.comments.count }})</h3>
-        
+
         <div id="alert-container"></div>
 
         {% if user.is_authenticated %}
-            <div class="p-4 rounded shadow-sm mb-4" style="background: var(--gris-muy-claro);">
-                <form id="main-comment-form" method="post" action="{% url 'blog:article_detail' article.slug %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="parent_id" value="">
-                    <div class="d-flex align-items-start">
-                        <div class="avatar-circle d-flex align-items-center justify-content-center me-3"
-                            style="width: 48px; height: 48px; background: var(--naranja); border-radius: 50%; color: var(--blanco); font-weight: bold; font-size: 18px; box-shadow: 0 2px 8px rgba(255, 108, 46, 0.3);">
-                            {{ user.username|slice:':1'|upper }}
-                        </div>
-                        <div class="flex-grow-1">
-                            <textarea name="content" class="form-control border-1 shadow-sm" rows="3"
-                                placeholder="Escribe tu comentario..."
-                                style="border-radius: 12px; background: var(--blanco);" required></textarea>
-                            <div class="text-end mt-2">
-                                <button type="submit" class="btn btn-orange">
-                                    <i class="fas fa-paper-plane me-1"></i> Enviar Comentario
-                                </button>
-                            </div>
+        <div class="p-4 rounded shadow-sm mb-4" style="background: var(--gris-muy-claro);">
+            <form id="main-comment-form" method="post" action="{% url 'blog:article_detail' article.slug %}">
+                {% csrf_token %}
+                <input type="hidden" name="parent_id" value="">
+                <div class="d-flex align-items-start">
+                    <div class="avatar-circle d-flex align-items-center justify-content-center me-3"
+                        style="width: 48px; height: 48px; background: var(--naranja); border-radius: 50%; color: var(--blanco); font-weight: bold; font-size: 18px; box-shadow: 0 2px 8px rgba(255, 108, 46, 0.3);">
+                        {{ user.username|slice:':1'|upper }}
+                    </div>
+                    <div class="flex-grow-1">
+                        <textarea name="content" class="form-control border-1 shadow-sm" rows="3"
+                            placeholder="Escribe tu comentario..."
+                            style="border-radius: 12px; background: var(--blanco);" required></textarea>
+                        <div class="text-end mt-2">
+                            <button type="submit" class="btn btn-orange">
+                                <i class="fas fa-paper-plane me-1"></i> Enviar Comentario
+                            </button>
                         </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
+        </div>
         {% else %}
-            <div class="alert alert-info" role="alert">
-                <a href="{% url 'user_auth:login' %}" style="color: var(--naranja-oscuro); font-weight: bold;">Inicia sesión</a> para dejar un comentario.
-            </div>
+        <div class="alert alert-info" role="alert">
+            <a href="{% url 'user_auth:login' %}" style="color: var(--naranja-oscuro); font-weight: bold;">Inicia
+                sesión</a> para dejar un comentario.
+        </div>
         {% endif %}
 
         <div id="comments-container">
             {% for comment in comments %}
-                {% include 'blog/partials/comment.html' with comment=comment user=user %}
+            {% include 'blog/partials/comment.html' with comment=comment user=user %}
             {% endfor %}
         </div>
     </div>
 </main>
 
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -119,38 +176,48 @@
 {% block extra_styles %}
 <style>
     /* Estilos de comment.html movidos aquí */
-    .comment-like-btn:hover, .reply-btn:hover {
+    .comment-like-btn:hover,
+    .reply-btn:hover {
         color: var(--naranja) !important;
         transform: translateY(-1px);
     }
+
     .comment-bubble {
         transition: all 0.2s ease;
     }
+
     .comment-bubble:hover {
         transform: translateY(-1px);
         box-shadow: var(--sombra-hover) !important;
     }
+
     .avatar-circle {
         transition: all 0.2s ease;
     }
+
     .comment-wrapper:hover .avatar-circle {
         transform: scale(1.05);
         box-shadow: 0 4px 12px rgba(255, 108, 46, 0.4) !important;
     }
+
     .dropdown-toggle::after {
         display: none;
     }
+
     .dropdown-item:hover {
         background: var(--naranja-claro);
         color: var(--gris-oscuro);
     }
+
     .replies-divider {
         position: relative;
     }
+
     .replies-divider::before {
         content: '';
         position: absolute;
-        left: -2px; /* Ajuste para alinear con el borde */
+        left: -2px;
+        /* Ajuste para alinear con el borde */
         top: -10px;
         width: 20px;
         height: 20px;
@@ -158,39 +225,48 @@
         border-bottom: 2px solid var(--naranja-claro);
         border-bottom-left-radius: 10px;
     }
+
     /* Mejoras en el formulario de edición */
     .edit-controls textarea {
         border-color: var(--gris-claro);
         border-radius: 8px;
     }
+
     .edit-controls textarea:focus {
         border-color: var(--naranja);
         box-shadow: 0 0 0 0.2rem rgba(255, 108, 46, 0.25);
     }
+
     /* Estados disabled para botones */
     .comment-like-btn:disabled,
     .reply-btn:disabled {
         opacity: 0.6;
         cursor: not-allowed;
     }
+
     /* Responsive */
     @media (max-width: 576px) {
         .comment-bubble {
             margin-left: 0;
             border-radius: 16px !important;
         }
+
         .avatar-circle {
             width: 40px !important;
             height: 40px !important;
             font-size: 16px !important;
         }
+
         .replies-container {
             margin-left: 10px;
         }
+
         .replies-divider {
             margin-left: 15px !important;
             padding-left: 15px !important;
         }
+
+
     }
 </style>
 {% endblock %}

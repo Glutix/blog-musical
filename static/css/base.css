@@ -3,9 +3,11 @@
     opacity: 0;
     transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .fade-in-comment.visible {
     opacity: 1;
 }
+
 /* ================== VARIABLES DE COLORES - BLOG MUSICAL ================== */
 :root {
     /* ========== COLORES BASE ========== */
@@ -25,7 +27,7 @@
     /* ========== GRISES ========== */
     --gris-muy-claro: #F8F9FA;
     /* Fondo alternativo */
-    --gris-claro: #E5E5E5;
+    --gris-claro: #E6E6E6;
     /* Bordes */
     --gris: #6C757D;
     /* Texto secundario */
@@ -41,7 +43,7 @@
 
     /* Fondos */
     --color-fondo: var(--blanco);
-    --color-fondo-alternativo: var(--gris-muy-claro);
+    --color-fondo-alternativo: var(--gris-claro);
     --color-fondo-claro: var(--blanco);
     --color-fondo-accent: var(--naranja-claro);
 

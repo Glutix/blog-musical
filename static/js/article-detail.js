@@ -381,3 +381,17 @@ function updateLikeUI(likeCountSpan, icon, totalLikes, isLiked) {
         }
     }
 }
+
+
+document.getElementById("shareBtn").addEventListener("click", function () {
+    const currentUrl = window.location.href;
+    navigator.clipboard.writeText(currentUrl)
+        .then(() => {
+            const toastEl = document.getElementById('shareToast');
+            const toast = new bootstrap.Toast(toastEl, { delay: 2000 }); // 2 segundos
+            toast.show();
+        })
+        .catch(err => {
+            console.error("Error al copiar el enlace: ", err);
+        });
+});

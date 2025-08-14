@@ -1,7 +1,13 @@
 /* --- FORZAR PALETA PERSONALIZADA SOBRE BOOTSTRAP EN LOGIN --- */
 body.bg-gris-oscuro {
-    background: var(--gris-oscuro) !important;
+    background: var(--gris-claro) !important;
     color: var(--blanco) !important;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    box-sizing: border-box;
 }
 
 .card-base {
@@ -23,11 +29,13 @@ body.bg-gris-oscuro {
     font-size: 1rem;
     transition: all 0.3s ease;
 }
+
 .form-control:focus {
     border-color: var(--naranja) !important;
     background: var(--blanco) !important;
     color: var(--gris-oscuro) !important;
 }
+
 .form-control::placeholder {
     color: var(--gris) !important;
     opacity: 0.8;
@@ -38,14 +46,17 @@ body.bg-gris-oscuro {
     border: 2px solid var(--gris-claro) !important;
     color: var(--gris-oscuro) !important;
 }
+
 .input-group-text.toggle-password:hover {
     background: var(--blanco) !important;
     border-color: var(--naranja) !important;
     color: var(--naranja) !important;
 }
+
 .toggle-password i {
     color: var(--gris-oscuro) !important;
 }
+
 .toggle-password:hover i,
 .toggle-password:focus i,
 .input-group:focus-within .toggle-password i {
@@ -64,12 +75,14 @@ body.bg-gris-oscuro {
     width: 100%;
     box-shadow: 0 6px 15px rgba(255, 108, 46, 0.08);
 }
+
 .btn-primary-custom:hover {
     background: var(--naranja-hover) !important;
     color: var(--blanco) !important;
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(255, 108, 46, 0.18);
 }
+
 .btn-primary-custom:active {
     transform: translateY(0);
 }
@@ -85,9 +98,11 @@ body.bg-gris-oscuro {
     margin-top: 0.5rem;
     display: block;
 }
+
 .field-error * {
     color: var(--naranja-oscuro) !important;
 }
+
 .field-error div {
     color: var(--naranja-oscuro) !important;
     font-weight: 600 !important;
@@ -97,20 +112,11 @@ body.bg-gris-oscuro {
     color: var(--naranja) !important;
     transition: all 0.3s ease;
 }
+
 .page-center a.color-naranja-claro:hover {
     color: var(--naranja-hover) !important;
     text-decoration: underline !important;
     transform: translateY(-1px);
-}
-
-body.bg-gris-oscuro {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: var(--gris-oscuro);
-    padding: 1rem;
-    box-sizing: border-box;
 }
 
 .page-center {
@@ -132,6 +138,7 @@ body.bg-gris-oscuro {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -184,6 +191,7 @@ h1.color-naranja-claro {
 .mb-3:focus-within .form-label {
     color: var(--naranja);
 }
+
 .mb-3:focus-within .form-label i {
     color: var(--naranja);
     transform: scale(1.1);
@@ -199,10 +207,12 @@ h1.color-naranja-claro {
     transition: all 0.3s ease;
     background-color: var(--gris-muy-claro);
 }
+
 .form-control:hover {
     border-color: var(--naranja);
     background-color: var(--blanco);
 }
+
 .form-control:focus {
     border-color: var(--naranja);
     box-shadow: 0 0 0 0.2rem rgba(255, 108, 46, 0.15);
@@ -223,10 +233,12 @@ h1.color-naranja-claro {
     border-right: none;
     border-radius: 8px 0 0 8px;
 }
+
 .input-group .form-control:focus {
     border-color: var(--naranja);
     box-shadow: 0 0 0 0.2rem rgba(255, 108, 46, 0.15);
 }
+
 .input-group-text.toggle-password {
     border: 2px solid var(--gris-claro);
     border-left: none;
@@ -235,18 +247,22 @@ h1.color-naranja-claro {
     cursor: pointer;
     transition: all 0.3s ease;
 }
+
 .input-group-text.toggle-password:hover {
     background-color: var(--blanco);
     border-color: var(--naranja);
 }
+
 .input-group:focus-within .toggle-password {
     border-color: var(--naranja);
     background-color: var(--blanco);
 }
+
 .toggle-password i {
     transition: color 0.3s ease;
     color: var(--color-texto);
 }
+
 .toggle-password:hover i,
 .toggle-password:focus i,
 .input-group:focus-within .toggle-password i {
@@ -266,9 +282,11 @@ h1.color-naranja-claro {
     margin-top: 0.5rem;
     display: block;
 }
+
 .field-error * {
     color: var(--naranja-oscuro) !important;
 }
+
 .field-error div {
     color: var(--naranja-oscuro) !important;
     font-weight: 600 !important;
@@ -287,12 +305,14 @@ h1.color-naranja-claro {
     transition: all 0.3s ease;
     width: 100%;
 }
+
 .btn-primary-custom:hover {
     background-color: var(--naranja-hover);
     color: var(--blanco);
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(255, 108, 46, 0.3);
 }
+
 .btn-primary-custom:active {
     transform: translateY(0);
 }
@@ -303,6 +323,7 @@ h1.color-naranja-claro {
     color: var(--naranja);
     transition: all 0.3s ease;
 }
+
 .page-center a.color-naranja-claro:hover {
     color: var(--naranja-hover);
     text-decoration: underline !important;

@@ -1,6 +1,6 @@
 /* --- FORZAR PALETA PERSONALIZADA SOBRE BOOTSTRAP EN REGISTER --- */
 body.bg-gris-oscuro {
-    background: var(--gris-oscuro) !important;
+    background: var(--gris-claro) !important;
     color: var(--blanco) !important;
 }
 
@@ -23,11 +23,13 @@ body.bg-gris-oscuro {
     font-size: 1rem;
     transition: all 0.3s ease;
 }
+
 .form-control:focus {
     border-color: var(--naranja) !important;
     background: var(--blanco) !important;
     color: var(--gris-oscuro) !important;
 }
+
 .form-control::placeholder {
     color: var(--gris) !important;
     opacity: 0.8;
@@ -45,12 +47,14 @@ body.bg-gris-oscuro {
     width: 100%;
     box-shadow: 0 6px 15px rgba(255, 108, 46, 0.08);
 }
+
 .btn-primary-custom:hover {
     background: var(--naranja-hover) !important;
     color: var(--blanco) !important;
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(255, 108, 46, 0.18);
 }
+
 .btn-primary-custom:active {
     transform: translateY(0);
 }
@@ -66,9 +70,11 @@ body.bg-gris-oscuro {
     margin-top: 0.5rem;
     display: block;
 }
+
 .field-error * {
     color: var(--naranja-oscuro) !important;
 }
+
 .field-error div {
     color: var(--naranja-oscuro) !important;
     font-weight: 600 !important;
@@ -78,11 +84,13 @@ body.bg-gris-oscuro {
     color: var(--naranja) !important;
     transition: all 0.3s ease;
 }
+
 .page-center a.color-naranja-claro:hover {
     color: var(--naranja-hover) !important;
     text-decoration: underline !important;
     transform: translateY(-1px);
 }
+
 /* Ajustes específicos para el body del registro */
 html,
 body {
