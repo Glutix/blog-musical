@@ -14,7 +14,9 @@ def create_initial_data(sender, **kwargs):
     categories = [
         "Rock",
         "Pop",
+        "Trap",
         "Jazz",
+        "Rap",
         "Clásica",
         "Electrónica",
         "Hip Hop",
@@ -24,8 +26,6 @@ def create_initial_data(sender, **kwargs):
         "Metal",
         "Indie",
         "Folk",
-        "Soul",
-        "R&B",
         "Funk",
     ]
 

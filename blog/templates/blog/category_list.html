@@ -1,0 +1,33 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block title %}Catálogo de Categorías{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="fw-bold mb-4 border-bottom pb-3">Catálogo de Categorías</h1>
+    {% if categories %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for category in categories %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% with category_image_path='img/'|add:category.name|lower|add:'.jpg' %}
+                    <img src="{% static category_image_path %}" class="card-img-top" alt="{{ category.name }}">
+                {% endwith %}
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">{{ category.name }}</h5>
+                    <p class="card-text text-muted">{{ category.article_count }} artículo{{ category.articles_count|pluralize }}</p>
+                    <!-- El href ahora apunta a la URL de listado de artículos por categoría -->
+                    <a href="{% url 'blog:articles_by_category' category_name=category.name %}" class="btn btn-orange mt-2">Ver artículos</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info" role="alert">
+        No se encontraron categorías disponibles.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponseForbidden, JsonResponse
+from django.db.models import Count
 from django.utils.text import slugify
 from .models import (
     Article,
@@ -10,9 +11,9 @@ from .models import (
     ArticleLike,
     ArticleView,
     CommentLike,
+    Category,
 )
 from .forms import ArticleForm, CommentForm
-
 
 # Vista para listar todos los artículos (pública)
 def article_list(request):
@@ -330,3 +331,27 @@ def edit_comment_ajax(request, comment_id):
         return JsonResponse({"success": True, "content": comment.content})
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
+
+def articles_by_category(request, category_name):
+    """
+    Vista pública para mostrar artículos filtrados por una categoría específica.
+    """
+    # Usamos get_object_or_404 para devolver un 404 si la categoría no existe
+    category = get_object_or_404(Category, name=category_name)
+    # Filtramos los artículos que tienen esa categoría.
+    articles = Article.objects.filter(category__name=category_name).order_by("-created_at")
+    
+    # Pasamos la categoría y los artículos a la plantilla.
+    # El título se actualizará dinámicamente.
+    return render(request, 'blog/articles_by_category.html', {
+        'articles': articles,
+        'category': category,
+    })
+
+def category_list(request):
+    """
+    Vista pública para mostrar las categorías con un recuento de artículos.
+    """
+    # Anotamos cada categoría con el recuento de artículos y luego ordenamos.
+    categories = Category.objects.annotate(article_count=Count('articles')).order_by('-article_count', 'name')
+    return render(request, 'blog/category_list.html', {'categories': categories})

@@ -7,6 +7,8 @@ app_name = "blog"
 urlpatterns = [
     #! URLs públicas
     path('', views.article_list, name='article_list'),
+    path('catalogo/', views.category_list, name='category_list'),
+    path('catalogo/<str:category_name>/', views.articles_by_category, name='articles_by_category'),
 
     #! URL para ver mis artículos
     path('articulo/mis-articulos/', views.my_articles, name='my_articles'),
