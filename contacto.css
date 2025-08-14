@@ -1,0 +1,89 @@
+/* Variables de color definidas en :root */
+:root {
+    --color-texto: #000000;           /* Negro */
+    --color-naranja: #FF6C2E;         /* Naranja principal */
+    --color-naranja-oscuro: #D25C2A;  /* Naranja más oscuro para hover */
+    --color-fondo-gris: #E5E5E5;      /* Gris claro */
+    --color-fondo-claro: #FFFFFF;     /* Blanco */
+}
+
+/* Estilo general de la página */
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--color-fondo-gris); /* Fondo gris */
+    color: var(--color-texto);
+    margin: 0;
+    padding: 0;
+}
+
+/* Contenedor del formulario */
+.contact-container {
+    width: 400px;
+    margin: 60px auto;
+    padding: 20px;
+    background-color: var(--color-fondo-claro); /* Fondo blanco */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Título */
+h1 {
+    text-align: center;
+    color: var(--color-texto);
+    margin-bottom: 20px;
+}
+
+/* Etiquetas */
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: var(--color-texto);
+}
+
+/* Campos de texto, email y área de texto */
+input, textarea, select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    color: var(--color-texto);
+    background-color: var(--color-fondo-claro);
+}
+
+/* Botón de envío */
+button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px;
+    background-color: var(--color-naranja);
+    color: var(--color-fondo-claro);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+/* Efecto hover en el botón */
+button:hover {
+    background-color: var(--color-naranja-oscuro);
+}
+
+/* Mensaje de éxito */
+.exito {
+    color: green;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Errores de validación de Django Forms */
+.errorlist {
+    color: red;
+    font-size: 13px;
+    list-style: none;
+    padding: 0;
+}
