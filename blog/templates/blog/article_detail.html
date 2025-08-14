@@ -153,20 +153,25 @@
     </div>
 </main>
 
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+<!-- Modal de Confirmación de Borrado (igual que en my_articles.html) -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center border-0 shadow-lg">
+            <div class="modal-header modal-header-delete">
+                <h5 class="modal-title w-100 fw-bold" id="deleteModalLabel">ELIMINAR PUBLICACIÓN</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                ¿Estás seguro de que quieres eliminar este comentario? Esta acción no se puede deshacer.
+            <div class="modal-body py-5">
+                <i class="fa-solid fa-trash modal-icon mb-4"></i>
+                <h4 class="mb-3 fw-bold">¿Estás seguro de esto?</h4>
+                <p class="text-muted px-4">Estás a punto de eliminar esta publicación para siempre. Una vez que lo elimines, no hay vuelta atrás.</p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
+            <div class="modal-footer justify-content-center border-0 pb-4">
+                <form id="deleteForm" method="post" action="{% url 'blog:article_delete' article.slug %}">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-secondary px-4 me-2 btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger px-4">Sí, eliminar</button>
+                </form>
             </div>
         </div>
     </div>

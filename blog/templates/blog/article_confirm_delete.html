@@ -2,33 +2,287 @@
 
 {% block title %}Confirmar Eliminación{% endblock %}
 
+{% block head_extra %}
+<style>
+    :root {
+        --color-naranja: #ff6b35;
+        --color-naranja-hover: #e55a2e;
+        --color-naranja-light: #fff2ee;
+    }
+
+    .delete-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .delete-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border: none;
+        max-width: 500px;
+        width: 100%;
+        animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .delete-header {
+        background: linear-gradient(135deg, var(--color-naranja) 0%, var(--color-naranja-hover) 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+        position: relative;
+    }
+
+    .delete-header::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-top: 10px solid var(--color-naranja-hover);
+    }
+
+    .delete-header h2 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .warning-icon {
+        font-size: 32px;
+        color: white;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    .delete-body {
+        padding: 40px 30px;
+        text-align: center;
+    }
+
+    .article-title {
+        color: var(--color-naranja);
+        font-weight: 700;
+        font-size: 20px;
+        margin: 15px 0;
+        padding: 15px 20px;
+        background: var(--color-naranja-light);
+        border-radius: 10px;
+        border-left: 4px solid var(--color-naranja);
+    }
+
+    .warning-text {
+        color: #6c757d;
+        font-size: 16px;
+        margin-bottom: 30px;
+        line-height: 1.5;
+    }
+
+    .main-text {
+        color: #2c3e50;
+        font-size: 18px;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+
+    .btn-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-cancel {
+        background: #6c757d;
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 12px 24px;
+        border-radius: 10px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 120px;
+        justify-content: center;
+    }
+
+    .btn-cancel:hover {
+        background: #545b62;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(108, 117, 125, 0.3);
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, var(--color-naranja) 0%, var(--color-naranja-hover) 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 12px 24px;
+        border-radius: 10px;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 120px;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(255, 107, 53, 0.2);
+    }
+
+    .btn-delete:hover {
+        background: linear-gradient(135deg, var(--color-naranja-hover) 0%, #d44820 100%);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
+    }
+
+    .danger-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--color-naranja);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .info-box {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+        border-left: 4px solid var(--color-naranja);
+    }
+
+    .info-box i {
+        color: var(--color-naranja);
+        margin-right: 10px;
+    }
+
+    .info-box p {
+        margin: 0;
+        color: #495057;
+        font-size: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .delete-container {
+            padding: 20px 15px;
+        }
+
+        .delete-body {
+            padding: 30px 20px;
+        }
+
+        .btn-actions {
+            flex-direction: column;
+        }
+
+        .btn-cancel,
+        .btn-delete {
+            width: 100%;
+        }
+
+        .article-title {
+            font-size: 18px;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-6">
-        <div class="card bg-danger text-white shadow-lg border-0 rounded-3">
-            <div class="card-header bg-dark border-0 rounded-top">
-                <h2 class="mb-0 text-center">⚠️ Confirmar Eliminación</h2>
+<div class="delete-container">
+    <div class="delete-card">
+        <!-- Header -->
+        <div class="delete-header">
+            <h2>
+                <i class="fa-solid fa-triangle-exclamation warning-icon"></i>
+                Confirmar Eliminación
+            </h2>
+        </div>
+
+        <!-- Body -->
+        <div class="delete-body">
+            <div class="danger-badge">
+                <i class="fa-solid fa-exclamation-circle"></i>
+                Acción Irreversible
             </div>
-            <div class="card-body text-center">
-                <p class="fs-5">
-                    ¿Estás seguro de que quieres eliminar el artículo <br>
-                    <strong>"{{ article.title }}"</strong>?
-                </p>
-                <p class="text-grey">
-                    Esta acción es irreversible y no se puede deshacer.
-                </p>
-                <form method="post" class="mt-4">
-                    {% csrf_token %}
-                    <div class="d-flex justify-content-center gap-3">
-                        <a href="{% url 'blog:article_detail' article.slug %}" class="btn btn-custom-light rounded-pill px-4">
-                            ← Cancelar
-                        </a>
-                        <button type="submit" class="btn btn-warning rounded-pill px-4">
-                            Sí, eliminar
-                        </button>
-                    </div>
-                </form>
+
+            <p class="main-text">
+                ¿Estás seguro de que quieres eliminar este artículo?
+            </p>
+
+            <div class="article-title">
+                <i class="fa-solid fa-file-alt me-2"></i>
+                "{{ article.title }}"
             </div>
+
+            <div class="info-box">
+                <i class="fa-solid fa-info-circle"></i>
+                <p>Esta acción eliminará permanentemente el artículo y todos sus datos asociados. No podrás recuperarlo
+                    una vez eliminado.</p>
+            </div>
+
+            <p class="warning-text">
+                <i class="fa-solid fa-clock me-2"></i>
+                Tómate un momento para considerar esta decisión.
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="btn-actions">
+                    <a href="{% url 'blog:article_detail' article.slug %}" class="btn-cancel">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Cancelar
+                    </a>
+                    <button type="submit" class="btn-delete">
+                        <i class="fa-solid fa-trash-can"></i>
+                        Sí, Eliminar
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

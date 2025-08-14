@@ -4,8 +4,12 @@
             <div class="avatar-circle d-flex align-items-center justify-content-center"
                 style="width: 48px; height: 48px; background: var(--naranja); 
                         border-radius: 50%; color: var(--blanco); font-weight: bold; font-size: 18px; 
-                        box-shadow: 0 2px 8px rgba(255, 108, 46, 0.3);">
-                {{ comment.user.username|slice:':1'|upper }}
+                        box-shadow: 0 2px 8px rgba(255, 108, 46, 0.3); overflow: hidden;">
+                {% if comment.user.profile.avatar %}
+                    <img src="{{ comment.user.profile.avatar.url }}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                {% else %}
+                    {{ comment.user.username|slice:':1'|upper }}
+                {% endif %}
             </div>
         </div>
 

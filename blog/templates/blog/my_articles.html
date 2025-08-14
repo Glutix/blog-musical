@@ -19,21 +19,36 @@
         position: absolute;
         top: 10px;
         right: 10px;
-        background-color: rgba(255, 255, 255, 0.8);
         border-radius: 5px;
-        padding: 5px;
+        padding: 6px;
         display: flex;
-        gap: 8px;
+        gap: 12px;
+        background-color: #3333337e;
     }
 
-    .card-actions a {
-        color: var(--color-texto);
+
+    .card-actions a:nth-child(1) {
         font-size: 1rem;
+        color: #E6E6E6 !important;
+        transition: ease-in-out 0.4s;
+
+        :hover {
+            color: #FF6C2E !important;
+        }
     }
 
-    .card-actions a:hover {
-        color: var(--color-naranja);
+    .card-actions a:nth-child(2) {
+        font-size: 1rem;
+        color: #E6E6E6 !important;
+        transition: ease-in-out 0.4s;
+
+        :hover {
+            color: red !important;
+        }
     }
+
+
+
 
     .empty-state {
         text-align: center;
@@ -44,12 +59,12 @@
 
     .empty-state-icon {
         font-size: 4rem;
-        color: var(--color-naranja);
+        color: var(--naranja);
         margin-bottom: 1.5rem;
     }
 
     .modal-header-delete {
-        background-color: var(--color-naranja);
+        background-color: var(--naranja);
         color: var(--color-fondo-claro);
         border-bottom: 0;
     }
@@ -60,7 +75,19 @@
 
     .modal-icon {
         font-size: 3.5rem;
-        color: var(--color-naranja);
+        color: var(--naranja);
+    }
+
+
+    .btn-cancel {
+        background-color: var(--naranja);
+        color: var(--color-fondo-claro);
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-cancel:hover {
+        background-color: var(--naranja-hover);
     }
 </style>
 {% endblock %}
@@ -88,8 +115,10 @@
                     {% endif %}
 
                     <div class="card-actions">
-                        <a href="{% url 'blog:article_edit' article.slug %}" title="Editar"><i
-                                class="fa-solid fa-pen"></i></a>
+                        <a href="{% url 'blog:article_edit' article.slug %}" title="Editar">
+                            <i class="fa-solid fa-pen"></i>
+                        </a>
+
                         <a href="#" title="Eliminar" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
                             data-delete-url="{% url 'blog:article_delete' article.slug %}">
                             <i class="fa-solid fa-trash"></i>
@@ -98,9 +127,9 @@
                 </div>
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title fw-bold">{{ article.title }}</h5>
-                    <p class="card-text text-truncate-3-lines">{{ article.content|striptags|truncatewords:25 }}</p>
+                    <p class="card-text text-truncate-3-lines">{{ article.content|striptags|truncatewords:20 }}</p>
                     <div class="mt-auto">
-                        <a href="{% url 'blog:article_detail' article.slug %}" class="btn btn-dark w-100">Leer más</a>
+                        <a href="{% url 'blog:article_detail' article.slug %}" class="btn btn-orange w-100">Leer más</a>
                     </div>
                 </div>
             </div>
@@ -130,7 +159,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body py-5">
-                <i class="fa-solid fa-power-off modal-icon mb-4"></i>
+                <i class="fa-solid fa-trash modal-icon mb-4"></i>
                 <h4 class="mb-3 fw-bold">¿Estás seguro de esto?</h4>
                 <p class="text-muted px-4">Estás a punto de eliminar esta publicación para siempre. Una vez que lo
                     elimines, no hay vuelta atrás.</p>
@@ -138,8 +167,8 @@
             <div class="modal-footer justify-content-center border-0 pb-4">
                 <form id="deleteForm" method="post" action="">
                     {% csrf_token %}
-                    <button type="button" class="btn btn-secondary px-4 me-2"
-                        data-bs-dismiss="modal">Cancelar</button>add
+                    <button type="button" class="btn btn-secondary px-4 me-2 btn-cancel"
+                        data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-danger px-4">Sí, eliminar</button>
                 </form>
             </div>
