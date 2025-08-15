@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import Count # Importamos Count para contar los artículos
 from django.utils import timezone
 from django.utils.text import slugify
 # Actualizamos la importación para usar ArticleLike en lugar de ArticleRating
@@ -6,8 +7,43 @@ from .models import Category, Tag, Article, ArticleView, Comment, ArticleLike, C
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'description']
-    search_fields = ['name']
+    # Campos que se mostrarán en la lista principal del admin de categorías
+    # Se ha eliminado el campo 'slug' de la lista
+    list_display = ['name', 'description', 'article_count']
+    # Filtros laterales para buscar categorías por su nombre
+    list_filter = ['name']
+    # Campos por los que se puede buscar en la barra de búsqueda
+    search_fields = ['name', 'description']
+    # Se ha eliminado la línea de prepopulated_fields
+
+    # Organiza los campos en el formulario de creación/edición de la categoría
+    fieldsets = (
+    ('Información de la Categoría', {
+        'fields': ('name', 'description', 'image') 
+    }),
+)
+
+
+    def get_queryset(self, request):
+        """
+        Sobreescribe el queryset para incluir el conteo de artículos
+        relacionados con cada categoría.
+        """
+        queryset = super().get_queryset(request).annotate(article_count=Count('articles'))
+        return queryset
+
+    def article_count(self, obj):
+        """
+        Método para mostrar el conteo de artículos en la lista.
+        """
+        return obj.article_count
+    
+    # Configuramos la columna 'article_count' para que sea ordenable
+    article_count.admin_order_field = 'article_count'
+    # Le damos un nombre más amigable a la columna
+    article_count.short_description = 'Número de Artículos'
+
+    # Se ha eliminado el método save_model ya que el slug no es necesario
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):

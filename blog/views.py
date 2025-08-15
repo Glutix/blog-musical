@@ -15,6 +15,12 @@ from .models import (
 )
 from .forms import ArticleForm, CommentForm
 
+def custom_404_view(request, exception):
+    """
+    Vista personalizada para manejar el error 404 (página no encontrada).
+    """
+    return render(request, '404.html', status=404)
+
 # Vista para listar todos los artículos (pública)
 def article_list(request):
     """
@@ -355,3 +361,4 @@ def category_list(request):
     # Anotamos cada categoría con el recuento de artículos y luego ordenamos.
     categories = Category.objects.annotate(article_count=Count('articles')).order_by('-article_count', 'name')
     return render(request, 'blog/category_list.html', {'categories': categories})
+

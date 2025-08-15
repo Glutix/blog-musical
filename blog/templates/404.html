@@ -1,0 +1,35 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block title %}Página no encontrada{% endblock %}
+
+{% block content %}
+    <!-- Contenedor principal de la página de error -->
+    <div class="container d-flex justify-content-center align-items-center text-center" style="min-height: 60vh;">
+        <div class="card p-4 shadow-lg border-0" style="max-width: 600px;">
+            <div class="card-body text-center">
+                
+                <!-- Contenedor para el 404 con la imagen en el medio -->
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <h1 class="display-1 fw-bold" style="color: var(--color-naranja-claro); margin: 0; font-size: 10rem ;">4</h1>
+                    <img 
+                        src="https://res.cloudinary.com/dt5xp6kba/image/upload/v1755187950/404_irqxfr.png" 
+                        alt="Un disco de vinilo roto"
+                        class="img-fluid"
+                        style="height: 200px; width: 200px; object-fit: cover;"
+                    >
+                    <h1 class="display-1 fw-bold" style="color: var(--color-naranja-claro); margin: 0; font-size: 10rem ;">4</h1>
+                </div>
+                <h1 class="display-1 fw-bold" style="color: var(--color-naranja-claro); margin: 0; font-size: 2.5rem ;"> ERROR </h1>
+
+                <h2 class="fw-bold mb-4">¡Parece que la música se detuvo!</h2>
+                <p class="lead mb-4 text-muted">
+                    Lo sentimos, la página que buscas no se encuentra. Quizás la melodía que buscabas cambió de URL o el DJ se equivocó de pista.
+                </p>
+                <a href="{% url 'blog:article_list' %}" class="btn btn-orange btn-lg fw-bold px-5">
+                    Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

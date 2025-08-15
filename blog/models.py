@@ -6,6 +6,7 @@ from cloudinary.models import CloudinaryField
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=255)
+    image = CloudinaryField('image', folder='category_images', null=True, blank=True)
 
     class Meta:
         verbose_name = "Category"
