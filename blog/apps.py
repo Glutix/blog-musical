@@ -26,7 +26,7 @@ def create_initial_data(sender, **kwargs):
         "Jazz": "https://res.cloudinary.com/dt5xp6kba/image/upload/v1755195853/jazz_fkoysj.jpg",
         "Rap": "https://res.cloudinary.com/dt5xp6kba/image/upload/v1755195839/rap_vbctns.jpg",
         "Clásica": "https://res.cloudinary.com/dt5xp6kba/image/upload/v1755195873/cl%C3%A1sica_iiya9a.jpg",
-        "Electrónica": "https://res.cloudinary.com/dt5xp6kba/image/upload/v1755195873/cl%C3%A1sica_iiya9a.jpg",
+        "Electrónica": "https://res.cloudinary.com/dt5xp6kba/image/upload/v1755195767/electr%C3%B3nica_ihnemd.jpg",
         "Hip Hop": "https://res.cloudinary.com/dt5xp6kba/image/upload/v1755195767/hiphop_pqm8mb.jpg",
         "Reggae": "https://res.cloudinary.com/dt5xp6kba/image/upload/v1755195750/reggae_iezjh8.jpg",
         "Country": "https://res.cloudinary.com/dt5xp6kba/image/upload/v1755195870/country_b2efud.jpg",
