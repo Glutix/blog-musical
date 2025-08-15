@@ -20,7 +20,7 @@
                 <img src="{% if article.featured_image %}
                     {{ article.featured_image.url }}
                   {% else %}
-                    {% static 'img/articulo-sin-imagen.png' %}
+                    https://res.cloudinary.com/dt5xp6kba/image/upload/v1755222307/articulo-sin-imagen_ah0jeq.png
                   {% endif %}"
                   class="d-block w-100"
                   alt="{{ article.title }}" />
@@ -36,7 +36,7 @@
           {% empty %}
             <div class="carousel-item active">
               <div class="carousel-image-container">
-                <img src="{% static 'img/articulo-sin-imagen.png' %}" class="d-block w-100" alt="No hay artículos destacados" />
+                <img src="https://res.cloudinary.com/dt5xp6kba/image/upload/v1755222307/articulo-sin-imagen_ah0jeq.png" class="d-block w-100" alt="No hay artículos destacados" />
               </div>
               <div class="carousel-caption d-none d-md-block text-white">
                 <div class="hero-caption">
@@ -70,7 +70,7 @@
                 <img src="{% if article.featured_image %}
                     {{ article.featured_image.url }}
                   {% else %}
-                        {% static 'img/articulo-sin-imagen.png' %}
+                        https://res.cloudinary.com/dt5xp6kba/image/upload/v1755222307/articulo-sin-imagen_ah0jeq.png
                   {% endif %}"
                   class="card-img-top"
                   alt="{{ article.title }}" />

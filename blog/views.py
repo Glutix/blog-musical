@@ -14,6 +14,7 @@ from .models import (
     Category,
 )
 from .forms import ArticleForm, CommentForm
+from user_auth.models import Profile
 
 def custom_404_view(request, exception):
     """
@@ -163,6 +164,17 @@ def article_create(request):
 
             article.save()
             form.save_m2m()  # Guardar relaciones ManyToMany
+
+            # Lógica para atribuir el rol de autor al crear el primer artículo
+            if Article.objects.filter(user=request.user).count() == 1:
+                try:
+                    profile = Profile.objects.get(user=request.user)
+                    profile.is_author = True
+                    profile.save()
+                    messages.success(request, "¡Felicidades! Se te ha atribuido el rol de autor.")
+                except Profile.DoesNotExist:
+                    messages.warning(request, "Perfil de usuario no encontrado. No se pudo actualizar el rol de autor.")
+
             messages.success(request, "Artículo creado exitosamente.")
             return redirect("blog:article_detail", slug=article.slug)
     else:
