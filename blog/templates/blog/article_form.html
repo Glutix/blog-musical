@@ -1,13 +1,314 @@
-{% extends 'blog/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}{{ title }}{% endblock %}
 
 {% block head_extra %}
 <style>
+    :root {
+        --color-naranja: #ff6b35;
+        --color-naranja-hover: #e55a2e;
+        --color-naranja-light: #fff2ee;
+    }
+
+    .form-check-input {
+        width: 18px;
+        height: 18px;
+        margin-top: 0.2em;
+        margin-right: 8px;
+        background-color: white;
+        border: 1.5px solid #ced4da;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+        /* Alinea todos los cuadraditos en columna */
+        display: inline-block;
+        vertical-align: middle;
+    }
+
     .form-check-input:checked {
         background-color: var(--color-naranja);
         border-color: var(--color-naranja);
+        box-shadow: none;
+    }
+
+    .form-check-input:focus {
+        border-color: var(--color-naranja);
+        outline: 0;
+        box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.2);
+    }
+
+    .form-check-input:hover {
+        border-color: var(--color-naranja);
+    }
+
+    .form-check-label {
+        color: #495057;
+        font-weight: 500;
+        cursor: pointer;
+        font-size: 15px;
+        line-height: 1.4;
+        min-width: 80px;
+        /* Fuerza el mismo ancho para alinear los cuadraditos */
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .form-check {
+        padding: 6px 0;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        height: 100%;
+        margin-left: 0;
+        padding-left: 0;
+        gap: 8px;
+    }
+
+    .checkbox-grid .row {
+        align-items: center;
+    }
+
+    .checkbox-grid .col-md-4, .checkbox-grid .col-sm-6 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 48px;
+        /* Para que todos los inputs estén alineados en columna */
+        flex-direction: row;
+    }
+
+    .checkbox-grid {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 16px;
+        border: 1px solid #e9ecef;
+    }
+
+    .btn-orange {
+        background-color: var(--color-naranja);
+        border-color: var(--color-naranja);
+        color: white;
+        font-weight: 600;
+        padding: 12px 24px;
+        border-radius: 8px;
+        transition: all 0.15s ease-in-out;
+        box-shadow: 0 2px 4px rgba(255, 107, 53, 0.2);
+    }
+
+    .btn-orange:hover {
+        background-color: var(--color-naranja-hover);
+        border-color: var(--color-naranja-hover);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: white;
+        font-weight: 500;
+        padding: 12px 24px;
+        border-radius: 8px;
+        transition: all 0.15s ease-in-out;
+    }
+
+    .btn-secondary:hover {
+        background-color: #545b62;
+        border-color: #545b62;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .form-control,
+    .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 16px;
+        transition: all 0.15s ease-in-out;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--color-naranja);
+        box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.1);
+        outline: 0;
+    }
+
+    .form-label {
+        color: #2c3e50;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 15px;
+    }
+
+    .section-card {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        transition: all 0.15s ease-in-out;
+    }
+
+    .section-card:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-title {
+        color: var(--color-naranja);
+        font-weight: 700;
+        font-size: 18px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--color-naranja-light);
+        display: flex;
+        align-items: center;
+    }
+
+    .section-title i {
+        margin-right: 10px;
+        width: 20px;
+    }
+
+    .checkbox-grid {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 16px;
+        border: 1px solid #e9ecef;
+    }
+
+    .form-check {
+        padding: 6px 0;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .form-check:hover {
+        background-color: transparent;
+    }
+
+    .image-preview-container {
+        position: relative;
+        max-width: 300px;
+    }
+
+    .image-preview {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid #e9ecef;
+        transition: all 0.15s ease-in-out;
+    }
+
+    .image-preview:hover {
+        border-color: var(--color-naranja);
+    }
+
+    .image-placeholder {
+        width: 100%;
+        height: 200px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: #6c757d;
+        transition: all 0.15s ease-in-out;
+    }
+
+    .image-placeholder:hover {
+        border-color: var(--color-naranja);
+        background: linear-gradient(135deg, var(--color-naranja-light) 0%, #fff2ee 100%);
+        color: var(--color-naranja);
+    }
+
+    .file-input-wrapper {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+
+    .file-input-custom {
+        background: var(--color-naranja);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: inline-block;
+        font-weight: 500;
+        transition: all 0.15s ease-in-out;
+        border: none;
+        margin-top: 10px;
+    }
+
+    .file-input-custom:hover {
+        background: var(--color-naranja-hover);
+        transform: translateY(-1px);
+    }
+
+    .alert {
+        border: none;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 20px;
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
+
+
+
+    .form-container {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, var(--color-naranja) 0%, var(--color-naranja-hover) 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+    }
+
+    .form-header h1 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 28px;
+    }
+
+    .form-body {
+        padding: 40px;
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 14px;
+        margin-top: 4px;
+    }
+
+    .form-text {
+        color: #6c757d;
+        font-size: 14px;
+        margin-top: 4px;
     }
 </style>
 {% endblock %}
@@ -15,92 +316,243 @@
 {% block content %}
 <div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-lg-9">
-            <div class="bg-white p-4 p-md-5 shadow-sm" style="border-radius: 8px;">
-                <h1 class="fw-bold mb-4 border-bottom pb-3">{{ title }}</h1>
-                
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    
-                    <!-- Errores generales del formulario -->
-                    {% if form.non_field_errors %}
-                    <div class="alert alert-danger">
-                        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
-                    </div>
-                    {% endif %}
+        <div class="col-lg-10">
+            <div class="form-container">
+                <!-- Header -->
+                <div class="form-header">
+                    <h1>
+                        <i class="fa-solid fa-{{ article|yesno:'edit,plus' }} me-3"></i>
+                        {{ title }}
+                    </h1>
+                </div>
 
-                    <!-- Título -->
-                    <div class="mb-4">
-                        <label for="{{ form.title.id_for_label }}" class="form-label fw-bold">{{ form.title.label }}</label>
-                        {{ form.title }}
-                        {% if form.title.help_text %}<div class="form-text">{{ form.title.help_text }}</div>{% endif %}
-                        {% for error in form.title.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
-                    </div>
+                <!-- Body -->
+                <div class="form-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
 
-                    <!-- Contenido -->
-                    <div class="mb-4">
-                        <label for="{{ form.content.id_for_label }}" class="form-label fw-bold">{{ form.content.label }}</label>
-                        {{ form.content }}
-                        {% if form.content.help_text %}<div class="form-text">{{ form.content.help_text }}</div>{% endif %}
-                        {% for error in form.content.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
-                    </div>
-
-                    <!-- Imagen destacada -->
-                    <div class="mb-4">
-                        <label for="{{ form.featured_image.id_for_label }}" class="form-label fw-bold">{{ form.featured_image.label }}</label>
-                        {{ form.featured_image }}
-                        {% if form.featured_image.help_text %}<div class="form-text">{{ form.featured_image.help_text }}</div>{% endif %}
-                        {% if article.featured_image %}
-                        <div class="mt-2">
-                            <small class="text-muted">Imagen actual:</small><br>
-                            <img src="{{ article.featured_image.url }}" alt="Imagen actual" class="img-thumbnail mt-1" style="max-height: 150px;">
+                        <!-- Errores generales -->
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            <i class="fa-solid fa-exclamation-triangle me-2"></i>
+                            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
                         </div>
                         {% endif %}
-                        {% for error in form.featured_image.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
-                    </div>
 
-                    <!-- Categorías -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">{{ form.category.label }}</label>
-                        <div class="row bg-light p-3 rounded">
-                            {% for choice in form.category %}
-                            <div class="col-md-4">
-                                <div class="form-check">{{ choice.tag }} <label class="form-check-label" for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label></div>
+                        <!-- Información Básica -->
+                        <div class="section-card">
+                            <div class="section-title">
+                                <i class="fa-solid fa-info-circle"></i>
+                                Información Básica
                             </div>
-                            {% endfor %}
-                        </div>
-                        {% for error in form.category.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
-                    </div>
 
-                    <!-- Tags -->
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">{{ form.tags.label }}</label>
-                        <div class="row bg-light p-3 rounded">
-                            {% for choice in form.tags %}
-                            <div class="col-md-4">
-                                <div class="form-check">{{ choice.tag }} <label class="form-check-label" for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label></div>
+                            <!-- Título -->
+                            <div class="mb-4">
+                                <label for="{{ form.title.id_for_label }}" class="form-label">
+                                    <i class="fa-solid fa-heading me-2"></i>{{ form.title.label }}
+                                </label>
+                                {{ form.title }}
+                                {% if form.title.help_text %}
+                                <div class="form-text">{{ form.title.help_text }}</div>
+                                {% endif %}
+                                {% for error in form.title.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
-                        </div>
-                        {% for error in form.tags.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
-                    </div>
 
-                    <!-- Botones -->
-                    <div class="d-flex justify-content-between pt-4 border-top">
-                        <a href="{{ request.META.HTTP_REFERER|default:'blog:my_articles' }}" class="btn btn-secondary">
-                            Cancelar
-                        </a>
-                        <button type="submit" class="btn btn-orange px-4">
-                            {% if article %}
+                            <!-- Contenido -->
+                            <div class="mb-4">
+                                <label for="{{ form.content.id_for_label }}" class="form-label">
+                                    <i class="fa-solid fa-align-left me-2"></i>{{ form.content.label }}
+                                </label>
+                                {{ form.content }}
+                                {% if form.content.help_text %}
+                                <div class="form-text">{{ form.content.help_text }}</div>
+                                {% endif %}
+                                {% for error in form.content.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Imagen Destacada -->
+                        <div class="section-card">
+                            <div class="section-title">
+                                <i class="fa-solid fa-image"></i>
+                                Imagen Destacada
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label for="{{ form.featured_image.id_for_label }}" class="form-label">
+                                        {{ form.featured_image.label }}
+                                    </label>
+
+                                    <div class="file-input-wrapper">
+                                        {{ form.featured_image }}
+                                        <label for="{{ form.featured_image.id_for_label }}" class="file-input-custom">
+                                            <i class="fa-solid fa-cloud-upload me-2"></i>
+                                            Seleccionar imagen
+                                        </label>
+                                    </div>
+
+                                    {% if form.featured_image.help_text %}
+                                    <div class="form-text mt-2">{{ form.featured_image.help_text }}</div>
+                                    {% endif %}
+                                    {% for error in form.featured_image.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Vista Previa</label>
+                                    <div class="image-preview-container">
+                                        {% if article.featured_image %}
+                                        <img id="imagePreview" src="{{ article.featured_image.url }}" alt="Vista previa"
+                                            class="image-preview">
+                                        {% else %}
+                                        <div id="imagePlaceholder" class="image-placeholder">
+                                            <i class="fa-solid fa-image fa-3x mb-2"></i>
+                                            <span>Sin imagen</span>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Categorización -->
+                        <div class="section-card">
+                            <div class="section-title">
+                                <i class="fa-solid fa-tags"></i>
+                                Categorización
+                            </div>
+
+                            <!-- Categorías -->
+                            <div class="mb-4">
+                                <label class="form-label">
+                                    <i class="fa-solid fa-folder me-2"></i>{{ form.category.label }}
+                                </label>
+                                <div class="checkbox-grid">
+                                    <div class="row">
+                                        {% for choice in form.category %}
+                                        <div class="col-md-4 col-sm-6">
+                                            <div class="form-check">
+                                                {{ choice.tag }}
+                                                <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                                    {{ choice.choice_label }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% for error in form.category.errors %}
+                                <div class="text-danger mt-2">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Tags -->
+                            <div class="mb-4">
+                                <label class="form-label">
+                                    <i class="fa-solid fa-hashtag me-2"></i>{{ form.tags.label }}
+                                </label>
+                                <div class="checkbox-grid">
+                                    <div class="row">
+                                        {% for choice in form.tags %}
+                                        <div class="col-md-4 col-sm-6">
+                                            <div class="form-check">
+                                                {{ choice.tag }}
+                                                <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                                    {{ choice.choice_label }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% for error in form.tags.errors %}
+                                <div class="text-danger mt-2">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="d-flex justify-content-between align-items-center pt-4 border-top">
+                            <a href="{{ request.META.HTTP_REFERER|default:'blog:my_articles' }}"
+                                class="btn btn-secondary">
+                                <i class="fa-solid fa-arrow-left me-2"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-orange px-4">
+                                {% if article %}
                                 <i class="fa-solid fa-save me-2"></i>Actualizar Artículo
-                            {% else %}
+                                {% else %}
                                 <i class="fa-solid fa-plus me-2"></i>Crear Artículo
-                            {% endif %}
-                        </button>
-                    </div>
-                </form>
+                                {% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const fileInput = document.querySelector('input[type="file"]');
+        const imagePreview = document.getElementById('imagePreview');
+        const imagePlaceholder = document.getElementById('imagePlaceholder');
+
+        if (fileInput) {
+            // Ocultar el input file original
+            fileInput.style.display = 'none';
+
+            fileInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+
+                if (file) {
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        if (imagePreview) {
+                            imagePreview.src = e.target.result;
+                            imagePreview.style.display = 'block';
+                        } else {
+                            // Crear nueva imagen si no existe
+                            const newImg = document.createElement('img');
+                            newImg.id = 'imagePreview';
+                            newImg.src = e.target.result;
+                            newImg.alt = 'Vista previa';
+                            newImg.className = 'image-preview';
+
+                            const container = document.querySelector('.image-preview-container');
+                            container.innerHTML = '';
+                            container.appendChild(newImg);
+                        }
+
+                        if (imagePlaceholder) {
+                            imagePlaceholder.style.display = 'none';
+                        }
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Animación de enfoque en campos del formulario
+        const formControls = document.querySelectorAll('.form-control, .form-select');
+        formControls.forEach(control => {
+            control.addEventListener('focus', function () {
+                this.parentElement.style.transform = 'scale(1.01)';
+                this.parentElement.style.transition = 'transform 0.15s ease-in-out';
+            });
+
+            control.addEventListener('blur', function () {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+    });
+</script>
 {% endblock %}

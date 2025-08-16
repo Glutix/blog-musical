@@ -1,64 +1,139 @@
-<!-- blog/partials/comment.html -->
-<div class="d-flex mt-4" id="comment-{{ comment.id }}">
-    <img src="https://placehold.co/48x48/E5E5E5/000000?text={{ comment.user.username|slice:':1'|upper }}"
-         alt="{{ comment.user.username }} avatar"
-         class="rounded-circle me-3"
-         style="width: 48px; height: 48px;">
-    
-    <div class="flex-grow-1 bg-light p-3 rounded border">
-        <div class="d-flex justify-content-between align-items-center mb-1">
-            <p class="fw-bold mb-0">{{ comment.user.username }}</p>
-            {% if user == comment.user %}
-                <div class="d-flex align-items-center">
-                    <button class="btn btn-outline-warning btn-sm me-1 edit-btn" data-id="{{ comment.id }}" data-content="{{ comment.content|escapejs }}">✏️</button>
-                    <form action="{% url 'blog:comment_delete' comment.id %}" method="post" id="delete-form-{{ comment.id }}" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="button" class="btn btn-outline-danger btn-sm delete-btn" data-id="{{ comment.id }}">🗑️</button>
-                    </form>
+<div class="comment-wrapper mb-4" id="comment-{{ comment.id }}">
+    <div class="d-flex">
+        <div class="comment-avatar me-3">
+            <div class="avatar-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: var(--naranja); 
+                        border-radius: 50%; color: var(--blanco); font-weight: bold; font-size: 18px; 
+                        box-shadow: 0 2px 8px rgba(255, 108, 46, 0.3); overflow: hidden;">
+                {% if comment.user.profile.avatar %}
+                <img src="{{ comment.user.profile.avatar.url }}" alt="Avatar"
+                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                {% else %}
+                {{ comment.user.username|slice:':1'|upper }}
+                {% endif %}
+            </div>
+        </div>
+
+
+        
+        <div class="comment-content-wrapper flex-grow-1">
+            <div class="comment-bubble p-3 position-relative" style="background: var(--gris-muy-claro); 
+                        border-radius: 18px 18px 18px 4px; 
+                        border: 1px solid var(--gris-claro);
+                        box-shadow: var(--sombra-suave);">
+
+                <div class="comment-header d-flex justify-content-between align-items-start mb-2">
+                    <div class="comment-user-info">
+                        <h6 class="mb-0 fw-bold" style="color: var(--naranja);">{{ comment.user.username }}</h6>
+                        <small class="text-muted">
+                            <i class="far fa-clock me-1"></i>
+                            Hace {{ comment.created_at|timesince }}
+                        </small>
+                    </div>
+
+                    {% if user == comment.user %}
+                    <div class="comment-owner-actions">
+                        <div class="dropdown">
+                            <button class="btn btn-link p-1 text-muted" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false" style="border: none; background: none;">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                <li>
+                                    <button class="dropdown-item edit-btn" data-id="{{ comment.id }}"
+                                        data-content="{{ comment.content|escapejs }}"
+                                        data-url="{% url 'blog:edit_comment_ajax' comment.id %}">
+                                        <i class="fas fa-edit me-2" style="color: var(--naranja);"></i> Editar
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item text-danger delete-btn" data-id="{{ comment.id }}"
+                                        data-url="{% url 'blog:comment_delete_ajax' comment.id %}">
+                                        <i class="fas fa-trash me-2"></i> Eliminar
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
-            {% endif %}
-        </div>
 
-        <p class="mb-2 text-muted comment-content">{{ comment.content|linebreaks }}</p>
-        <small class="text-muted"> Hace {{ comment.created_at|timesince }} </small>
+                <div class="comment-text">
+                    <p class="mb-0 comment-content" style="line-height: 1.5; color: var(--gris-oscuro);">
+                        {{ comment.content|linebreaks }}
+                    </p>
+                </div>
 
-        <div class="mt-2 comment-actions">
-            {% if user.is_authenticated %}
-                <button class="btn btn-link p-0 text-decoration-none comment-like-btn" data-comment-id="{{ comment.id }}">
-                    <i class="{% if comment.user_has_liked %}fas fa-heart text-danger{% else %}far fa-heart{% endif %}"></i>
-                    <span class="comment-like-count">{{ comment.total_likes }}</span> Me gusta
-                </button>
-                <button class="btn btn-link p-0 ms-3 text-decoration-none reply-btn" data-comment-id="{{ comment.id }}">Responder</button>
-            {% else %}
-                <small><a href="{% url 'user_auth:login' %}">Inicia sesión</a> para dar like o responder</small>
-            {% endif %}
-        </div>
+                <div class="comment-actions mt-3 pt-2 border-top" style="border-color: var(--gris-claro) !important;">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="action-buttons d-flex align-items-center">
+                            {% if user.is_authenticated %}
+                            <button class="btn btn-sm comment-like-btn me-3 p-0" data-comment-id="{{ comment.id }}"
+                                data-url="{% url 'blog:comment_like_toggle' comment.id %}"
+                                style="border: none; background: none; color: var(--gris); transition: all 0.2s ease;">
+                                <i class="{% if comment.user_has_liked %}fas fa-heart text-danger{% else %}far fa-heart{% endif %} me-1"
+                                    style="font-size: 16px;"></i>
+                                <span class="comment-like-count fw-semibold">{{ comment.total_likes }}</span>
+                                <span class="ms-1">Me gusta</span>
+                            </button>
 
-        <!-- Contenedor del formulario de respuesta (inicialmente oculto) -->
-        <div class="reply-form-container mt-3" style="display: none;" id="reply-form-{{ comment.id }}">
-            <form action="{% url 'blog:article_detail' comment.article.slug %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                <div class="d-flex align-items-start">
-                    <img src="https://placehold.co/48x48/E5E5E5/000000?text={{ user.username|slice:':1'|upper }}" 
-                         alt="{{ user.username }} avatar" 
-                         class="rounded-circle me-3">
-                    <div class="flex-grow-1">
-                        <textarea name="content" class="form-control" rows="2" placeholder="Escribe tu respuesta..." required></textarea>
-                        <button type="submit" class="btn btn-naranja btn-sm mt-2">Enviar Respuesta</button>
-                        <button type="button" class="btn btn-secondary btn-sm mt-2 cancel-reply">Cancelar</button>
+                            <button class="btn btn-sm reply-btn p-0" data-comment-id="{{ comment.id }}"
+                                style="border: none; background: none; color: var(--gris); transition: all 0.2s ease;">
+                                <i class="far fa-comment-dots me-1"></i> Responder
+                            </button>
+                            {% else %}
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-            </form>
-        </div>
-
-        <!-- Recursión para mostrar las respuestas anidadas -->
-        {% if comment.replies.all %}
-            <div class="replies-container">
-                {% for reply in comment.replies.all %}
-                    {% include 'blog/partials/comment.html' with comment=reply %}
-                {% endfor %}
             </div>
-        {% endif %}
+
+            <div class="reply-form-container mt-3 d-none" id="reply-form-{{ comment.id }}">
+                <div class="p-3 rounded" style="background: var(--naranja-claro); border: 1px dashed var(--naranja);">
+                    <form class="reply-form-wrapper" action="{% url 'blog:article_detail' comment.article.slug %}"
+                        method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                        <div class="d-flex align-items-start">
+                            {% if user.profile.avatar %}
+                            <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="me-3"
+                                style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
+                            {% else %}
+                            <div class="avatar-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px; background: var(--naranja); 
+                                border-radius: 50%; color: var(--blanco); font-weight: bold; font-size: 14px;">
+                                {{ user.username|slice:':1'|upper }}
+                            </div>
+                            {% endif %}
+                            <div class="flex-grow-1">
+                                <textarea name="content" class="form-control border-0 shadow-sm" rows="2"
+                                    placeholder="Escribe tu respuesta..."
+                                    style="resize: none; border-radius: 12px; background: var(--blanco);"
+                                    required></textarea>
+                                <div class="reply-actions mt-2">
+                                    <button type="submit" class="btn btn-orange btn-sm me-2"
+                                        style="border-radius: 20px; padding: 6px 16px;">
+                                        <i class="fas fa-paper-plane me-1"></i>
+                                        Enviar
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm cancel-reply"
+                                        style="border-radius: 20px; padding: 6px 16px;">
+                                        Cancelar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="replies-container mt-4">
+                <div class="replies-divider mb-3"
+                    style="border-left: 2px solid var(--naranja-claro); margin-left: 24px; padding-left: 20px;">
+                    {% for reply in comment.replies_list|default:comment.replies.all|dictsort:"created_at" %}
+                    {% include 'blog/partials/comment.html' with comment=reply user=user %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
+
 </div>

@@ -1,35 +1,107 @@
-{% extends 'blog/base.html' %}
-{% load static %}
+{% extends 'base.html' %} 
+{% load static %} 
 
-{% block title %}Catálogo de Categorías{% endblock %}
+{% block title %}Catálogo de Categorías{% endblock %} 
+
+{% block head_extra %}
+<style>
+  /* ================== LAYOUT PRINCIPAL ================== */
+  .main-section {
+    max-width: 1000px;
+    background-color: var(--color-fondo);
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    padding: .5rem 1rem;
+    margin: 2rem auto;
+    border-radius: 0.5rem;
+    padding-bottom: 2rem;
+  }
+
+  .main-container {
+    border-radius: 0.3rem;
+  }
+
+  .container-spacing {
+    margin: -0.5rem 0 !important;
+  }
+
+  /* ================== CARDS ================== */
+  .card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var(--color-fondo-claro);
+    box-shadow: var(--sombra-suave);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--sombra-hover);
+  }
+
+  .card img {
+    object-fit: cover;
+    height: 220px;
+    width: 100%;
+  }
+
+  .card-body {
+    padding: 1.2rem;
+  }
+
+  /* Truncar texto a 3 líneas (útil si añades descripciones) */
+  .text-truncate-3-lines {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container my-5">
-    <h1 class="fw-bold mb-4 border-bottom pb-3">Catálogo de Categorías</h1>
-    {% if categories %}
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        {% for category in categories %}
-    <div class="col">
-        <div class="card h-100 shadow-sm">
-            {% if category.image %}
-                <img src="{{ category.image }}" class="card-img-top" alt="{{ category.name }}">
-            {% else %}
-                <img src="https://res.cloudinary.com/dt5xp6kba/image/upload/v1755222307/articulo-sin-imagen_ah0jeq.png" class="card-img-top" alt="{{ category.name }}">
-            {% endif %}
-            <div class="card-body">
-                <h5 class="card-title fw-bold">{{ category.name }}</h5>
-                <p class="card-text text-muted">{{ category.article_count }} artículo{{ category.articles_count|pluralize }}</p>
-                <a href="{% url 'blog:articles_by_category' category_name=category.name %}" class="btn btn-orange mt-2">Ver artículos</a>
-            </div>
-        </div>
-    </div>
-{% endfor %}
+<section class="main-section">
+  <h2 class="text-center mb-4">CATÁLOGO DE CATEGORÍAS</h2>
 
+  <main class="main-container container container-spacing">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      {% if categories %} 
+        {% for category in categories %}
+        <div class="col">
+          <div class="card h-100">
+            
+            {% if category.image %}
+              <img src="{{ category.image.url }}" class="card-img-top" alt="{{ category.name }}" />
+            {% else %}
+              <img src="https://res.cloudinary.com/dt5xp6kba/image/upload/v1755345049/Copilot_20250816_085023_cijdrm.png" class="card-img-top" alt="{{ category.name }}" />
+            {% endif %}
+            <div class="card-body d-flex flex-column gap-2">
+              <h5 class="card-title fw-bold">{{ category.name }}</h5>
+              <p class="card-text">
+                {{ category.article_count }} artículo{{ category.article_count|pluralize }}
+              </p>
+              <div class="mt-auto">
+                <a
+                  href="{% url 'blog:articles_by_category' category_name=category.name %}"
+                  class="btn btn-orange w-100 fw-bold"
+                  >Ver artículos</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %} 
+      {% else %}
+      <div class="col-12">
+        <div class="alert alert-info" role="alert">
+            No se encontraron categorías disponibles.
+        </div>
+      </div>
+      {% endif %}
     </div>
-    {% else %}
-    <div class="alert alert-info" role="alert">
-        No se encontraron categorías disponibles.
-    </div>
-    {% endif %}
-</div>
+  </main>
+</section>
 {% endblock %}

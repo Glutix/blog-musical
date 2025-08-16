@@ -1,324 +1,286 @@
-{% extends 'blog/base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ article.title }} - Integrate{% endblock %}
+{% block title %}{{ article.title }} - Blog Musical{% endblock %}
 
 {% block content %}
-<style>
-    /* Usamos las variables de color definidas en base.html */
-    body {
-        background-color: #f8f9fa; /* Un fondo muy claro para que el contenido resalte */
-    }
+<main id="article-detail-container" class="container my-4 my-md-4">
+    <div class="border-0 shadow-lg bg-white rounded">
+        {% if article.featured_image %}
+        <img src="{{ article.featured_image.url }}" class="card-img-top" alt="{{ article.title }}"
+            style="max-height: 650px; object-fit: cover" />
+        {% else %}
+                <img src="https://res.cloudinary.com/dt5xp6kba/image/upload/v1755222307/articulo-sin-imagen_ah0jeq.png" class="card-img-top" alt="{{ article.title }}"
+            style="max-height: 650px; object-fit: cover" />
+        {% endif %}
 
-    .article-container {
-        background-color: var(--color-blanco);
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        overflow: hidden;
-    }
-
-    .article-featured-image {
-        width: 100%;
-        max-height: 500px;
-        object-fit: cover;
-    }
-
-    .article-body {
-        padding: 2rem 2.5rem 3rem;
-    }
-
-    @media (max-width: 768px) {
-        .article-body {
-            padding: 1.5rem;
-        }
-    }
-
-    .article-title {
-        font-size: 2.8rem;
-        font-weight: 700;
-        color: var(--color-texto);
-        line-height: 1.2;
-    }
-
-    .article-meta {
-        color: #6c757d;
-        font-size: 0.95rem;
-        margin-top: 1rem;
-    }
-
-    .article-meta .author-link {
-        color: var(--color-naranja);
-        font-weight: 500;
-        text-decoration: none;
-    }
-
-    .article-meta .author-link:hover {
-        text-decoration: underline;
-    }
-
-    .article-content {
-        margin-top: 2rem;
-        font-size: 1.1rem;
-        line-height: 1.8;
-        color: #343a40;
-    }
-    
-    .article-content p {
-        margin-bottom: 1.5rem;
-    }
-
-    /* --- Sección de Comentarios --- */
-    .comments-section {
-        margin-top: 2.5rem;
-        padding: 2rem 2.5rem;
-        background-color: var(--color-blanco);
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-    
-    @media (max-width: 768px) {
-        .comments-section {
-            padding: 1.5rem;
-        }
-    }
-
-    .comments-section h3 {
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-    }
-
-    .comment-form-container {
-        display: flex;
-        gap: 1rem;
-        align-items: flex-start;
-    }
-
-    .comment-avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    .comment-form-container textarea {
-        border-radius: 8px;
-        border: 1px solid #ced4da;
-        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    }
-
-    .comment-form-container textarea:focus {
-        border-color: var(--color-naranja);
-        box-shadow: 0 0 0 0.25rem rgba(255, 108, 46, 0.25);
-    }
-    
-    .btn-submit-comment {
-        background-color: var(--color-naranja);
-        color: var(--color-blanco);
-        font-weight: 500;
-        border: none;
-        border-radius: 50px;
-        padding: 0.5rem 1.25rem;
-        transition: background-color 0.2s ease;
-    }
-
-    .btn-submit-comment:hover {
-        background-color: var(--color-naranja-oscuro);
-        color: var(--color-blanco);
-    }
-
-    /* Estilo de cada comentario */
-    .comment-thread {
-        margin-top: 2rem;
-    }
-
-    .comment {
-        display: flex;
-        gap: 1rem;
-        align-items: flex-start;
-    }
-
-    .comment-content-wrapper {
-        flex: 1;
-    }
-
-    .comment-author {
-        font-weight: 600;
-        color: var(--color-texto);
-    }
-
-    .comment-date {
-        font-size: 0.85rem;
-        color: #6c757d;
-        margin-left: 0.5rem;
-    }
-
-    .comment-body {
-        margin-top: 0.25rem;
-        line-height: 1.6;
-    }
-
-    .comment-actions {
-        margin-top: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .comment-actions button, .comment-actions a {
-        background: none;
-        border: none;
-        padding: 0;
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: #6c757d;
-        text-decoration: none;
-        cursor: pointer;
-        transition: color 0.2s ease;
-    }
-    
-    .comment-actions button:hover, .comment-actions a:hover {
-        color: var(--color-naranja);
-    }
-
-    .comment-like-btn.liked, .comment-like-btn.liked i {
-        color: var(--color-naranja) !important;
-    }
-
-    .comment-like-btn i {
-        margin-right: 4px;
-    }
-    
-    /* Respuestas anidadas */
-    .replies {
-        margin-top: 1.5rem;
-        padding-left: 3.5rem; /* 40px avatar + 16px gap */
-        border-left: 2px solid #e9ecef;
-    }
-
-</style>
-
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-9">
-
-            <!-- Contenedor principal del artículo -->
-            <main class="article-container">
-                {% if article.featured_image %}
-                <img src="{{ article.featured_image.url }}" class="article-featured-image" alt="{{ article.title }}">
-                {% else %}
-                <img src="https://res.cloudinary.com/dt5xp6kba/image/upload/v1755222307/articulo-sin-imagen_ah0jeq.png" class="card-img-top" alt="{{ category.name }}">
-                {% endif %}
-
-                <div class="article-body">
-                    <h1 class="article-title">{{ article.title }}</h1>
-                    <p class="article-meta">
-                        Por <a href="#" class="author-link">{{ article.user.username }}</a>
-                        <span class="mx-2">&bull;</span>
-                        <span>{{ article.created_at|date:"d F, Y" }}</span>
-                        <span class="mx-2">&bull;</span>
-                        <span>15 minutos de lectura</span>
-                    </p>
-
-                    <div class="article-content">
-                        {{ article.content|safe|linebreaks }}
-                    </div>
-                </div>
-            </main>
-
-            <!-- Sección de Comentarios -->
-            <section class="comments-section">
-                <h3>{{ article.comments.count }} Comentarios</h3>
-
-                <!-- Formulario para agregar un nuevo comentario -->
-                {% if user.is_authenticated %}
-                <div class="comment-form-container mt-4 mb-5">
-                    <img src="{{ user.profile.get_avatar_url }}" alt="{{ user.username }} avatar" class="comment-avatar">
-                    <div class="flex-grow-1">
-                        <form method="post" action="{% url 'blog:article_detail' article.slug %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="parent_id" value="">
-                            <textarea name="content" class="form-control" rows="3" placeholder="Agrega un comentario..." required></textarea>
-                            <div class="text-end mt-2">
-                                <button type="submit" class="btn btn-submit-comment">Comentar</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                {% else %}
-                <div class="alert alert-light border my-4" role="alert">
-                    <a href="{% url 'user_auth:login' %}" class="alert-link">Inicia sesión</a> para dejar un comentario.
-                </div>
-                {% endif %}
-
-                <!-- Listado de comentarios -->
-                <div class="comment-thread">
-                    {% for comment in comments %}
-                        {% include 'blog/partials/comment.html' with comment=comment %}
+        <div class="card-body p-4 p-md-5">
+            <div class="d-flex align-items-center small text-muted mb-2">
+                <span>Categorias</span>
+                <span class="mx-2">&bull;</span>
+                <span>
+                    {% if article.category.all %}
+                    {% for cat in article.category.all|slice:":5" %}
+                    {{ cat.name }}{% if not forloop.last %} - {% endif %}
                     {% endfor %}
+                    {% else %}
+                    Sin Categoría
+                    {% endif %}
+                </span>
+            </div>
+
+            <h1 class="display-5 fw-bold mb-3">{{ article.title }}</h1>
+
+            <p class="card-subtitle mb-3 text-grey">
+                Por <a href="{% url 'user_auth:public_profile' article.user.username %}"
+                    class="text-orange text-decoration-none">
+                    <span class="fw-bold author-link-span">
+                        {{ article.user.username }}
+                    </span>
+                </a> | {{ article.created_at|date:'d M, Y' }}
+            </p>
+
+            <article class="fs-5">{{ article.content|linebreaks }}</article>
+
+
+            <div class="d-flex align-items-center small text-muted mb-2">
+                <span>Tags</span>
+                <span class="mx-2">&bull;</span>
+                <span>
+                    {% if article.tags.all %}
+                    {% for tag in article.tags.all|slice:":5" %}
+                    <span style="background-color: var(--naranja-claro); padding: .2rem; border-radius: .3rem;"
+                        class="text-black me-1">{{ tag.name }}</span>
+                    {% endfor %}
+                    {% if article.tags.count > 5 %}
+                    <span class="text-black">...</span>
+                    {% endif %}
+                    {% else %}
+                    <span class="text-muted">Sin Tags</span>
+                    {% endif %}
+                </span>
+            </div>
+
+
+            <div class="mt-5 d-flex align-items-center flex-wrap">
+                {% if user.is_authenticated %}
+                <button id="like-button"
+                    class="btn btn-link text-decoration-none text-muted d-flex align-items-center me-4 mb-2"
+                    data-article-id="{{ article.id }}" data-url="{% url 'blog:article_like_toggle' article.id %}"> <i
+                        class="{% if user_has_liked %}fas fa-heart fs-4 me-2 text-danger{% else %}far fa-heart fs-4 me-2{% endif %}"></i>
+                    <span class="fw-semibold" id="like-count">{{ total_likes }}</span>
+                    <span class="ms-1">Me gusta</span>
+                </button>
+                {% endif %}
+
+                <!-- Botón de compartir -->
+                <button id="shareBtn"
+                    class="btn btn-link text-decoration-none text-muted d-flex align-items-center me-4 mb-2">
+                    <i class="far fa-share-square fs-4 me-2"></i>
+                    <span class="fw-semibold">Compartir</span>
+                </button>
+
+                <!-- Toast de confirmación -->
+                <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                    <div id="shareToast" class="toast align-items-center text-bg-success border-0" role="alert"
+                        aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                ✅ Enlace copiado al portapapeles
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                                aria-label="Cerrar"></button>
+                        </div>
+                    </div>
                 </div>
-            </section>
+
+
+
+                <div class="d-flex align-items-center text-muted mb-2">
+                    <i class="far fa-eye fs-4 me-2"></i>
+                    <span class="fw-semibold">{{ article.articleview_set.count }} Vistas</span>
+                </div>
+
+                {% if user == article.user %}
+                <div class="d-flex align-items-center ms-auto">
+                    <a href="{% url 'blog:article_edit' article.slug %}" class="btn btn-outline-warning btn-sm me-2">✏️
+                        Editar</a>
+                    <a href="{% url 'blog:article_delete' article.slug %}" class="btn btn-outline-danger btn-sm">🗑️
+                        Eliminar</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="my-5">
+        <h3 class="mb-4">Comentarios ({{ article.comments.count }})</h3>
+
+        <div id="alert-container"></div>
+
+        {% if user.is_authenticated %}
+        <div class="p-4 rounded shadow-sm mb-4" style="background: var(--gris-muy-claro);">
+            <form id="main-comment-form" method="post" action="{% url 'blog:article_detail' article.slug %}">
+                {% csrf_token %}
+                <input type="hidden" name="parent_id" value="">
+                <div class="d-flex align-items-start">
+                    {% if user.profile.avatar %}
+                    <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="me-3" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
+                            box-shadow: 0 2px 8px rgba(255, 108, 46, 0.3);">
+                    {% else %}
+                    <div class="avatar-circle d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px; background: var(--naranja); border-radius: 50%;
+                           color: var(--blanco); font-weight: bold; font-size: 18px;
+                           box-shadow: 0 2px 8px rgba(255, 108, 46, 0.3);">
+                        {{ user.username|slice:':1'|upper }}
+                    </div>
+                    {% endif %}
+                    <div class="flex-grow-1">
+                        <textarea name="content" class="form-control border-1 shadow-sm" rows="3"
+                            placeholder="Escribe tu comentario..."
+                            style="border-radius: 12px; background: var(--blanco);" required></textarea>
+                        <div class="text-end mt-2">
+                            <button type="submit" class="btn btn-orange">
+                                <i class="fas fa-paper-plane me-1"></i> Enviar Comentario
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% else %}
+        <div class="alert alert-info" role="alert">
+            <a href="{% url 'user_auth:login' %}" style="color: var(--naranja-oscuro); font-weight: bold;">Inicia
+                sesión</a> para dejar un comentario.
+        </div>
+        {% endif %}
+
+        <div id="comments-container">
+            {% for comment in comments %}
+            {% include 'blog/partials/comment.html' with comment=comment user=user %}
+            {% endfor %}
+        </div>
+    </div>
+</main>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que quieres eliminar este comentario? Esta acción no se puede deshacer.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
 
-<!-- El JS existente para la interactividad no se ha modificado -->
-<!-- Se asume que el partial 'blog/partials/comment.html' tiene la estructura correcta para anidar comentarios y que el JS del archivo original sigue siendo funcional con esta estructura. -->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const csrfToken = '{{ csrf_token }}';
-        
-        // --- Lógica para el like del artículo (adaptada a la nueva UI si es necesario) ---
-        // ... (Tu JS para like de artículo iría aquí si lo tienes)
-        
-        // --- Lógica para el like de comentarios ---
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.comment-like-btn')) {
-                const btn = e.target.closest('.comment-like-btn');
-                const commentId = btn.dataset.commentId;
-                fetch(`/comentario/${commentId}/like/`, {
-                    method: 'POST',
-                    headers: {'X-CSRFToken': csrfToken},
-                })
-                .then(res => res.json())
-                .then(data => {
-                    const icon = btn.querySelector('i');
-                    const likeCountSpan = btn.querySelector('.comment-like-count');
-                    
-                    if (data.is_liked) {
-                        btn.classList.add('liked');
-                        icon.classList.remove('far');
-                        icon.classList.add('fas');
-                    } else {
-                        btn.classList.remove('liked');
-                        icon.classList.remove('fas');
-                        icon.classList.add('far');
-                    }
-                    likeCountSpan.textContent = data.total_likes;
-                })
-                .catch(error => console.error('Error:', error));
-            }
-        });
+{% block extra_styles %}
+<style>
+    /* Estilos de comment.html movidos aquí */
+    .comment-like-btn:hover,
+    .reply-btn:hover {
+        color: var(--naranja) !important;
+        transform: translateY(-1px);
+    }
 
-        // --- Lógica para mostrar/ocultar formulario de respuesta ---
-        document.addEventListener('click', function(e) {
-            if (e.target.closest('.reply-btn')) {
-                const btn = e.target.closest('.reply-btn');
-                const commentId = btn.dataset.commentId;
-                const replyFormContainer = document.getElementById(`reply-form-${commentId}`);
-                
-                // Ocultar todos los otros formularios de respuesta abiertos
-                document.querySelectorAll('.reply-form-container').forEach(form => {
-                    if (form.id !== `reply-form-${commentId}`) {
-                        form.style.display = 'none';
-                    }
-                });
+    .comment-bubble {
+        transition: all 0.2s ease;
+    }
 
-                // Alternar visibilidad del formulario actual
-                if (replyFormContainer) {
-                    replyFormContainer.style.display = replyFormContainer.style.display === 'none' || !replyFormContainer.style.display ? 'block' : 'none';
-                }
-            }
-        });
-    });
-</script>
+    .comment-bubble:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--sombra-hover) !important;
+    }
+
+    .avatar-circle {
+        transition: all 0.2s ease;
+    }
+
+    .comment-wrapper:hover .avatar-circle {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(255, 108, 46, 0.4) !important;
+    }
+
+    .dropdown-toggle::after {
+        display: none;
+    }
+
+    .dropdown-item:hover {
+        background: var(--naranja-claro);
+        color: var(--gris-oscuro);
+    }
+
+    .replies-divider {
+        position: relative;
+    }
+
+    .replies-divider::before {
+        content: '';
+        position: absolute;
+        left: -2px;
+        /* Ajuste para alinear con el borde */
+        top: -10px;
+        width: 20px;
+        height: 20px;
+        border-left: 2px solid var(--naranja-claro);
+        border-bottom: 2px solid var(--naranja-claro);
+        border-bottom-left-radius: 10px;
+    }
+
+    /* Mejoras en el formulario de edición */
+    .edit-controls textarea {
+        border-color: var(--gris-claro);
+        border-radius: 8px;
+    }
+
+    .edit-controls textarea:focus {
+        border-color: var(--naranja);
+        box-shadow: 0 0 0 0.2rem rgba(255, 108, 46, 0.25);
+    }
+
+    /* Estados disabled para botones */
+    .comment-like-btn:disabled,
+    .reply-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    /* Responsive */
+    @media (max-width: 576px) {
+        .comment-bubble {
+            margin-left: 0;
+            border-radius: 16px !important;
+        }
+
+        .avatar-circle {
+            width: 40px !important;
+            height: 40px !important;
+            font-size: 16px !important;
+        }
+
+        .replies-container {
+            margin-left: 10px;
+        }
+
+        .replies-divider {
+            margin-left: 15px !important;
+            padding-left: 15px !important;
+        }
+
+
+    }
+</style>
+{% endblock %}
+
+
+{% block extra_js %}
+<script src="{% static 'js/article-detail.js' %}"></script>
 {% endblock %}

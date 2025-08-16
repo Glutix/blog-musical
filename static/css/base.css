@@ -1,125 +1,287 @@
-/* Variables globales de color */
+/* Fade-in para comentarios nuevos */
+.fade-in-comment {
+    opacity: 0;
+    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-in-comment.visible {
+    opacity: 1;
+}
+
+/* ================== VARIABLES DE COLORES - BLOG MUSICAL ================== */
 :root {
-    --color-negro: #000000;
-    --color-naranja-claro: #FF6C2E;
-    --color-naranja-hover: #e65a1f;
-    --color-naranja-oscuro: #D25C2A;
-    --color-gris-oscuro: #E5E5E5;
-    --color-blanco: #FFFFFF;
+    /* ========== COLORES BASE ========== */
+    --negro: #000000;
+    --blanco: #FFFFFF;
+
+    /* ========== NARANJA (COLOR PRINCIPAL) ========== */
+    --naranja-claro: #FFE5D6;
+    /* Fondos suaves */
+    --naranja: #FF6C2E;
+    /* Principal */
+    --naranja-hover: #E65A1F;
+    /* Hover */
+    --naranja-oscuro: #D25C2A;
+    /* Texto sobre claro */
+
+    /* ========== GRISES ========== */
+    --gris-muy-claro: #F8F9FA;
+    /* Fondo alternativo */
+    --gris-claro: #E6E6E6;
+    /* Bordes */
+    --gris: #6C757D;
+    /* Texto secundario */
+    --gris-oscuro: #343A40;
+    /* Texto con contraste */
+
+    /* ========== VARIABLES FUNCIONALES ========== */
+    /* Texto */
+    --color-texto: var(--negro);
+    --color-texto-secundario: var(--gris);
+    --color-texto-claro: var(--blanco);
+    --color-texto-accent: var(--naranja);
+
+    /* Fondos */
+    --color-fondo: var(--blanco);
+    --color-fondo-alternativo: var(--gris-claro);
+    --color-fondo-claro: var(--blanco);
+    --color-fondo-accent: var(--naranja-claro);
+
+    /* Botones */
+    --color-boton-principal: var(--naranja);
+    --color-boton-hover: var(--naranja-hover);
+    --color-boton-texto: var(--blanco);
+
+    /* Bordes y sombras */
+    --color-borde: var(--gris-claro);
+    --sombra-suave: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --sombra-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Reset básico */
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
+
+/* ========== CLASES BÁSICAS ========== */
+
+/* Textos */
+.text-primary {
+    color: var(--color-texto);
 }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--color-gris-oscuro);
-    color: var(--color-negro);
-    margin: 0;
-    padding: 0;
+.text-secondary {
+    color: var(--color-texto-secundario);
 }
 
-/* Utilidades de colores */
-.bg-blanco {
-    background-color: var(--color-blanco);
+.text-accent {
+    color: var(--color-texto-accent);
 }
 
-.bg-gris-oscuro {
-    background-color: var(--color-gris-oscuro);
+.text-white {
+    color: var(--color-texto-claro);
 }
 
-.color-negro {
-    color: var(--color-negro);
+/* Fondos */
+.bg-primary {
+    background-color: var(--color-fondo) !important;
 }
 
-.color-naranja-claro {
-    color: var(--color-naranja-claro);
+.bg-alt {
+    background-color: var(--gris-claro) !important;
 }
 
-.color-naranja-oscuro {
-    color: var(--color-naranja-oscuro);
+.bg-accent-soft {
+    background-color: var(--color-fondo-accent);
 }
 
-/* Botón primario */
-.btn-primary-custom {
-    background-color: var(--color-naranja-claro);
+/* ========== COMPONENTES ESENCIALES ========== */
+
+/* Botones */
+.btn-orange {
+    background-color: var(--color-boton-principal);
+    color: var(--color-boton-texto);
     border: none;
-    color: var(--color-blanco);
-    font-weight: 600;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.2s ease;
 }
 
-.btn-primary-custom:hover,
-.btn-primary-custom:focus {
-    background-color: var(--color-naranja-hover);
-    color: var(--color-blanco);
-    outline: none;
-    box-shadow: 0 0 8px var(--color-naranja-hover);
+.btn-orange:hover {
+    background-color: var(--color-boton-hover);
+    color: var(--color-boton-texto);
+    transform: translateY(-1px);
 }
 
-/* Inputs */
-input.form-control,
-.input-group .form-control {
-    border: 1px solid #ccc;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+/* Cards */
+.card {
+    background-color: var(--color-fondo-claro);
+    border: 1px solid var(--color-borde);
+    box-shadow: var(--sombra-suave);
+    transition: all 0.2s ease;
 }
 
-input.form-control:hover,
-.input-group .form-control:hover,
-input.form-control:focus,
-.input-group .form-control:focus {
-    border-color: var(--color-naranja-claro);
-    box-shadow: 0 0 0 0.2rem rgba(255, 108, 46, 0.25);
+.card:hover {
+    box-shadow: var(--sombra-hover);
+    transform: translateY(-2px);
 }
 
-/* Labels */
-.form-label {
-    font-weight: 600;
-    color: var(--color-negro);
+/* Links */
+a {
+    color: var(--color-texto-accent);
+    text-decoration: none;
 }
 
-.form-label i {
-    font-size: 1.2rem;
-    margin-right: 0.5rem;
+a:hover {
+    color: var(--naranja-hover);
 }
 
-/* Layouts comunes */
-.container-centered,
-.page-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+/* ================== NAVBAR ================== */
+.navbar-brand img {
+    height: 50px;
 }
 
-/* Tarjetas base */
-.card-base {
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
-    background-color: var(--color-blanco);
-    width: 100%;
-    max-width: 480px;
+.navbar-nav .nav-link {
+    font-weight: 500;
+    color: var(--color-texto);
+    transition: color 0.2s ease;
 }
 
-/* Logo base */
-.logo-base {
-    max-width: 320px;
-    height: auto;
-    display: block;
-    margin: 0 auto 1.5rem auto;
+.navbar-nav .nav-link:hover {
+    color: var(--naranja);
 }
 
-/* Utilidad para puntero */
-.cursor-pointer {
-    cursor: pointer;
+.navbar-nav .nav-link.active {
+    color: var(--color-texto-accent);
 }
 
-/* Utilidad texto centrado */
-.text-center {
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--naranja-claro);
+}
+
+/* ================== Dropdown escritorio ================== */
+.nav-item.dropdown .nav-link {
+    color: var(--color-texto);
+    font-weight: 500;
+}
+
+.nav-item.dropdown .nav-link:hover {
+    color: var(--naranja);
+}
+
+.dropdown-menu {
+    --bs-dropdown-bg: var(--color-fondo);
+    --bs-dropdown-color: var(--color-texto);
+    --bs-dropdown-border-color: transparent;
+    --bs-dropdown-link-color: var(--color-texto);
+    --bs-dropdown-link-hover-color: var(--color-texto-claro);
+    --bs-dropdown-link-hover-bg: var(--naranja);
+    --bs-dropdown-link-active-color: var(--color-texto-claro);
+    --bs-dropdown-link-active-bg: var(--naranja-hover);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+    padding: .5rem 0;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .18s ease, transform .18s ease;
+}
+
+.dropdown-menu.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    font-size: .95rem;
+    padding: .6rem 1.1rem;
+}
+
+.dropdown-item i {
+    width: 18px;
     text-align: center;
+}
+
+.dropdown-divider {
+    margin: .4rem 0;
+}
+
+@media (max-width: 991.98px) {
+    .nav-item.dropdown {
+        display: none !important;
+    }
+}
+
+/* Menú usuario móvil */
+.user-menu-mobile {
+    background-color: var(--color-fondo);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
+}
+
+.user-mobile-item {
+    display: block;
+    padding: 0.6rem 0.8rem;
+    color: var(--color-texto);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.user-mobile-item:hover {
+    background-color: var(--naranja);
+    color: var(--color-texto-claro);
+}
+
+.user-mobile-item i {
+    width: 18px;
+    text-align: center;
+}
+
+/* ================== FOOTER ================== */
+footer {
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+}
+
+footer h5 {
+    color: var(--color-texto);
+}
+
+footer .col-md-4 {
+    text-align: center;
+}
+
+footer .col-md-4 ul {
+    padding-left: 0;
+    list-style: none;
+}
+
+.footer-link {
+    color: var(--color-texto);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+    color: var(--color-texto-accent);
+}
+
+.social-icons {
+    justify-content: center;
+}
+
+.social-icons a {
+    color: var(--color-texto);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    text-decoration: none;
+}
+
+.social-icons a:hover {
+    background-color: var(--naranja-hover);
+    color: var(--color-texto-claro);
+    transform: scale(1.1);
 }
