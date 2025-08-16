@@ -1,21 +1,22 @@
 <div class="comment-wrapper mb-4" id="comment-{{ comment.id }}">
     <div class="d-flex">
         <div class="comment-avatar me-3">
-            <div class="avatar-circle d-flex align-items-center justify-content-center"
-                style="width: 48px; height: 48px; background: var(--naranja); 
+            <div class="avatar-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: var(--naranja); 
                         border-radius: 50%; color: var(--blanco); font-weight: bold; font-size: 18px; 
                         box-shadow: 0 2px 8px rgba(255, 108, 46, 0.3); overflow: hidden;">
                 {% if comment.user.profile.avatar %}
-                    <img src="{{ comment.user.profile.avatar.url }}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                <img src="{{ comment.user.profile.avatar.url }}" alt="Avatar"
+                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 {% else %}
-                    {{ comment.user.username|slice:':1'|upper }}
+                {{ comment.user.username|slice:':1'|upper }}
                 {% endif %}
             </div>
         </div>
 
+
+        
         <div class="comment-content-wrapper flex-grow-1">
-            <div class="comment-bubble p-3 position-relative"
-                style="background: var(--gris-muy-claro); 
+            <div class="comment-bubble p-3 position-relative" style="background: var(--gris-muy-claro); 
                         border-radius: 18px 18px 18px 4px; 
                         border: 1px solid var(--gris-claro);
                         box-shadow: var(--sombra-suave);">
@@ -38,16 +39,14 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                                 <li>
-                                    <button class="dropdown-item edit-btn" 
-                                        data-id="{{ comment.id }}"
+                                    <button class="dropdown-item edit-btn" data-id="{{ comment.id }}"
                                         data-content="{{ comment.content|escapejs }}"
                                         data-url="{% url 'blog:edit_comment_ajax' comment.id %}">
                                         <i class="fas fa-edit me-2" style="color: var(--naranja);"></i> Editar
                                     </button>
                                 </li>
                                 <li>
-                                    <button class="dropdown-item text-danger delete-btn" 
-                                        data-id="{{ comment.id }}"
+                                    <button class="dropdown-item text-danger delete-btn" data-id="{{ comment.id }}"
                                         data-url="{% url 'blog:comment_delete_ajax' comment.id %}">
                                         <i class="fas fa-trash me-2"></i> Eliminar
                                     </button>
@@ -68,8 +67,7 @@
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="action-buttons d-flex align-items-center">
                             {% if user.is_authenticated %}
-                            <button class="btn btn-sm comment-like-btn me-3 p-0" 
-                                data-comment-id="{{ comment.id }}"
+                            <button class="btn btn-sm comment-like-btn me-3 p-0" data-comment-id="{{ comment.id }}"
                                 data-url="{% url 'blog:comment_like_toggle' comment.id %}"
                                 style="border: none; background: none; color: var(--gris); transition: all 0.2s ease;">
                                 <i class="{% if comment.user_has_liked %}fas fa-heart text-danger{% else %}far fa-heart{% endif %} me-1"
@@ -85,21 +83,26 @@
                             {% else %}
                             {% endif %}
                         </div>
-                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="reply-form-container mt-3 d-none" id="reply-form-{{ comment.id }}">
-                <div class="p-3 rounded"
-                    style="background: var(--naranja-claro); border: 1px dashed var(--naranja);">
-                    <form class="reply-form-wrapper" action="{% url 'blog:article_detail' comment.article.slug %}" method="post">
+                <div class="p-3 rounded" style="background: var(--naranja-claro); border: 1px dashed var(--naranja);">
+                    <form class="reply-form-wrapper" action="{% url 'blog:article_detail' comment.article.slug %}"
+                        method="post">
                         {% csrf_token %}
                         <input type="hidden" name="parent_id" value="{{ comment.id }}">
                         <div class="d-flex align-items-start">
+                            {% if user.profile.avatar %}
+                            <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="me-3"
+                                style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
+                            {% else %}
                             <div class="avatar-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px; background: var(--naranja); 
-                                        border-radius: 50%; color: var(--blanco); font-weight: bold; font-size: 14px;">
+                                border-radius: 50%; color: var(--blanco); font-weight: bold; font-size: 14px;">
                                 {{ user.username|slice:':1'|upper }}
                             </div>
+                            {% endif %}
                             <div class="flex-grow-1">
                                 <textarea name="content" class="form-control border-0 shadow-sm" rows="2"
                                     placeholder="Escribe tu respuesta..."
@@ -126,11 +129,11 @@
                 <div class="replies-divider mb-3"
                     style="border-left: 2px solid var(--naranja-claro); margin-left: 24px; padding-left: 20px;">
                     {% for reply in comment.replies_list|default:comment.replies.all|dictsort:"created_at" %}
-                        {% include 'blog/partials/comment.html' with comment=reply user=user %}
+                    {% include 'blog/partials/comment.html' with comment=reply user=user %}
                     {% endfor %}
                 </div>
             </div>
         </div>
     </div>
-    
-    </div>
+
+</div>

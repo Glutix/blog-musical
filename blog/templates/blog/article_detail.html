@@ -121,10 +121,16 @@
                 {% csrf_token %}
                 <input type="hidden" name="parent_id" value="">
                 <div class="d-flex align-items-start">
-                    <div class="avatar-circle d-flex align-items-center justify-content-center me-3"
-                        style="width: 48px; height: 48px; background: var(--naranja); border-radius: 50%; color: var(--blanco); font-weight: bold; font-size: 18px; box-shadow: 0 2px 8px rgba(255, 108, 46, 0.3);">
+                    {% if user.profile.avatar %}
+                    <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="me-3" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
+                            box-shadow: 0 2px 8px rgba(255, 108, 46, 0.3);">
+                    {% else %}
+                    <div class="avatar-circle d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px; background: var(--naranja); border-radius: 50%;
+                           color: var(--blanco); font-weight: bold; font-size: 18px;
+                           box-shadow: 0 2px 8px rgba(255, 108, 46, 0.3);">
                         {{ user.username|slice:':1'|upper }}
                     </div>
+                    {% endif %}
                     <div class="flex-grow-1">
                         <textarea name="content" class="form-control border-1 shadow-sm" rows="3"
                             placeholder="Escribe tu comentario..."
@@ -153,25 +159,20 @@
     </div>
 </main>
 
-<!-- Modal de Confirmación de Borrado (igual que en my_articles.html) -->
-<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content text-center border-0 shadow-lg">
-            <div class="modal-header modal-header-delete">
-                <h5 class="modal-title w-100 fw-bold" id="deleteModalLabel">ELIMINAR PUBLICACIÓN</h5>
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body py-5">
-                <i class="fa-solid fa-trash modal-icon mb-4"></i>
-                <h4 class="mb-3 fw-bold">¿Estás seguro de esto?</h4>
-                <p class="text-muted px-4">Estás a punto de eliminar esta publicación para siempre. Una vez que lo elimines, no hay vuelta atrás.</p>
+            <div class="modal-body">
+                ¿Estás seguro de que quieres eliminar este comentario? Esta acción no se puede deshacer.
             </div>
-            <div class="modal-footer justify-content-center border-0 pb-4">
-                <form id="deleteForm" method="post" action="{% url 'blog:article_delete' article.slug %}">
-                    {% csrf_token %}
-                    <button type="button" class="btn btn-secondary px-4 me-2 btn-cancel" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-danger px-4">Sí, eliminar</button>
-                </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
             </div>
         </div>
     </div>
