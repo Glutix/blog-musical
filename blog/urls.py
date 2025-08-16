@@ -37,4 +37,6 @@ urlpatterns = [
     path('editar/<slug:slug>/', views.article_edit, name='article_edit'),
     path('eliminar/<slug:slug>/', views.article_delete, name='article_delete'),
 
+    #! contactos
+    path('contacto/', views.contact, name='contact'),
 ]

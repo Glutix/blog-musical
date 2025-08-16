@@ -166,3 +166,17 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "user_auth:login"  # Vista que usará cuando alguien intente entrar sin autenticarse
 LOGIN_REDIRECT_URL = "blog:article_list"  # A dónde va después de iniciar sesión
 LOGOUT_REDIRECT_URL = "/"  # A dónde va después de cerrar sesión
+
+
+
+# para el mail de contacto pueda enviar
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'example@gmail.com'              # Remitente
+EMAIL_HOST_PASSWORD = '1234exa,é' # Contraseña de aplicación
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+CONTACT_EMAIL = 'correo_destino_blog@gmail.com'      # Destinatario

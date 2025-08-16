@@ -27,10 +27,10 @@
 
       <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
         <ul class="navbar-nav mx-auto gap-4">
-          <li class="nav-item"><a class="nav-link active" href="/">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'blog:category_list' %}">Catalogo</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Colecciones</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Sobre nosotros</a></li>
+          <li class="nav-item"><a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link {% if request.path == '/catalogo/' %}active{% endif %}" href="{% url 'blog:category_list' %}">Catalogo</a></li>
+          <li class="nav-item"><a class="nav-link {% if request.path == '/contactanos/' %}active{% endif %}" href="{% url 'blog:contact' %}">Contáctanos</a></li>
+          <li class="nav-item"><a class="nav-link {% if request.path == '/sobre-nosotros/' %}active{% endif %}" href="#">Sobre nosotros</a></li>
         </ul>
 
         <!-- Dropdown usuario escritorio -->

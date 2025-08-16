@@ -17,6 +17,8 @@ from .models import (
 )
 from .forms import ArticleForm, CommentForm
 from user_auth.models import Profile
+from django.conf import settings
+from django.core.mail import send_mail
 #import json
 
 def custom_404_view(request, exception):
@@ -410,3 +412,49 @@ def category_list(request):
     # Anotamos cada categoría con el recuento de artículos y luego ordenamos.
     categories = Category.objects.annotate(article_count=Count('articles')).order_by('-article_count', 'name')
     return render(request, 'blog/category_list.html', {'categories': categories})
+
+
+#! Vista para manejar el formulario de contacto
+def contact(request):
+    # Variable de control para mostrar el mensaje "enviado" en el template
+    enviado = False
+
+    # Si el usuario envió el formulario (método POST)...
+    if request.method == "POST":
+        # Toma los valores enviados por el formulario mediante sus 'name'
+        nombre = request.POST.get("nombre")
+        email = request.POST.get("email")
+        mensaje = request.POST.get("mensaje")
+
+        # Arma el asunto del correo incluyendo el nombre del remitente
+        asunto = f"Nuevo mensaje de contacto - {nombre}"
+
+        # Cuerpo del correo: incluye nombre, email y el mensaje
+        cuerpo = (
+            f"Nombre: {nombre}\n"
+            f"Email: {email}\n\n"
+            f"Mensaje:\n{mensaje}"
+        )
+
+        # Envía el correo:
+        # send_mail(
+        #   subject,              -> Asunto del correo
+        #   message,              -> Texto plano del correo
+        #   from_email,           -> Dirección del remitente (debe existir y estar autorizada)
+        #   recipient_list,       -> Lista de destinatarios (una o varias direcciones)
+        #   fail_silently=False   -> Si hay error, lanza excepción (útil para detectar problemas)
+        # )
+        send_mail(
+            asunto,
+            cuerpo,
+            settings.DEFAULT_FROM_EMAIL,   # Remitente (definido en settings.py)
+            [settings.CONTACT_EMAIL],      # Lista de destinatarios (el correo del blog)
+            fail_silently=False,
+        )
+
+        # Marca que el envío se realizó para que el template muestre el mensaje de éxito
+        enviado = True
+
+    # Renderiza la plantilla 'contacto.html' pasando la variable 'enviado'
+    return render(request, "blog/contact.html", {"enviado": enviado})
+
