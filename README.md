@@ -77,8 +77,9 @@ python manage.py runserver
 
 - [Ferreyra Ricardo](https://github.com/Glutix)
 - [Benitez Cluadia](https://github.com/ClauBenitez)
-- [Flores Mariana](https://github.com/Glutix)
+- [Flores Mariana](https://github.com/Maguiflor)
 - [Vargas Alejandro](https://github.com/dether)
+- [Cazal Iván](https://github.com/Ivaanczl)
 
 ## 📌 Estado del proyecto
 

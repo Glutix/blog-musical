@@ -31,7 +31,7 @@
           <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'article_list' %}active{% endif %}" href="/">Inicio</a></li>
           <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'category_list' %}active{% endif %}" href="{% url 'blog:category_list' %}">Catalogo</a></li>
           <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'blog:contact' %}">Contáctanos</a></li>
-          <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="#">Sobre nosotros</a></li>
+          <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'blog:about' %}">Sobre nosotros</a></li>
         </ul>
 
         <!-- Dropdown usuario escritorio -->
@@ -100,17 +100,16 @@
         <div class="col-md-4 mb-4">
           <h5 class="fw-bold text-dark mb-3">Integrate</h5>
           <ul class="list-unstyled">
-            <li><a href="#" class="footer-link">Inicio</a></li>
+            <li><a href="/" class="footer-link">Inicio</a></li>
             <li><a href="{% url 'blog:category_list' %}" class="footer-link">Catalogo</a></li>
-            <li><a href="#" class="footer-link">Colecciones</a></li>
           </ul>
         </div>
         <div class="col-md-4 mb-4">
           <h5 class="fw-bold text-dark mb-3">Sobre Integrate</h5>
           <ul class="list-unstyled">
-            <li><a href="#" class="footer-link">¿Quiénes somos?</a></li>
+            <li><a href="{% url 'blog:about' %}" class="footer-link">¿Quiénes somos?</a></li>
             <li><a href="#" class="footer-link">Misión y visión</a></li>
-            <li><a href="#" class="footer-link">Contáctanos</a></li>
+            <li><a href="{% url 'blog:contact' %}" class="footer-link">Contáctanos</a></li>
           </ul>
         </div>
         <div class="col-md-4 mb-4">

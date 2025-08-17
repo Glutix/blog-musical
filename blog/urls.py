@@ -39,4 +39,6 @@ urlpatterns = [
 
     #! contactos
     path('contacto/', views.contact, name='contact'),
+    #! about
+    path('about/', views.about, name='about'),
 ]

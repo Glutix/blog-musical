@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Acerca de nosotros{% endblock %}
+
+
+{% block content %}
+
+
+<div class="about-container">
+    <h1>Acerca de nosotros</h1>
+    <p>¡Bienvenidos! Somos Iván, Ricardo, Claudia, Alejandro y Mariana, un equipo de 5 estudiantes de programación.
+        En este blog podras encontrar toda la información del mundo de la música, hits del momento, información
+        sobre artistas, nuevos lanzamientos, tendencias y mucho más.</p>
+    <p>Queremos compartir cómo la música se cruza con nuestra vida cotidiana. Exploraremos nuestras bandas
+        favoritas, géneros musicales que nos inspiran, experiencias en conciertos, y cómo la música influye en
+        nuestra creatividad. También podríamos hablar sobre proyectos que combinan música y tecnología.</p>
+    <p>A través de este blog, buscamos conectar con otros que comparten nuestra pasión por la música y la
+        programación. Queremos compartir nuestras historias, descubrimientos musicales y reflexiones sobre cómo
+        estas dos pasiones se entrelazan en nuestras vidas.</p>
+    <p>¡Esperamos que disfrutes leyendo nuestros contenidos y que te unas a nuestra comunidad!</p>
+    <p>Atentamente, Iván, Ricardo, Claudia, Alejandro y Mariana</p>
+</div>
+
+
+{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .about-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 2rem;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+
+    .about-container h1 {
+        color: var(--naranja);
+    }
+</style>
+{% endblock %}

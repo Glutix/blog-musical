@@ -1,4 +1,3 @@
-
 # blog/views.py
 import json
 from django.shortcuts import render, get_object_or_404, redirect
@@ -19,13 +18,16 @@ from .forms import ArticleForm, CommentForm
 from user_auth.models import Profile
 from django.conf import settings
 from django.core.mail import send_mail
-#import json
+
+# import json
+
 
 def custom_404_view(request, exception):
     """
     Vista personalizada para manejar el error 404 (página no encontrada).
     """
-    return render(request, '404.html', status=404)
+    return render(request, "404.html", status=404)
+
 
 # Vista para listar todos los artículos (pública)
 def article_list(request):
@@ -34,6 +36,7 @@ def article_list(request):
     """
     articles = Article.objects.all().order_by("-created_at")
     return render(request, "blog/article_list.html", {"articles": articles})
+
 
 def article_detail(request, slug):
     article = get_object_or_404(Article, slug=slug)
@@ -65,15 +68,21 @@ def article_detail(request, slug):
                     except Comment.DoesNotExist:
                         pass
                 new_comment.save()
-                if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.content_type == 'application/json':
+                if (
+                    request.headers.get("x-requested-with") == "XMLHttpRequest"
+                    or request.content_type == "application/json"
+                ):
                     from django.template.loader import render_to_string
+
                     # Pasa el contexto completo de request.user y user al render, para que los hijos tengan el CSRF token y clase
                     context = {
                         "comment": new_comment,
                         "user": request.user,
                         "request": request,
                     }
-                    comment_html = render_to_string("blog/partials/comment.html", context, request=request)
+                    comment_html = render_to_string(
+                        "blog/partials/comment.html", context, request=request
+                    )
                     return JsonResponse({"success": True, "comment_html": comment_html})
                 messages.success(request, "Tu comentario ha sido publicado.")
                 return redirect("blog:article_detail", slug=article.slug)
@@ -94,7 +103,6 @@ def article_detail(request, slug):
         user_has_liked = ArticleLike.objects.filter(
             user=request.user, article=article
         ).exists()
-
 
     # 💡 Cálculo de likes en cada comentario y replies recursivamente
     def set_user_has_liked(comment, user):
@@ -121,6 +129,7 @@ def article_detail(request, slug):
     }
     return render(request, "blog/article_detail.html", context)
 
+
 # Vista para borrar un comentario (NUEVA)
 @login_required
 def delete_comment(request, comment_id):
@@ -143,6 +152,7 @@ def delete_comment(request, comment_id):
     # Opcional: Renderizar una plantilla de confirmación si se accede por GET
     return render(request, "blog/comment_confirm_delete.html", {"comment": comment})
 
+
 @login_required
 def article_like_toggle(request, pk):
     if request.method == "POST":
@@ -160,6 +170,7 @@ def article_like_toggle(request, pk):
         return JsonResponse({"is_liked": is_liked, "total_likes": article.total_likes})
 
     return JsonResponse({"error": "Método inválido"}, status=405)
+
 
 # Vista para crear un nuevo artículo (protegida)
 @login_required
@@ -193,9 +204,14 @@ def article_create(request):
                     profile = Profile.objects.get(user=request.user)
                     profile.is_author = True
                     profile.save()
-                    messages.success(request, "¡Felicidades! Se te ha atribuido el rol de autor.")
+                    messages.success(
+                        request, "¡Felicidades! Se te ha atribuido el rol de autor."
+                    )
                 except Profile.DoesNotExist:
-                    messages.warning(request, "Perfil de usuario no encontrado. No se pudo actualizar el rol de autor.")
+                    messages.warning(
+                        request,
+                        "Perfil de usuario no encontrado. No se pudo actualizar el rol de autor.",
+                    )
 
             messages.success(request, "Artículo creado exitosamente.")
             return redirect("blog:article_detail", slug=article.slug)
@@ -207,6 +223,7 @@ def article_create(request):
         "blog/article_form.html",
         {"form": form, "title": "Crear Nuevo Artículo"},
     )
+
 
 # Vista para editar un artículo existente (protegida)
 @login_required
@@ -254,6 +271,7 @@ def article_edit(request, slug):
         {"form": form, "article": article, "title": f"Editar: {article.title}"},
     )
 
+
 # Vista para borrar un artículo (protegida)
 @login_required
 def article_delete(request, slug):
@@ -277,6 +295,7 @@ def article_delete(request, slug):
 
     return render(request, "blog/article_confirm_delete.html", {"article": article})
 
+
 # Vista para mostrar los artículos del usuario actual
 @login_required
 def my_articles(request):
@@ -285,6 +304,7 @@ def my_articles(request):
     """
     articles = Article.objects.filter(user=request.user)
     return render(request, "blog/my_articles.html", {"articles": articles})
+
 
 # Función auxiliar para obtener la IP del cliente
 def get_client_ip(request):
@@ -297,6 +317,7 @@ def get_client_ip(request):
     else:
         ip = request.META.get("REMOTE_ADDR")
     return ip
+
 
 @login_required
 def edit_comment(request, comment_id):
@@ -321,6 +342,7 @@ def edit_comment(request, comment_id):
 
     return render(request, "blog/comment_edit_form.html", {"comment": comment})
 
+
 @login_required
 def comment_like_toggle(request, pk):
     """
@@ -341,6 +363,7 @@ def comment_like_toggle(request, pk):
         return JsonResponse({"is_liked": is_liked, "total_likes": comment.total_likes})
 
     return JsonResponse({"error": "Invalid request method"}, status=400)
+
 
 @login_required
 def edit_comment_ajax(request, comment_id):
@@ -365,8 +388,12 @@ def edit_comment_ajax(request, comment_id):
     comment.content = content
     comment.save()
     from django.template.loader import render_to_string
-    content_html = render_to_string("blog/partials/comment_content.html", {"comment": comment})
+
+    content_html = render_to_string(
+        "blog/partials/comment_content.html", {"comment": comment}
+    )
     return JsonResponse({"success": True, "content_html": content_html})
+
 
 @login_required
 def delete_comment_ajax(request, comment_id):
@@ -389,6 +416,7 @@ def delete_comment_ajax(request, comment_id):
     # Si no es POST, devolver un error
     return JsonResponse({"error": "Método no permitido."}, status=405)
 
+
 def articles_by_category(request, category_name):
     """
     Vista pública para mostrar artículos filtrados por una categoría específica.
@@ -396,22 +424,31 @@ def articles_by_category(request, category_name):
     # Usamos get_object_or_404 para devolver un 404 si la categoría no existe
     category = get_object_or_404(Category, name=category_name)
     # Filtramos los artículos que tienen esa categoría.
-    articles = Article.objects.filter(category__name=category_name).order_by("-created_at")
-    
+    articles = Article.objects.filter(category__name=category_name).order_by(
+        "-created_at"
+    )
+
     # Pasamos la categoría y los artículos a la plantilla.
     # El título se actualizará dinámicamente.
-    return render(request, 'blog/articles_by_category.html', {
-        'articles': articles,
-        'category': category,
-    })
+    return render(
+        request,
+        "blog/articles_by_category.html",
+        {
+            "articles": articles,
+            "category": category,
+        },
+    )
+
 
 def category_list(request):
     """
     Vista pública para mostrar las categorías con un recuento de artículos.
     """
     # Anotamos cada categoría con el recuento de artículos y luego ordenamos.
-    categories = Category.objects.annotate(article_count=Count('articles')).order_by('-article_count', 'name')
-    return render(request, 'blog/category_list.html', {'categories': categories})
+    categories = Category.objects.annotate(article_count=Count("articles")).order_by(
+        "-article_count", "name"
+    )
+    return render(request, "blog/category_list.html", {"categories": categories})
 
 
 #! Vista para manejar el formulario de contacto
@@ -430,11 +467,7 @@ def contact(request):
         asunto = f"Nuevo mensaje de contacto - {nombre}"
 
         # Cuerpo del correo: incluye nombre, email y el mensaje
-        cuerpo = (
-            f"Nombre: {nombre}\n"
-            f"Email: {email}\n\n"
-            f"Mensaje:\n{mensaje}"
-        )
+        cuerpo = f"Nombre: {nombre}\n" f"Email: {email}\n\n" f"Mensaje:\n{mensaje}"
 
         # Envía el correo:
         # send_mail(
@@ -447,8 +480,8 @@ def contact(request):
         send_mail(
             asunto,
             cuerpo,
-            settings.DEFAULT_FROM_EMAIL,   # Remitente (definido en settings.py)
-            [settings.CONTACT_EMAIL],      # Lista de destinatarios (el correo del blog)
+            settings.DEFAULT_FROM_EMAIL,  # Remitente (definido en settings.py)
+            [settings.CONTACT_EMAIL],  # Lista de destinatarios (el correo del blog)
             fail_silently=False,
         )
 
@@ -458,3 +491,7 @@ def contact(request):
     # Renderiza la plantilla 'contacto.html' pasando la variable 'enviado'
     return render(request, "blog/contact.html", {"enviado": enviado})
 
+
+#! About
+def about(request):
+    return render(request, "blog/about.html")
