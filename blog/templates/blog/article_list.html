@@ -33,6 +33,31 @@
   }
 
   /* ================== CARRUSEL ================== */
+  /* Agregar overlay oscuro a cada slide */
+  .carousel-item {
+    position: relative;
+  }
+
+  .carousel-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* background: rgba(0,0,0,0.4);  negro con 40% de opacidad */
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 60%, rgba(0,0,0,0.9));
+    z-index: 1;
+  }
+
+  /* Asegura que el caption quede arriba del overlay */
+  .carousel-caption {
+    position: absolute;
+    z-index: 2;
+  }
+
+
+
   .carousel-item img {
     height: 500px;
     object-fit: cover;
@@ -181,8 +206,12 @@
           </div>
           <div class="carousel-caption d-none d-md-block text-white">
             <div class="hero-caption">
-              <span class="fw-bold text-orange"> {{ article.user.username }}</span>
-              <h5>{{ article.title }}</h5>
+              <a href="{% url 'user_auth:public_profile' article.user.username %}"
+                class="text-orange text-decoration-none">
+                <span class="fw-bold ">
+                  {{ article.user.username|slice:":25"|capfirst }}
+                </span></a>
+              <h5>{{ article.title|slice:":51" }}</h5>
               <a href="{% url 'blog:article_detail' article.slug %}" class="btn btn-orange">Leer más</a>
             </div>
           </div>
@@ -190,7 +219,8 @@
         {% empty %}
         <div class="carousel-item active">
           <div class="carousel-image-container">
-            <img src="https://res.cloudinary.com/dt5xp6kba/image/upload/v1755341061/Copilot_20250816_074408_bviaji.png" class="d-block w-90" alt="No hay artículos destacados" />
+            <img src="https://res.cloudinary.com/dt5xp6kba/image/upload/v1755341061/Copilot_20250816_074408_bviaji.png"
+              class="d-block w-90" alt="No hay artículos destacados" />
           </div>
           <div class="carousel-caption d-none d-md-block text-white">
             <div class="hero-caption">
@@ -224,12 +254,12 @@
               class="card-img-top" alt="{{ article.title }}" />
           </div>
           <div class="card-body d-flex flex-column gap-2">
-            <h5 class="card-title fw-bold">{{ article.title }}</h5>
+            <h5 class="card-title fw-bold">{{ article.title|slice:":51" }}</h5>
             <p class="card-subtitle mb-3 text-grey">
               Por <a href="{% url 'user_auth:public_profile' article.user.username %}"
                 class="text-orange text-decoration-none">
                 <span class="fw-bold author-link-span">
-                  {{ article.user.username }}
+                  {{ article.user.username|slice:":25"|capfirst }}
                 </span>
               </a> | {{ article.created_at|date:'d M, Y' }}
             </p>

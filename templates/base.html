@@ -13,6 +13,7 @@
 
   <link rel="stylesheet" href="{% static 'css/base.css' %}" />
   {% block head_extra %}{% endblock %}
+  {% block extra_styles %}{% endblock %}
 
 </head>
 
@@ -27,10 +28,10 @@
 
       <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
         <ul class="navbar-nav mx-auto gap-4">
-          <li class="nav-item"><a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link {% if request.path == '/catalogo/' %}active{% endif %}" href="{% url 'blog:category_list' %}">Catalogo</a></li>
-          <li class="nav-item"><a class="nav-link {% if request.path == '/contactanos/' %}active{% endif %}" href="{% url 'blog:contact' %}">Contáctanos</a></li>
-          <li class="nav-item"><a class="nav-link {% if request.path == '/sobre-nosotros/' %}active{% endif %}" href="#">Sobre nosotros</a></li>
+          <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'article_list' %}active{% endif %}" href="/">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'category_list' %}active{% endif %}" href="{% url 'blog:category_list' %}">Catalogo</a></li>
+          <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'blog:contact' %}">Contáctanos</a></li>
+          <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="#">Sobre nosotros</a></li>
         </ul>
 
         <!-- Dropdown usuario escritorio -->
@@ -41,7 +42,7 @@
               role="button" data-bs-toggle="dropdown">
               <span class="d-flex align-items-center gap-2">
                 <img src="{{ user.profile.get_avatar_url }}" alt="Avatar {{ user.username }}" class="user-avatar">
-                <span class="d-none d-lg-block">{{ user.username }}</span>
+                <span class="d-none d-lg-block">{{ user.username|capfirst }}</span>
               </span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
@@ -69,7 +70,7 @@
           {% if user.is_authenticated %}
           <div class="d-flex align-items-center mb-3">
             <img src="{{ user.profile.get_avatar_url }}" alt="Avatar {{ user.username }}" class="user-avatar me-2">
-            <span class="fw-semibold">{{ user.username }}</span>
+            <span class="fw-semibold">{{ user.username|capfirst }}</span>
           </div>
           <ul class="list-unstyled mb-0">
             <li><a class="user-mobile-item" href="{% url 'blog:my_articles' %}"><i
@@ -114,7 +115,7 @@
         </div>
         <div class="col-md-4 mb-4">
           {% if user.is_authenticated %}
-          <h5 class="fw-bold text-dark mb-3">Bienvenido {{ user.username }}</h5>
+          <h5 class="fw-bold text-dark mb-3">Bienvenido {{ user.username|capfirst }}</h5>
           <ul class="list-unstyled">
             <li><a class="footer-link" href="{% url 'user_auth:profile_view' %}">Perfil</a></li>
             <li><a class="footer-link" href="{% url 'blog:my_articles' %}">Mis artículos</a></li>

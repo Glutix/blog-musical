@@ -10,55 +10,52 @@
         <img src="{{ article.featured_image.url }}" class="card-img-top" alt="{{ article.title }}"
             style="max-height: 650px; object-fit: cover" />
         {% else %}
-                <img src="https://res.cloudinary.com/dt5xp6kba/image/upload/v1755222307/articulo-sin-imagen_ah0jeq.png" class="card-img-top" alt="{{ article.title }}"
-            style="max-height: 650px; object-fit: cover" />
+        <img src="https://res.cloudinary.com/dt5xp6kba/image/upload/v1755222307/articulo-sin-imagen_ah0jeq.png"
+            class="card-img-top" alt="{{ article.title }}" style="max-height: 650px; object-fit: cover" />
         {% endif %}
 
         <div class="card-body p-4 p-md-5">
             <div class="d-flex align-items-center small text-muted mb-2">
-                <span>Categorias</span>
-                <span class="mx-2">&bull;</span>
-                <span>
+                <div class="categories-container">
                     {% if article.category.all %}
                     {% for cat in article.category.all|slice:":5" %}
-                    {{ cat.name }}{% if not forloop.last %} - {% endif %}
+                    <a href="/catalogo/{{ cat.name }}/" class="category">{{ cat.name }}</a>
                     {% endfor %}
                     {% else %}
-                    Sin Categoría
+                    <span class="text-muted">Sin Categoría</span>
                     {% endif %}
-                </span>
+                </div>
             </div>
 
-            <h1 class="display-5 fw-bold mb-3">{{ article.title }}</h1>
+            <h1 class="display-5 fw-bold mb-3 truncate-text" data-max-length="80">
+                {{ article.title|capfirst }}
+            </h1>
+
 
             <p class="card-subtitle mb-3 text-grey">
                 Por <a href="{% url 'user_auth:public_profile' article.user.username %}"
                     class="text-orange text-decoration-none">
                     <span class="fw-bold author-link-span">
-                        {{ article.user.username }}
+                        {{ article.user.username|capfirst }}
                     </span>
                 </a> | {{ article.created_at|date:'d M, Y' }}
             </p>
 
-            <article class="fs-5">{{ article.content|linebreaks }}</article>
+            <article class="fs-5 truncate-text" data-max-length="250">
+                {{ article.content|linebreaks }}
+            </article>
 
 
             <div class="d-flex align-items-center small text-muted mb-2">
-                <span>Tags</span>
-                <span class="mx-2">&bull;</span>
-                <span>
+                <div class="tags-container">
                     {% if article.tags.all %}
-                    {% for tag in article.tags.all|slice:":5" %}
-                    <span style="background-color: var(--naranja-claro); padding: .2rem; border-radius: .3rem;"
-                        class="text-black me-1">{{ tag.name }}</span>
+                    {% for tag in article.tags.all %}
+                    <span class="tag">{{ tag.name }}</span>
                     {% endfor %}
-                    {% if article.tags.count > 5 %}
-                    <span class="text-black">...</span>
-                    {% endif %}
                     {% else %}
                     <span class="text-muted">Sin Tags</span>
                     {% endif %}
-                </span>
+                </div>
             </div>
 
 
@@ -253,6 +250,75 @@
         cursor: not-allowed;
     }
 
+    /* --------------- TAGS --------------- */
+    .tags-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        /* espacio entre tags */
+    }
+
+    /* Cada tag */
+    .tag {
+        display: inline-block;
+        background: var(--naranja-claro, #ffe5d6) !important;
+        color: var(--naranja, #ff6c2e) !important;
+        font-weight: 600;
+        font-size: 0.85rem;
+        padding: 0.35rem 0.9rem;
+        border-radius: 20px;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+    }
+
+    /* Hover */
+    .tag:hover {
+        background: var(--naranja, #ff6c2e);
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 3px 8px rgba(255, 108, 46, 0.3);
+    }
+
+
+    /* --------------- Categorias --------------- */
+    .categories-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    /* Cada categoría */
+    .category {
+        display: inline-block;
+        background: var(--gris-muy-claro, #f4f4f4);
+        color: var(--gris-oscuro, #333);
+        font-weight: 500;
+        font-size: 0.85rem;
+        padding: 0.35rem 0.9rem;
+        border-radius: 12px;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+    }
+
+    /* Hover */
+    .category:hover {
+        background: var(--naranja, #ff6c2e);
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 3px 8px rgba(255, 108, 46, 0.2);
+    }
+
+    .truncate-text {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .truncate-text.expanded {
+        overflow: visible;
+    }
+
+
     /* Responsive */
     @media (max-width: 576px) {
         .comment-bubble {
@@ -275,6 +341,16 @@
             padding-left: 15px !important;
         }
 
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.7rem;
+        }
+
+        .category {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.7rem;
+        }
 
     }
 </style>

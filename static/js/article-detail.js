@@ -395,3 +395,31 @@ document.getElementById("shareBtn").addEventListener("click", function () {
             console.error("Error al copiar el enlace: ", err);
         });
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".truncate-text").forEach(elem => {
+        const maxLength = parseInt(elem.dataset.maxLength, 10);
+        const fullText = elem.innerText.trim();
+
+        if (fullText.length > maxLength) {
+            const truncated = fullText.slice(0, maxLength) + "... ";
+            elem.innerText = truncated;
+
+            const toggleBtn = document.createElement("button");
+            toggleBtn.innerText = "Ver más";
+            toggleBtn.className = "btn btn-link p-0 text-orange fw-bold";
+            toggleBtn.style.fontSize = "0.9rem";
+
+            elem.appendChild(toggleBtn);
+
+            let expanded = false;
+            toggleBtn.addEventListener("click", () => {
+                expanded = !expanded;
+                elem.innerText = expanded ? fullText + " " : truncated;
+                toggleBtn.innerText = expanded ? "Ver menos" : "Ver más";
+                elem.appendChild(toggleBtn); // reinsertar el botón
+            });
+        }
+    });
+});
