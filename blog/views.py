@@ -10,6 +10,8 @@ from .models import (
     ArticleLike,
     ArticleView,
     CommentLike,
+    MisionVision,
+    
 )
 from .forms import ArticleForm, CommentForm
 
@@ -330,5 +332,8 @@ def edit_comment_ajax(request, comment_id):
         return JsonResponse({"success": True, "content": comment.content})
 
     return JsonResponse({"error": "Método no permitido"}, status=405)
-def mostrar_mensaje(request):
-    return HttpResponse("Centraliza la información del mundo de la música, para estar mas cerca de tus artistas favoritos.  Con tu música a la orden del día")
+
+# Misión y visión
+
+def mision_vision_view(request):
+    return (request,'misiòn_vision.html',{'mision_vision'. mision_vision})

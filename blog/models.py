@@ -101,3 +101,10 @@ class CommentLike(models.Model):
         unique_together = ("user", "comment")
         verbose_name = "Like in Comment"
         verbose_name_plural = "Like in Comments"
+
+class MisionVision(models.Model):
+    mision = models.TextField()
+    vision = models.TextField()
+
+    def __str__(self):
+        return "Misión y Visión"

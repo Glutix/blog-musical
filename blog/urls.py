@@ -27,7 +27,7 @@ urlpatterns = [
     path('comentario/<int:comment_id>/editar-ajax/', views.edit_comment_ajax, name='comment_edit_ajax'),
     path('comentario/<int:pk>/like/', views.comment_like_toggle, name='comment_like_toggle'),
     
-    #! misión y visión
-    path('Misión y Visión/',views.mostrar_mensaje,name='mostrar_mensaje)'
-
+    # Mision-Vision
+    path('mision-vision/',views.mision_vision_view, name='mision_vision'),
+    
 ]
