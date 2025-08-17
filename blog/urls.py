@@ -41,4 +41,6 @@ urlpatterns = [
     path('contacto/', views.contact, name='contact'),
     #! about
     path('about/', views.about, name='about'),
+    #! Mision y vision
+    path('mision-vision/',views.mision_vision, name='mision_vision'),
 ]

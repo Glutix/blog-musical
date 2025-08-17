@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Acerca de nosotros{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="header-text">
+        <h1>Nuestra Esencia</h1>
+        <p class="text-secondary">Somos un equipo de estudiantes de programación unidos por una pasión: la música. Este
+            blog es el escenario donde compartimos cómo las melodías y los algoritmos dan forma a nuestro mundo.</p>
+    </div>
+
+    <div class="mision-vision-container">
+        <div class="card">
+            <h2><i class="fas fa-bullseye"></i> Misión</h2>
+            <p class="text-secondary">Crear un espacio digital vibrante donde la música y la tecnología convergen.
+                Buscamos compartir contenido relevante y personal, conectando con una comunidad de aficionados que, como
+                nosotros, encuentran inspiración tanto en la melodía de un acorde como en la lógica del código.</p>
+        </div>
+        <div class="card">
+            <h2><i class="fas fa-eye"></i> Visión</h2>
+            <p class="text-secondary">Ser el blog de referencia para la comunidad de habla hispana interesada en la
+                intersección entre música y programación. Aspiramos a construir una comunidad activa donde el
+                intercambio de ideas inspire a nuestros lectores a explorar nuevas fronteras creativas y tecnológicas.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_styles %}
+<!-- Font Awesome para los iconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+    /* Estos estilos utilizan las variables de tu archivo base.css */
+    .container {
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 20px;
+    }
+
+    .header-text {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .header-text h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--naranja);
+        /* Variable de tu CSS */
+        margin-bottom: 10px;
+    }
+
+    .header-text p {
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .mision-vision-container {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+        /* Para que se adapte en móviles */
+    }
+
+    /* La clase .card ya está definida en tu base.css, pero aquí la especializamos */
+    .mision-vision-container .card {
+        flex: 1;
+        /* Para que ambas tarjetas ocupen el mismo espacio */
+        min-width: 280px;
+        /* Ancho mínimo antes de que se apilen */
+        padding: 30px;
+        /* Las propiedades de hover, border y shadow las hereda de base.css */
+    }
+
+    .mision-vision-container .card h2 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--naranja-oscuro);
+        /* Variable de tu CSS */
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mision-vision-container .card h2 i {
+        color: var(--naranja);
+        /* Variable de tu CSS */
+    }
+
+    .mision-vision-container .card p {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: var(--gris);
+        /* Variable de tu CSS */
+    }
+
+    /* Media Query para dispositivos móviles */
+    @media (max-width: 768px) {
+        .mision-vision-container {
+            flex-direction: column;
+        }
+
+        .container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+        }
+
+        .header-text h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}

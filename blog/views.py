@@ -495,3 +495,8 @@ def contact(request):
 #! About
 def about(request):
     return render(request, "blog/about.html")
+
+
+
+def mision_vision(request):
+    return render(request,'blog/mision_vision.html')
